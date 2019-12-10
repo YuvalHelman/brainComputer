@@ -1,5 +1,6 @@
 from connection import Connection
 import socket
+import contextlib
 
 
 class Listener:
@@ -10,6 +11,12 @@ class Listener:
         self.reuseaddr = reuseaddr
 
         self.serversocket = None
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
 
     def __repr__(self):
         return f'Listener(port={self.port!r}, host={self.host!r}, backlog={self.backlog!r}, reuseaddr={self.reuseaddr!r})'

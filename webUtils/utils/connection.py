@@ -1,4 +1,5 @@
 import socket
+import contextlib
 
 
 class Connection:
@@ -10,6 +11,24 @@ class Connection:
         dest_address = self.socket.getpeername()
         return f'<Connection from {my_address[0]}:{my_address[1]} to ' \
                f'{dest_address[0]}:{dest_address[1]}>'
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.socket.close()
+
+    @classmethod
+    @contextlib.contextmanager
+    def connect(cls, host, port):
+        connection = None
+        try:
+            sock = socket.socket()
+            sock.connect((host, port))
+            connection = Connection(sock)
+            yield connection
+        finally:
+            pass
 
     def send(self, data):
         self.socket.sendall(data)
@@ -35,6 +54,8 @@ class Connection:
 
     def close(self):
         self.socket.close()
+
+
 
 
 if __name__ == '__main__':
