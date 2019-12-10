@@ -1,6 +1,9 @@
 import sys
 from pathlib import Path
-from .website import Website
+import click
+from flask import Flask
+
+app = Flask(__name__)
 
 _INDEX_HTML = '''<html>
                     <head></head>
@@ -34,18 +37,19 @@ _INDEX_USER_HTML = '''
 '''
 
 
+@click.command(name='web')
+@click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
+@click.option('--data_dir', '-d', help='The directory where the server fetches data.')
 def run_webserver(address, data_dir):
-    website = Website()
-
-    @website.route('/')
+    @app.route('/')
     def index():
         users_html = []
         p = Path(data_dir)
         for user_dir in p.iterdir():
             users_html.append(_USER_LINE_HTML.format(user_id=user_dir.name))
-        return 200, _INDEX_HTML.format(users='\n'.join(users_html))
+        return _INDEX_HTML.format(users='\n'.join(users_html))
 
-    @website.route('/users/([0-9]+)')
+    @app.route('/users/<user_id>')
     def user(user_id):
         users_html = []
         p = Path(fr"{data_dir}/{user_id}")
@@ -54,9 +58,9 @@ def run_webserver(address, data_dir):
                 with open(f"{file}", "r") as f:
                     thought_time = file.name.split(".")[0]
                     users_html.append(_SINGLE_THOUGHT_HTML.format(time=thought_time, thought=f.read()))
-        return 200, _INDEX_USER_HTML.format(user_thoughts='\n'.join(users_html), user_id=user_id)
+        return _INDEX_USER_HTML.format(user_thoughts='\n'.join(users_html), user_id=user_id)
 
-    website.run(address)
+    app.run()
 
 
 def main(argv):
