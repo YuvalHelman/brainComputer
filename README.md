@@ -10,9 +10,9 @@ An example package. See [full documentation](https://advanced-system-design-foob
 1. Clone the repository and enter it:
 
     ```sh
-    $ git clone git@github.com:dan-gittik/foobar.git
+    $ git clone https://github.com/YuvalHelman/SystemsDesignProject.git  
     ...
-    $ cd foobar/
+    $ cd webUtils/
     ```
 
 2. Run the installation script and activate the virtual environment:
@@ -21,7 +21,7 @@ An example package. See [full documentation](https://advanced-system-design-foob
     $ ./scripts/install.sh
     ...
     $ source .env/bin/activate
-    [foobar] $ # you're good to go!
+    [SystemsDesignProject] $ # you're good to go!
     ```
 
 3. To check that everything is working as expected, run the tests:
@@ -34,7 +34,7 @@ An example package. See [full documentation](https://advanced-system-design-foob
 
 ## Usage
 
-The `foobar` packages provides the following classes:
+The `webUtils` packages provides the following classes:
 
 - `Foo`
 
@@ -87,7 +87,7 @@ foo
 $ python -m foobar foo inc 1
 2
 $ python -m foobar foo add 1 2
-3
+3:
 ```
 
 The CLI further provides the `bar` command, with the `run` and `error`
