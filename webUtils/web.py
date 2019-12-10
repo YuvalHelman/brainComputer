@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from website import Website
+from .website import Website
 
 _INDEX_HTML = '''<html>
                     <head></head>

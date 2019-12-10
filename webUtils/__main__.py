@@ -1,14 +1,14 @@
 import click
-
+from .client import upload_thought
+from .server import run
 
 @click.group()
 def cli():
     pass
 
 
-@cli.command()  # @cli, not @click!
-def sync():
-    click.echo('Syncing')
+cli.add_command(upload_thought)
+cli.add_command(run)
 
 
 if __name__ == '__main__':

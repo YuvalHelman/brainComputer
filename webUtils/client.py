@@ -6,17 +6,11 @@ import struct
 import click
 
 
-@click.command()
-@click.option('--count', default=1, help='Number of greetings.')
-@click.option('--name', prompt='Your name',
-              help='The person to greet.')
+@click.command(name='upload')
+@click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
+@click.option('--user', '-u', help='user ID.')
+@click.option('--thought', '-t', help='an arbitrary string to send to the server.')
 def upload_thought(address, user, thought):
-    """
-    :param address: str.  example: 127.0.0.1:5000
-    :param user: str example: 1
-    :param thought: arbitrary string.
-    :return:
-    """
     ip, port = address.split(":")
     thought_encoded = thought.encode("utf-8")
     thought_size = len(thought)
@@ -31,9 +25,5 @@ def upload_thought(address, user, thought):
         return 1
 
 
-def main(argv):
-    cli.main()
-
-
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    pass

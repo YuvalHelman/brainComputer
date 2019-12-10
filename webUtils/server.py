@@ -4,7 +4,7 @@ import threading
 import sys
 import struct
 from pathlib import Path
-from cli import CommandLineInterface
+import click
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
 
@@ -18,16 +18,10 @@ def create_server_socket(ip: str, port: str):
     return serversocket
 
 
-cli = CommandLineInterface()
-
-
-@cli.command
-def run(address, data):  # python server.py run address="127.0.0.1:5000" data=data/
-    """
-    :param address:
-    :param data_dir:
-    :return:
-    """
+@click.command(name='run_server')
+@click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
+@click.option('--data_dir', '-d', help='The directory where the server fetches data.')
+def run(address, data_dir):  # python server.py run address="127.0.0.1:5000" data=data/
     ip, port = address.split(":")
     try:
         serversocket = create_server_socket(ip, port)
@@ -41,7 +35,7 @@ def run(address, data):  # python server.py run address="127.0.0.1:5000" data=da
     while True:  # Iterate different Clients
         try:
             clientsocket, address = serversocket.accept()
-            handler = ConnectionHandler(clientsocket, str(data))
+            handler = ConnectionHandler(clientsocket, str(data_dir))
             handler.start()  # start invokes .run()
         except Exception as e:
             print('Exception accepting or handling first half of message from client:', e)
@@ -125,9 +119,5 @@ class ConnectionHandler(threading.Thread):
                 fd.write(f"{thought}")
 
 
-def main(argv):
-    cli.main()
-
-
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    pass
