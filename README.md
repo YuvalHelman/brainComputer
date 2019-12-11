@@ -66,11 +66,11 @@ The `webUtils` packages provides the following classes:
     'bar'
     ```
 
-The `foobar` package also provides a command-line interface:
+The `webUtils` package also provides a command-line interface:
 
 ```sh
-$ python -m foobar
-foobar, version 0.1.0
+$ python -m webUtils
+webUtils, version 0.1.0
 ```
 
 All commands accept the `-q` or `--quiet` flag to suppress output, and the `-t`
@@ -82,11 +82,13 @@ The CLI provides the `foo` command, with the `run`, `add` and `inc`
 subcommands:
 
 ```sh
-$ python -m foobar foo run
-foo
-$ python -m foobar foo inc 1
-2
-$ python -m foobar foo add 1 2
+$ python -m webUtils upload -a 127.0.0.1:5000 -u 1 -t message
+message sent
+$ python -m run_server -a 127.0.0.1:5000 -d ./data
+server is ready to recieve requests
+$ python -m web -a 127.0.0.1:5000 -d ./data
+webserver is ready to recieve requests
+
 3:
 ```
 
