@@ -1,6 +1,5 @@
-from connection import Connection
+from .connection import Connection
 import socket
-import contextlib
 
 
 class Listener:

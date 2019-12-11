@@ -12,7 +12,7 @@ An example package. See [full documentation](https://advanced-system-design-foob
     ```sh
     $ git clone https://github.com/YuvalHelman/SystemsDesignProject.git  
     ...
-    $ cd webUtils/
+    $ cd SystemsDesignProject/
     ```
 
 2. Run the installation script and activate the virtual environment:
