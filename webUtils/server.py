@@ -1,7 +1,6 @@
 import datetime
 import socket
 import threading
-import sys
 import struct
 from pathlib import Path
 import click

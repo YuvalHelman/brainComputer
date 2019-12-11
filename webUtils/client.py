@@ -1,7 +1,5 @@
 import socket
-import sys
 import time
-from sys import getsizeof
 import struct
 import click
 

@@ -86,6 +86,4 @@ if __name__ == '__main__':
     print(data[:20])
     print(data[20:].decode())
     t3 = t1.deserialize(data)
-    print( t1 == t3)
-    # print(f"{t1!r}")
-    # print(t1)
+    print(t1 == t3)

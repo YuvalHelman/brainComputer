@@ -7,6 +7,6 @@ setup(
     author = 'Yuval Helman',
     description = 'An example project for the Advanced-System-Design course in TAU.',
     packages = find_packages(),
-    install_requires = ['click', 'flask'],
+    install_requires = ['click', 'flask', 'flake8'],
     tests_require = ['pytest', 'pytest-cov'],
 )
