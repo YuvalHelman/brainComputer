@@ -1,5 +1,5 @@
-![build status](https://travis-ci.org/dan-gittik/foobar.svg?branch=master)
-![coverage](https://codecov.io/gh/dan-gittik/foobar/branch/master/graph/badge.svg)
+![build status](https://travis-ci.org/YuvalHelman/SystemsDesignProject.svg?branch=master)
+![coverage](https://codecov.io/gh/YuvalHelman/SystemsDesignProject/branch/master/graph/badge.svg)
 
 # SystemsDesignProject
 
