@@ -1,8 +1,7 @@
 import struct
+import click
 
-
-class Snapshot:
-    """ Represents a Snapshot of a client's mind """
+class aaa:
 
     def __init__(self):
         self.user_id = None
@@ -21,45 +20,73 @@ class ReaderBinary:
 
     def __init__(self, path):
         self.file = open(path, 'rb')
-
-        self.curr_snapshot = Snapshot()
+        self.user_info = self.get_user_info()
 
     def get_user_info(self):
-        user_id = read_from_binary_file(self.file, "Q")
-        user_name_len = read_from_binary_file(self.file, "I")
-        user_name = read_from_binary_file(self.file, "%ds" % user_name_len)[0].decode("utf-8")
-        user_birth_date = read_from_binary_file(self.file, "I")
-        user_gender = read_from_binary_file(self.file, "c").decode("ASCII")
-        return User(user_id)
+        id, name_len = read_from_binary_file(self.file, "QI")
+        name = read_from_binary_file(self.file, "%ds" % name_len)[0].decode("ASCII")
+        birth_date, gender = read_from_binary_file(self.file, "Ic")
+        gender = gender.decode("ASCII")
+        return User(id, name, birth_date, gender)
 
-    # 1. Read from the file and use a generator to generate snapshots!
-    #
+    def get_snapshot(self):
+        timestamp = read_from_binary_file(self.file, "Q")
+        translation_tuple = read_from_binary_file(self.file, "3d")
+        rotation_tuple = read_from_binary_file(self.file, "4d")
+        color_height, color_width = read_from_binary_file(self.file, "II")
+        color_bgr = self.file.read(color_height * color_width * 3)
+        depth_height, depth_width = read_from_binary_file(self.file, "II")
+        depth_vals = read_from_binary_file(self.file, f"{depth_height * depth_width}f")
+        hunger, thirst, exhaustion, happiness = read_from_binary_file(self.file, "4f")
+
+        return Snapshot(timestamp, translation_tuple, rotation_tuple,
+                        (color_height, color_width, color_bgr),
+                        (depth_height, depth_width, depth_vals),
+                        (hunger, thirst, exhaustion, happiness))
+
+    def __iter__(self):
+        return self
+
 
     def __repr__(self):
         return f'Listener(port={self.port!r}, host={self.host!r}, backlog={self.backlog!r}, reuseaddr={self.reuseaddr!r})'
 
 
 def read_from_binary_file(file, unpack_format_string):
+    # Returns a tuple, even if one item returned
     size = struct.calcsize(unpack_format_string)
     messageInBytes = file.read(size)
     return struct.unpack(unpack_format_string, messageInBytes)
 
 
 class User:
-    def __init__(self, id, name, birth_date, gender):
-        self.id = id
+    def __init__(self, uid, name, birth_date, gender):
+        self.id = uid
         self.name = name
         self.birth_date = birth_date
         self.gender = gender
 
+    def __repr__(self):
+        return f"id={self.id}"
+
 
 class Snapshot:
-    def __init__(self, timestamp, translationTup, rotation):
+    """ Represents a Snapshot of a client's mind """
+
+    def __init__(self, timestamp, translation, rotation, color_image, depth_image, feelings):
         self.timestamp = timestamp
+        self.translation = translation
+        self.rotation = rotation
+        self.color_image = color_image
+        self.depth_image = depth_image
+        self.feelings = feelings
+
+@click.command(name='read_minds')
+@click.option('--address', '-a', default='127.0.0.1:5000', help="path to the data file")
+def read_messages_to_cli(data_path):
 
 
-class Translation3D:
-    def __init__(self, translation_x, translation_y, translation_z):
-        self.translation_x = translation_x
-        self.translation_y = translation_y
-        self.translation_z = translation_z
+
+
+if __name__ == '__main__':
+    pass
