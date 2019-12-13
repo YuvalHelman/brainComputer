@@ -10,3 +10,4 @@ setup(
     install_requires = ['click', 'flask', 'flake8'],
     tests_require = ['pytest', 'pytest-cov'],
 )
+
