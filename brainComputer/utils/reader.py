@@ -2,6 +2,7 @@ import struct
 import click
 from datetime import datetime
 
+
 class aaa:
 
     def __init__(self):
@@ -21,7 +22,7 @@ class ReaderBinary:
 
     def __init__(self, path):
         self.file = open(path, 'rb')
-        self.user_info = self.get_user_info()
+        self.user = self.get_user_info()
 
     def get_user_info(self):
         id, name_len = read_from_binary_file(self.file, "QI")
@@ -32,6 +33,10 @@ class ReaderBinary:
 
     def get_snapshot(self):
         timestamp = read_from_binary_file(self.file, "Q")
+
+        if timestamp is None:
+            raise StopIteration
+
         translation_tuple = read_from_binary_file(self.file, "3d")
         rotation_tuple = read_from_binary_file(self.file, "4d")
         color_height, color_width = read_from_binary_file(self.file, "II")
@@ -45,8 +50,11 @@ class ReaderBinary:
                         (depth_height, depth_width, depth_vals),
                         (hunger, thirst, exhaustion, happiness))
 
-    def __iter__(self):
+    def __next__(self):
         return self.get_snapshot()
+
+    def __iter__(self):
+        return self
 
     def __repr__(self):
         return f"A reader Object for the file {self.file}"
@@ -67,7 +75,11 @@ class User:
         self.gender = gender
 
     def __repr__(self):
-        return f"id={self.id}"
+        return \
+            f"User(id={self.id}, " \
+            f"name={self.name}, " \
+            f"birth_date={self.birth_date}, " \
+            f"gender={self.gender})"
 
 
 class Snapshot:
@@ -83,19 +95,23 @@ class Snapshot:
 
     def __repr__(self):
         return \
-        f"Snapshot from {datetime.fromtimestamp(self.timestamp).strftime('%Y-%m-%d_%H-%M-%S')}, " \
-        f"on translation={self.translation}, / " \
-        f'rotation={self.rotation}, ' \
-        f'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
-        f"and a {self.depth_image[0]}x{self.depth_image[1]}. " \
-        f'feelings={self.feelings})'
+            f"Snapshot from {self.timestamp}, " \
+            f"on translation={self.translation}, / " \
+            f'rotation={self.rotation}, ' \
+            f'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
+            f"and a {self.depth_image[0]}x{self.depth_image[1]}. " \
+            f'feelings={self.feelings})'
 
 
 @click.command(name='read_minds')
 @click.option('--data_path', '-d', help="path to the data file to read from")
 def read_messages_to_cli(data_path):
-    pass
+    pass # TODO: maybe.. not needed at the moment
 
 
 if __name__ == '__main__':
-    r = ReaderBinary('')
+    r = ReaderBinary('../../dataFiles/sample.mind')
+    print(r.user)
+    for snapshot in r:
+        print(snapshot)
+

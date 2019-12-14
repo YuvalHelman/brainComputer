@@ -3,6 +3,9 @@ import contextlib
 
 
 class Connection:
+    """ The Connection object receives a socket and initiates connections to it with the methods:
+    connect(), send(), receive()
+    """
     def __init__(self, socket_obj: socket.socket):
         self.socket = socket_obj
 
