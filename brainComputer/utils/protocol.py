@@ -73,7 +73,43 @@ class Snapshot:
             f'feelings={self.feelings})'
 
     def serialize(self, fields):
-        pass  # TODO
+        if 'translation' in fields:
+            translation = self.translation
+        else:
+            translation = (0, 0, 0)
+
+        if 'rotation' in fields:
+            rotation = self.rotation
+        else:
+            rotation = (0, 0, 0, 0)
+
+        if "color_image" in fields:
+            col_w, col_h, col_data = self.color_image
+        else:
+            col_w, col_h, col_data = (0, 0, b'')
+
+        if "depth_image" in fields:
+            depth_w, depth_h, depth_data = self.depth_image
+        else:
+            depth_w, depth_h, depth_data = (0, 0, b'')
+
+        if "feelings" in fields:
+            feelings = self.feelings
+        else:
+            feelings = (0, 0, 0, 0)
+
+        args = [self.timestamp, *translation, *rotation, col_w, col_h]
+        if col_data:
+            args.append(col_data)
+        args.extend([depth_w, depth_h])
+        if col_data:
+            args.append(depth_data)
+        args.append(*feelings)
+        return struct.pack(f'<Q3d4d'  # timestamp, translation, rotation 
+                           f'II{len(col_data)}s'  # color_image. len(col_data) bytes
+                           f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
+                           f'4f', *args)
+
 
     @classmethod
     def deserialize(cls, fields):
