@@ -1,20 +1,7 @@
 import struct
 import click
-from datetime import datetime
-
-
-class aaa:
-
-    def __init__(self):
-        self.user_id = None
-
-    def __next__(self):
-        return_value = self.a
-        self.a, self.b = self.b, self.a + self.b
-        return return_value
-
-    def __iter__(self):
-        return self
+from .protocol import Snapshot
+from .binary_operations import read_from_binary_file
 
 
 class ReaderBinary:
@@ -22,16 +9,16 @@ class ReaderBinary:
 
     def __init__(self, path):
         self.file = open(path, 'rb')
-        self.user = self.get_user_info()
+        self.user = self.read_user_info()
 
-    def get_user_info(self):
+    def read_user_info(self):
         id, name_len = read_from_binary_file(self.file, "QI")
-        name = read_from_binary_file(self.file, "%ds" % name_len)[0].decode("ASCII")
+        name = read_from_binary_file(self.file, "%ds" % name_len)[0].decode()
         birth_date, gender = read_from_binary_file(self.file, "Ic")
-        gender = gender.decode("ASCII")
+        gender = gender.decode()
         return User(id, name, birth_date, gender)
 
-    def get_snapshot(self):
+    def read_next_snapshot(self):
         timestamp = read_from_binary_file(self.file, "Q")
 
         if timestamp is None:
@@ -51,20 +38,13 @@ class ReaderBinary:
                         (hunger, thirst, exhaustion, happiness))
 
     def __next__(self):
-        return self.get_snapshot()
+        return self.read_next_snapshot()
 
     def __iter__(self):
         return self
 
     def __repr__(self):
         return f"A reader Object for the file {self.file}"
-
-
-def read_from_binary_file(file, unpack_format_string):
-    # Returns a tuple, even if one item returned
-    size = struct.calcsize(unpack_format_string)
-    messageInBytes = file.read(size)
-    return struct.unpack(unpack_format_string, messageInBytes)
 
 
 class User:
@@ -82,31 +62,10 @@ class User:
             f"gender={self.gender})"
 
 
-class Snapshot:
-    """ Represents a Snapshot of a client's mind """
-
-    def __init__(self, timestamp, translation, rotation, color_image, depth_image, feelings):
-        self.timestamp = timestamp
-        self.translation = translation
-        self.rotation = rotation
-        self.color_image = color_image
-        self.depth_image = depth_image
-        self.feelings = feelings
-
-    def __repr__(self):
-        return \
-            f"Snapshot from {self.timestamp}, " \
-            f"on translation={self.translation}, / " \
-            f'rotation={self.rotation}, ' \
-            f'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
-            f"and a {self.depth_image[0]}x{self.depth_image[1]}. " \
-            f'feelings={self.feelings})'
-
-
 @click.command(name='read_minds')
 @click.option('--data_path', '-d', help="path to the data file to read from")
 def read_messages_to_cli(data_path):
-    pass # TODO: maybe.. not needed at the moment
+    pass  # TODO: maybe.. not needed at the moment
 
 
 if __name__ == '__main__':
@@ -114,4 +73,3 @@ if __name__ == '__main__':
     print(r.user)
     for snapshot in r:
         print(snapshot)
-
