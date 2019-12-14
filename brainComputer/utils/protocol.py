@@ -110,7 +110,29 @@ class Snapshot:
                            f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
                            f'4f', *args)
 
-
     @classmethod
-    def deserialize(cls, fields):
-        pass  # TODO
+    def deserialize(cls, bytes_stream, fields):
+        timestamp, \
+        translation_x, translation_y, translation_z, \
+        rotation_x, rotation_y, rotation_z, rotation_w, \
+        color_height, color_width = read_from_binary_file(bytes_stream, 'Q4d3dII')
+
+        color_data = b''  # TODO: None ?
+        if "color_image" in fields:
+            color_data = bytes_stream.read(color_height * color_width * 3)
+
+        depth_height, depth_width = read_from_binary_file(bytes_stream, "II")
+
+        depth_data = b''  # TODO: None ?
+        if "depth_image" in fields:
+            depth_data = read_from_binary_file(bytes_stream, f"{depth_height * depth_width}f")
+
+        feelings = (0.0, 0.0, 0.0, 0.0)
+        if "feelings" in fields:
+            feelings = read_from_binary_file(bytes_stream, "4f")
+
+        return Snapshot(timestamp, (translation_x, translation_y, translation_z),
+                        (rotation_x, rotation_y, rotation_z, rotation_w),
+                        (color_height, color_width, color_data),
+                        (depth_height, depth_width, depth_data),
+                        feelings)
