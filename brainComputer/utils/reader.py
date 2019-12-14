@@ -1,5 +1,6 @@
 import struct
 import click
+from datetime import datetime
 
 class aaa:
 
@@ -45,11 +46,10 @@ class ReaderBinary:
                         (hunger, thirst, exhaustion, happiness))
 
     def __iter__(self):
-        return self
-
+        return self.get_snapshot()
 
     def __repr__(self):
-        return f'Listener(port={self.port!r}, host={self.host!r}, backlog={self.backlog!r}, reuseaddr={self.reuseaddr!r})'
+        return f"A reader Object for the file {self.file}"
 
 
 def read_from_binary_file(file, unpack_format_string):
@@ -81,12 +81,21 @@ class Snapshot:
         self.depth_image = depth_image
         self.feelings = feelings
 
+    def __repr__(self):
+        return \
+        f"Snapshot from {datetime.fromtimestamp(self.timestamp).strftime('%Y-%m-%d_%H-%M-%S')}, " \
+        f"on translation={self.translation}, / " \
+        f'rotation={self.rotation}, ' \
+        f'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
+        f"and a {self.depth_image[0]}x{self.depth_image[1]}. " \
+        f'feelings={self.feelings})'
+
+
 @click.command(name='read_minds')
-@click.option('--address', '-a', default='127.0.0.1:5000', help="path to the data file")
+@click.option('--data_path', '-d', help="path to the data file to read from")
 def read_messages_to_cli(data_path):
-
-
+    pass
 
 
 if __name__ == '__main__':
-    pass
+    r = ReaderBinary('')

@@ -2,4 +2,4 @@
 .pytest_cache/
 docs/build/
 .idea/
-tests/web_server_data/
+dataFiles/
