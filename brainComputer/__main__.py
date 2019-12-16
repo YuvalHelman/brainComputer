@@ -10,9 +10,24 @@ def cli():
     pass
 
 
-cli.add_command(upload_thought)
-cli.add_command(run)
 cli.add_command(run_webserver)
+
+
+@click.group(name="client")
+def client_cli():
+    pass
+
+
+client_cli.add_command(upload_thought)
+
+
+@click.group(name="server")
+def server_cli():
+    pass
+
+
+server_cli.add_command(run)
+
 # cli.add_command(read_messages_to_cli)
 
 if __name__ == '__main__':

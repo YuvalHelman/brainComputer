@@ -2,6 +2,7 @@ import socket
 import contextlib
 import struct
 
+
 class Connection:
     """ The Connection object receives a socket and initiates connections to it with the methods:
     connect(), send(), receive()
@@ -35,6 +36,8 @@ class Connection:
             pass
 
     def send(self, data):
+        msg_len = struct.pack('I', len(data))
+        self.socket.sendall(msg_len)
         self.socket.sendall(data)
 
     def receive_size(self, expected_message_size):
@@ -56,10 +59,8 @@ class Connection:
         messageInBytes = b"".join(bytes_lst)
         return messageInBytes
 
-    def receive(self, expected_message_size):
-        """ receives as many bytes as were specified by size, or throws an exception if
-        the connection was closed before all the data was received.
-        This function now receives a uint32 indicating the length of the message to be sent"""
+    def receive(self):
+        """ receives a uint32 indicating the length of the message to be sent and recieves that amount of bytes """
         MESSAGE_PREFIX_LEN = 4
         msg_len_bytes = self.socket.recv(MESSAGE_PREFIX_LEN)
         msg_len = struct.unpack('I', msg_len_bytes)[0]

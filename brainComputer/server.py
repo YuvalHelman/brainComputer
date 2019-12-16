@@ -5,6 +5,8 @@ import struct
 from pathlib import Path
 import click
 
+from .utils.connection import Connection
+
 _GLOBAL_WRITE_LOCK = threading.Lock()
 
 
@@ -20,7 +22,7 @@ def create_server_socket(ip: str, port: str):
 @click.command(name='run_server')
 @click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
 @click.option('--data_dir', '-d', help='The directory where the server fetches data.')
-def run(address, data_dir):  # python server.py run address="127.0.0.1:5000" data=data/
+def run(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
     ip, port = address.split(":")
     try:
         serversocket = create_server_socket(ip, port)
@@ -31,6 +33,7 @@ def run(address, data_dir):  # python server.py run address="127.0.0.1:5000" dat
         print(e)
         print("creating server socket failed")
         return 1
+
     while True:  # Iterate different Clients
         try:
             clientsocket, address = serversocket.accept()
@@ -51,6 +54,7 @@ class ConnectionHandler(threading.Thread):
         """ Handle the connection and then print to stdout
         :return:
         """
+
         returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
         if returnedTuple is None:
             print(f"error: First half of message error.")
