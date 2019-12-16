@@ -4,8 +4,8 @@ from .binary_operations import read_from_binary_file
 
 
 class Hello:
-    def __init__(self, user_id, user_name, user_birth_date, user_gender):
-        self.user = User(user_id, user_name, user_birth_date, user_gender)
+    def __init__(self, user):
+        self.user = user
 
     def __repr__(self):
         return f"Hello(user_id={self.user.id}, " \
