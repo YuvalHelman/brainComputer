@@ -1,10 +1,7 @@
-import socket
-import time
-import struct
 import click
 from .utils.reader import ReaderBinary
 from .utils.connection import Connection
-from .utils.protocol import Hello, Config, Snapshot
+from .utils.protocol import Hello, Config
 
 
 @click.command(name='upload')
@@ -16,12 +13,11 @@ def upload_thought(address, data_path):
     try:
         reader = ReaderBinary(data_path)
         hello = Hello(reader.user)
-        for thought in reader:
+        for snapshot in reader:
             with Connection.connect(host=ip, port=port) as con:
                 con.send(hello.serialize())
-                conf = Config.deserialize(con.receive())
-                con.send(Snapshot.serialize(thought))
-
+                conf_fields = Config.deserialize(con.receive())
+                con.send(snapshot.serialize(conf_fields))
     except Exception as error:
         print(f'ERROR: {error}')
         return 1
