@@ -16,8 +16,8 @@ def upload_thought(address, data_path):
         for snapshot in reader:
             with Connection.connect(host=ip, port=port) as con:
                 con.send(hello.serialize())
-                conf_fields = Config.deserialize(con.receive())
-                con.send(snapshot.serialize(conf_fields))
+                conf = Config.deserialize(con.receive())
+                con.send(snapshot.serialize(conf.fields_list))
     except Exception as error:
         print(f'ERROR: {error}')
         return 1

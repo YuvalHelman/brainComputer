@@ -1,6 +1,6 @@
 import click
 from .client import upload_thought
-from .server import run
+from .server import run_server
 from .web import run_webserver
 from .utils.reader import read_messages_to_cli
 
@@ -26,7 +26,7 @@ def server_cli():
     pass
 
 
-server_cli.add_command(run)
+server_cli.add_command(run_server)
 
 # cli.add_command(read_messages_to_cli)
 

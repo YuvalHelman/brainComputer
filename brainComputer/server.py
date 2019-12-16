@@ -4,50 +4,31 @@ import threading
 import struct
 from pathlib import Path
 import click
-
-from .utils.connection import Connection
+import json
+from .utils.listener import Listener
+from .utils.protocol import Hello, Config, Snapshot
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
 
 
-def create_server_socket(ip: str, port: str):
-    serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # create an INET, STREAMing socket
-    serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    serversocket.bind((ip, int(port)))  # bind the socket to a public host, and a well-known port
-    serversocket.listen(1000)  # start listening for connections
-
-    return serversocket
-
-
-@click.command(name='run_server')
+@click.command(name='run')
 @click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
 @click.option('--data_dir', '-d', help='The directory where the server fetches data.')
-def run(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
+def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
     ip, port = address.split(":")
-    try:
-        serversocket = create_server_socket(ip, port)
-    except socket.error as e:
-        print(f'Error - Bind failed. Message {e}')
-        return 1
-    except Exception as e:
-        print(e)
-        print("creating server socket failed")
-        return 1
+    with Listener(ip, port) as listener:
+        while True:
+            con = listener.accept()
+            handler = ConnectionHandler(con, str(data_dir))
+            handler.start()  # start() invokes .run()
 
-    while True:  # Iterate different Clients
-        try:
-            clientsocket, address = serversocket.accept()
-            handler = ConnectionHandler(clientsocket, str(data_dir))
-            handler.start()  # start invokes .run()
-        except Exception as e:
-            print('Exception accepting or handling first half of message from client:', e)
-            return 1
 
 
 class ConnectionHandler(threading.Thread):
-    def __init__(self, clientsocket, data_dir):
+    fields =  ['translation', 'color_image']
+    def __init__(self, connection, data_dir):
         super().__init__()
-        self.clientsocket = clientsocket  # a socket of communication with a client
+        self.connection = connection  # a socket of communication with a client
         self.data_dir = data_dir
 
     def run(self):
@@ -55,26 +36,44 @@ class ConnectionHandler(threading.Thread):
         :return:
         """
 
-        returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
-        if returnedTuple is None:
-            print(f"error: First half of message error.")
-            self.clientsocket.close()
-            return 1
-        userID, timeInSec, thoughtSize = returnedTuple
-        #  Handle receiving the rest of the message:
-        clientThought = self.receive_unpack(expected_message_size=thoughtSize,
-                                            unpack_format_string="<%ds" % thoughtSize)
-        if clientThought is None:
-            print(f"error: client {userID} didn't send a message of said length.")
-            self.clientsocket.close()
-            return 1
-        try:
-            clientThought = clientThought[0].decode("utf-8")
-            self.write_thought_to_file(clientThought, userID, timeInSec)
-            self.clientsocket.close()
-        except Exception as e:
-            print('Exception:', e)
-            self.clientsocket.close()
+        conf = Config(ConnectionHandler.fields)
+        with self.connection as con:
+            hello = Hello.deserialize(con.receive())
+            user_id = hello.user.id
+            con.send(conf.serialize())
+            snap = Snapshot.deserialize(con.receive(), ConnectionHandler.fields)
+
+        timestamp = snap.timestamp
+        # the server should then save them as:
+        # data/user_id/datetime/translation.json
+        # With the following JSON format: {"x": x, "y": y, "z": z}.
+        # TODO: start here.
+
+
+
+        json.dumps({"x": 0, "y": 0, "z": 0}
+
+
+        # returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
+        # if returnedTuple is None:
+        #     print(f"error: First half of message error.")
+        #     self.clientsocket.close()
+        #     return 1
+        # userID, timeInSec, thoughtSize = returnedTuple
+        # #  Handle receiving the rest of the message:
+        # clientThought = self.receive_unpack(expected_message_size=thoughtSize,
+        #                                     unpack_format_string="<%ds" % thoughtSize)
+        # if clientThought is None:
+        #     print(f"error: client {userID} didn't send a message of said length.")
+        #     self.clientsocket.close()
+        #     return 1
+        # try:
+        #     clientThought = clientThought[0].decode("utf-8")
+        #     self.write_thought_to_file(clientThought, userID, timeInSec)
+        #     self.clientsocket.close()
+        # except Exception as e:
+        #     print('Exception:', e)
+        #     self.clientsocket.close()
 
     def receive_unpack(self, expected_message_size, unpack_format_string):
         """

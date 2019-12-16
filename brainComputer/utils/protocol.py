@@ -72,7 +72,7 @@ class Snapshot:
             f"and a {self.depth_image[0]}x{self.depth_image[1]}. " \
             f'feelings={self.feelings})'
 
-    def serialize(self, fields):
+    def serialize(self, fields: iter):
         if 'translation' in fields:
             translation = self.translation
         else:
