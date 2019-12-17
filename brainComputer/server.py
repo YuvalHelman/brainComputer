@@ -2,6 +2,7 @@ import datetime
 import socket
 import threading
 import struct
+import pillow
 from pathlib import Path
 import click
 import json
@@ -39,15 +40,10 @@ class ConnectionHandler(threading.Thread):
         conf = Config(ConnectionHandler.fields)
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
-            user_id = hello.user.id
             con.send(conf.serialize())
             snap = Snapshot.deserialize(con.receive(), ConnectionHandler.fields)
 
-        timestamp = snap.timestamp
-        translation = 
-
-        # TODO: start here.
-        self.write_thought_to_file(user_id, timestamp)
+        self.write_translation_to_file(hello.user.id, snap.timestamp, snap.translation)
 
 
         # returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
@@ -98,7 +94,7 @@ class ConnectionHandler(threading.Thread):
             print("recv or unpack failed: ", e)
             return None
 
-    def write_thought_to_file(self, user_id, timestamp):
+    def write_translation_to_file(self, user_id, timestamp, translation):
         """ the server saves the thought into:
         data/user_id/datetime/translation.json
         With the following JSON format: {"x": x, "y": y, "z": z}.
