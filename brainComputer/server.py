@@ -2,7 +2,7 @@ import datetime
 import socket
 import threading
 import struct
-import pillow
+from PIL import Image
 from pathlib import Path
 import click
 import json
@@ -43,8 +43,7 @@ class ConnectionHandler(threading.Thread):
             con.send(conf.serialize())
             snap = Snapshot.deserialize(con.receive(), ConnectionHandler.fields)
 
-        self.write_translation_to_file(hello.user.id, snap.timestamp, snap.translation)
-
+        self.write_fields_to_file(hello.user.id, snap.timestamp, snap.translation, snap.color_image)
 
         # returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
         # if returnedTuple is None:
@@ -94,7 +93,7 @@ class ConnectionHandler(threading.Thread):
             print("recv or unpack failed: ", e)
             return None
 
-    def write_translation_to_file(self, user_id, timestamp, translation):
+    def write_fields_to_file(self, user_id, timestamp, translation, color_image):
         """ the server saves the thought into:
         data/user_id/datetime/translation.json
         With the following JSON format: {"x": x, "y": y, "z": z}.
@@ -105,11 +104,14 @@ class ConnectionHandler(threading.Thread):
         if not p_dir.exists():
             p_dir.mkdir(parents=True, exist_ok=True)
 
-        p = Path(f"{p_dir}/translation.json")
+        p1 = Path(f"{p_dir}/translation.json")
+        p2 = Path(f"{p_dir}/color_image.json")
 
         with _GLOBAL_WRITE_LOCK:  # Lock before writing
-            with p.open(mode="w") as fd:
+            with p1.open(mode="w") as fd:
                 fd.write(json.dumps({"x": 0, "y": 0, "z": 0}))
+            with p2.open(mode="w") as fd:
+                fd.write(json.dumps()) # TODO: start here again
 
     def write_thought_to_file_old(self, thought, userID, timeInSec):
         timeString = datetime.datetime.fromtimestamp(timeInSec).strftime('%Y-%m-%d_%H-%M-%S')
