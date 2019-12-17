@@ -23,19 +23,19 @@ def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -
             handler.start()  # start() invokes .run()
 
 
-
 class ConnectionHandler(threading.Thread):
-    fields =  ['translation', 'color_image']
+    fields = ['translation', 'color_image']
+
     def __init__(self, connection, data_dir):
         super().__init__()
         self.connection = connection  # a socket of communication with a client
-        self.data_dir = data_dir
+        if data_dir.split("/")[-1] != '':  # the path doesn't have an ending "/"
+            self.data_dir = data_dir + "/"
 
     def run(self):
         """ Handle the connection and then print to stdout
         :return:
         """
-
         conf = Config(ConnectionHandler.fields)
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
@@ -44,14 +44,10 @@ class ConnectionHandler(threading.Thread):
             snap = Snapshot.deserialize(con.receive(), ConnectionHandler.fields)
 
         timestamp = snap.timestamp
-        # the server should then save them as:
-        # data/user_id/datetime/translation.json
-        # With the following JSON format: {"x": x, "y": y, "z": z}.
+        translation = 
+
         # TODO: start here.
-
-
-
-        json.dumps({"x": 0, "y": 0, "z": 0}
+        self.write_thought_to_file(user_id, timestamp)
 
 
         # returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
@@ -102,7 +98,24 @@ class ConnectionHandler(threading.Thread):
             print("recv or unpack failed: ", e)
             return None
 
-    def write_thought_to_file(self, thought, userID, timeInSec):
+    def write_thought_to_file(self, user_id, timestamp):
+        """ the server saves the thought into:
+        data/user_id/datetime/translation.json
+        With the following JSON format: {"x": x, "y": y, "z": z}.
+        """
+        timeString = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
+        p_dir = Path(f"{self.data_dir}{user_id}/{timeString}")
+
+        if not p_dir.exists():
+            p_dir.mkdir(parents=True, exist_ok=True)
+
+        p = Path(f"{p_dir}/translation.json")
+
+        with _GLOBAL_WRITE_LOCK:  # Lock before writing
+            with p.open(mode="w") as fd:
+                fd.write(json.dumps({"x": 0, "y": 0, "z": 0}))
+
+    def write_thought_to_file_old(self, thought, userID, timeInSec):
         timeString = datetime.datetime.fromtimestamp(timeInSec).strftime('%Y-%m-%d_%H-%M-%S')
 
         if self.data_dir.split("/")[-1] == '':  # the path as an ending "/"
