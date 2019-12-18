@@ -1,6 +1,20 @@
-from .reader import User
 import struct
 from .binary_operations import read_from_binary_file
+
+
+class User:
+    def __init__(self, uid, name, birth_date, gender):
+        self.id = uid
+        self.name = name
+        self.birth_date = birth_date
+        self.gender = gender
+
+    def __repr__(self):
+        return \
+            f"User(id={self.id}, " \
+            f"name={self.name}, " \
+            f"birth_date={self.birth_date}, " \
+            f"gender={self.gender})"
 
 
 class Hello:

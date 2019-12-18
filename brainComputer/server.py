@@ -13,6 +13,7 @@ from .utils.parser import Parser
 _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']
 
+
 @click.command(name='run')
 @click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
 @click.option('--data_dir', '-d', help='The directory where the server fetches data.')
@@ -26,7 +27,6 @@ def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -
 
 
 class ConnectionHandler(threading.Thread):
-
 
     def __init__(self, connection, data_dir):
         super().__init__()
@@ -49,8 +49,6 @@ class ConnectionHandler(threading.Thread):
         for func_name, func in context_parser.fields_dict.items():
             if func_name in CONF_FIELDS:
                 func(context_parser, snap)
-
-
 
     def receive_unpack(self, expected_message_size, unpack_format_string):
         """

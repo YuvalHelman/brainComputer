@@ -11,6 +11,7 @@ def cli():
 
 
 cli.add_command(run_webserver)
+cli.add_command(read_messages_to_cli)
 
 
 @click.group(name="client")
@@ -28,7 +29,6 @@ def server_cli():
 
 server_cli.add_command(run_server)
 
-# cli.add_command(read_messages_to_cli)
 
 if __name__ == '__main__':
     cli()

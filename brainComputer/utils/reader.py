@@ -1,6 +1,6 @@
 import struct
 import click
-from .protocol import Snapshot
+from .protocol import Snapshot, User
 from .binary_operations import read_from_binary_file
 
 
@@ -47,29 +47,18 @@ class ReaderBinary:
         return f"A reader Object for the file {self.file}"
 
 
-class User:
-    def __init__(self, uid, name, birth_date, gender):
-        self.id = uid
-        self.name = name
-        self.birth_date = birth_date
-        self.gender = gender
-
-    def __repr__(self):
-        return \
-            f"User(id={self.id}, " \
-            f"name={self.name}, " \
-            f"birth_date={self.birth_date}, " \
-            f"gender={self.gender})"
-
-
-@click.command(name='read_minds')
+@click.command(name='read')
 @click.option('--data_path', '-d', help="path to the data file to read from")
-def read_messages_to_cli(data_path):
-    pass  # TODO: maybe.. not needed at the moment
-
+def read_messages_to_cli(data_path='sample.mind'):
+    r = ReaderBinary(data_path)
+    print(r.user)
+    for snap in r:
+        print(snap)
+        txt = input()
 
 if __name__ == '__main__':
     r = ReaderBinary('../../dataFiles/sample.mind')
     print(r.user)
     for snapshot in r:
         print(snapshot)
+    # pass
