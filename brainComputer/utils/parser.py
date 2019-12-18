@@ -3,19 +3,22 @@ import datetime
 from pathlib import Path
 from PIL import Image
 
+
+def parser(cls, field_name):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            Parser.fields_dict[field_name] = func
+
+        return wrapper
+
+    return decorator
+
+
 class Parser:
     fields_dict = {}
     @classmethod
-    def parser(cls, field_name):
-        def decorator(func):
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
 
-                Parser.fields_dict[field_name] = func
-
-            return wrapper
-
-        return decorator
 
     def create_path(self, timestamp):
         timeString = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
@@ -26,11 +29,12 @@ class Parser:
 
 
 @Parser.parser('color_image')
-def parse_color_image(snapshot, user):
+def parse_color_image(snapshot):
     pass
 
+
 @Parser.parser('color_image')
-    def parse_translation():
+def parse_translation(snapshot):
     pass
 
 
