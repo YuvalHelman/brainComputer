@@ -29,9 +29,10 @@ class ConnectionHandler(threading.Thread):
 
     def __init__(self, connection, data_dir):
         super().__init__()
-        self.connection = connection  # a socket of communication with a client
-        if data_dir.split("/")[-1] != '':  # the path doesn't have an ending "/"
-            self.data_dir = data_dir + "/"
+        self.connection = connection  # The current Connection Object with the client
+        self.data_dir = data_dir
+        if data_dir.split("/")[-1] != '':  # always have a postfix '/' in the path
+            self.data_dir += "/"
 
     def run(self):
         """ Handle the connection and then print to stdout
@@ -44,27 +45,6 @@ class ConnectionHandler(threading.Thread):
             snap = Snapshot.deserialize(con.receive(), ConnectionHandler.fields)
 
         self.write_fields_to_file(hello.user.id, snap.timestamp, snap.translation, snap.color_image)
-
-        # returnedTuple = self.receive_unpack(expected_message_size=20, unpack_format_string="<QQI")
-        # if returnedTuple is None:
-        #     print(f"error: First half of message error.")
-        #     self.clientsocket.close()
-        #     return 1
-        # userID, timeInSec, thoughtSize = returnedTuple
-        # #  Handle receiving the rest of the message:
-        # clientThought = self.receive_unpack(expected_message_size=thoughtSize,
-        #                                     unpack_format_string="<%ds" % thoughtSize)
-        # if clientThought is None:
-        #     print(f"error: client {userID} didn't send a message of said length.")
-        #     self.clientsocket.close()
-        #     return 1
-        # try:
-        #     clientThought = clientThought[0].decode("utf-8")
-        #     self.write_thought_to_file(clientThought, userID, timeInSec)
-        #     self.clientsocket.close()
-        # except Exception as e:
-        #     print('Exception:', e)
-        #     self.clientsocket.close()
 
     def receive_unpack(self, expected_message_size, unpack_format_string):
         """
@@ -93,25 +73,7 @@ class ConnectionHandler(threading.Thread):
             print("recv or unpack failed: ", e)
             return None
 
-    def write_fields_to_file(self, user_id, timestamp, translation, color_image):
-        """ the server saves the thought into:
-        data/user_id/datetime/translation.json
-        With the following JSON format: {"x": x, "y": y, "z": z}.
-        """
-        timeString = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
-        p_dir = Path(f"{self.data_dir}{user_id}/{timeString}")
 
-        if not p_dir.exists():
-            p_dir.mkdir(parents=True, exist_ok=True)
-
-        p1 = Path(f"{p_dir}/translation.json")
-        p2 = Path(f"{p_dir}/color_image.json")
-
-        with _GLOBAL_WRITE_LOCK:  # Lock before writing
-            with p1.open(mode="w") as fd:
-                fd.write(json.dumps({"x": 0, "y": 0, "z": 0}))
-            with p2.open(mode="w") as fd:
-                fd.write(json.dumps()) # TODO: start here again
 
     def write_thought_to_file_old(self, thought, userID, timeInSec):
         timeString = datetime.datetime.fromtimestamp(timeInSec).strftime('%Y-%m-%d_%H-%M-%S')
