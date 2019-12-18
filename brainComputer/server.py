@@ -8,9 +8,10 @@ import click
 import json
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
+from .utils.parser import Parser
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
-
+CONF_FIELDS = ['translation', 'color_image']
 
 @click.command(name='run')
 @click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
@@ -25,7 +26,7 @@ def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -
 
 
 class ConnectionHandler(threading.Thread):
-    fields = ['translation', 'color_image']
+
 
     def __init__(self, connection, data_dir):
         super().__init__()
@@ -38,13 +39,18 @@ class ConnectionHandler(threading.Thread):
         """ Handle the connection and then print to stdout
         :return:
         """
-        conf = Config(ConnectionHandler.fields)
+        conf = Config(CONF_FIELDS)
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
             con.send(conf.serialize())
-            snap = Snapshot.deserialize(con.receive(), ConnectionHandler.fields)
+            snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
-        self.write_fields_to_file(hello.user.id, snap.timestamp, snap.translation, snap.color_image)
+        context_parser = Parser(self.data_dir, hello, snap)
+        for func_name, func in context_parser.fields_dict.items():
+            if func_name in CONF_FIELDS:
+                func(context_parser, snap)
+
+
 
     def receive_unpack(self, expected_message_size, unpack_format_string):
         """
@@ -72,8 +78,6 @@ class ConnectionHandler(threading.Thread):
         except Exception as e:
             print("recv or unpack failed: ", e)
             return None
-
-
 
     def write_thought_to_file_old(self, thought, userID, timeInSec):
         timeString = datetime.datetime.fromtimestamp(timeInSec).strftime('%Y-%m-%d_%H-%M-%S')
