@@ -1,7 +1,51 @@
 import struct
+import gzip
 import click
 from .binary_operations import read_from_binary_file
 from .protocol import Snapshot, User
+from .brain_pb2 import User as ProtobuffUser, Snapshot as ProtobuffSnapshot
+
+
+class ReaderProtobuf:
+    """ A Reader of Snapshot's objects using the protobuf module """
+
+    def __init__(self, path):
+        self.file = gzip.open(path, 'rb')
+
+    def read_user_info(self):
+        id, name_len = read_from_binary_file(self.file, "QI")
+        name = read_from_binary_file(self.file, "%ds" % name_len)[0].decode()
+        birth_date, gender = read_from_binary_file(self.file, "Ic")
+        gender = gender.decode()
+        return User(id, name, birth_date, gender)
+
+    def read_next_snapshot(self):
+        timestamp, *_ = read_from_binary_file(self.file, "Q")
+
+        if timestamp is None:
+            raise StopIteration
+
+        translation_tuple = read_from_binary_file(self.file, "3d")
+        rotation_tuple = read_from_binary_file(self.file, "4d")
+        color_height, color_width = read_from_binary_file(self.file, "II")
+        color_bgr = self.file.read(color_height * color_width * 3)
+        depth_height, depth_width = read_from_binary_file(self.file, "II")
+        depth_vals = read_from_binary_file(self.file, f"{depth_height * depth_width}f")
+        hunger, thirst, exhaustion, happiness = read_from_binary_file(self.file, "4f")
+
+        return Snapshot(timestamp, translation_tuple, rotation_tuple,
+                        (color_height, color_width, color_bgr),
+                        (depth_height, depth_width, depth_vals),
+                        (hunger, thirst, exhaustion, happiness))
+
+    def __next__(self):
+        return self.read_next_snapshot()
+
+    def __iter__(self):
+        return self
+
+    def __repr__(self):
+        return f"A reader Object for the file {self.file}"
 
 
 class ReaderBinary:
@@ -48,8 +92,9 @@ class ReaderBinary:
 
 
 @click.command(name='read')
+@click.option('--version', '-v', help='version of reader to use. there are v1 and v2 at the moment')
 @click.option('--data_path', '-d', help="path to the data file to read from")
-def read_messages_to_cli(data_path='sample.mind'):
+def read_messages_to_cli(version='v2', data_path='sample.mind'):
     r = ReaderBinary(data_path)
     print(r.user)
     for snap in r:

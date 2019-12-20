@@ -15,10 +15,10 @@ def upload_thought(address, data_path):
         for snapshot in reader:
             with Connection.connect(host=ip, port=int(port)) as con:
                 con.send(hello.serialize())
-                r = con.receive()
-                conf = Config.deserialize(r)
-                con.send(snapshot.serialize(conf.fields))
-            import pdb; pdb.set_trace()  # DEBUG
+                conf = Config.deserialize(con.receive())
+                import pdb; pdb.set_trace()  # DEBUG
+                snap = snapshot.serialize(conf.fields)
+                con.send(snap)
     except Exception as error:
         print(f'ERROR: {error}')
         return 1
