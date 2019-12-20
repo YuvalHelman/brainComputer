@@ -4,7 +4,6 @@ from .binary_operations import read_from_binary_file
 from .protocol import Snapshot, User
 
 
-
 class ReaderBinary:
     """ A Reader of Snapshot's objects """
 
@@ -56,6 +55,7 @@ def read_messages_to_cli(data_path='sample.mind'):
     for snap in r:
         print(snap)
         txt = input()
+
 
 if __name__ == '__main__':
     r = ReaderBinary('../../dataFiles/sample.mind')

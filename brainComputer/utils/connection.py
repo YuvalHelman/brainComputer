@@ -25,7 +25,7 @@ class Connection:
 
     @classmethod
     @contextlib.contextmanager
-    def connect(cls, host, port):
+    def connect(cls, host: str, port: int):
         connection = None
         try:
             sock = socket.socket()
