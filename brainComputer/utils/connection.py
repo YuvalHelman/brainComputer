@@ -64,7 +64,7 @@ class Connection:
         """ receives a uint32 indicating the length of the message to be sent and recieves that amount of bytes """
         MESSAGE_PREFIX_LEN = 4
         msg_len_bytes = self.socket.recv(MESSAGE_PREFIX_LEN)
-        msg_len = struct.unpack('I', msg_len_bytes)[0]
+        msg_len, *_ = struct.unpack('I', msg_len_bytes)
         ret = self.receive_size(msg_len)
         return io.BytesIO(ret)  # converts to a stream of bytes
 

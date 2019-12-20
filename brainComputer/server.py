@@ -43,7 +43,6 @@ class ConnectionHandler(threading.Thread):
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
             con.send(conf.serialize())
-            import pdb; pdb.set_trace()  # DEBUG
             snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
         context_parser = Parser(self.data_dir, hello, snap)

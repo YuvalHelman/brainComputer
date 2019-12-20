@@ -17,8 +17,8 @@ def upload_thought(address, data_path):
                 con.send(hello.serialize())
                 r = con.receive()
                 conf = Config.deserialize(r)
-                import pdb; pdb.set_trace()  # DEBUG
                 con.send(snapshot.serialize(conf.fields))
+            import pdb; pdb.set_trace()  # DEBUG
     except Exception as error:
         print(f'ERROR: {error}')
         return 1

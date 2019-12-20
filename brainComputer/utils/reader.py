@@ -19,7 +19,7 @@ class ReaderBinary:
         return User(id, name, birth_date, gender)
 
     def read_next_snapshot(self):
-        timestamp = read_from_binary_file(self.file, "Q")
+        timestamp, *_ = read_from_binary_file(self.file, "Q")
 
         if timestamp is None:
             raise StopIteration

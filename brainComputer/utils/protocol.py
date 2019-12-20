@@ -63,10 +63,10 @@ class Config:
     @classmethod
     def deserialize(cls, bytes_stream):
         fields_list = []
-        num_of_fields = read_from_binary_file(bytes_stream, "<I")[0]
+        num_of_fields, *_ = read_from_binary_file(bytes_stream, "<I")
         for i in range(num_of_fields):
-            field_len = read_from_binary_file(bytes_stream, "<I")[0]
-            field = read_from_binary_file(bytes_stream, f"<{field_len}s")[0]
+            field_len, *_ = read_from_binary_file(bytes_stream, "<I")
+            field, *_ = read_from_binary_file(bytes_stream, f"<{field_len}s")
             fields_list.append(field.decode())
         return Config(fields_list)
 
@@ -84,12 +84,12 @@ class Snapshot:
 
     def __repr__(self):
         return \
-            f"Snapshot from {self.timestamp}, " \
-            f"on translation={self.translation}, / " \
-            f'rotation={self.rotation}, ' \
-            f'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
-            f"and a {self.depth_image[0]}x{self.depth_image[1]}. " \
-            f'feelings={self.feelings})'
+            f"""Snapshot from {self.timestamp}, " \
+            "on translation={self.translation}, " \
+            'rotation={self.rotation}, ' \
+            'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
+            "and a {self.depth_image[0]}x{self.depth_image[1]}. " \
+            'feelings={self.feelings})"""
 
     def serialize(self, fields: iter):
         if 'translation' in fields:
@@ -121,7 +121,7 @@ class Snapshot:
         if col_data:
             args.append(col_data)
         args.extend([depth_w, depth_h])
-        if col_data:
+        if depth_data:
             args.append(depth_data)
         args.extend([*feelings])
 
@@ -129,24 +129,25 @@ class Snapshot:
                            f'II{len(col_data)}s'  # color_image. len(col_data) bytes
                            f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
                            f'4f', *args)
-        # struct.pack(f'<QdddddddII{len(data)}sII{len(d_data)}fffff',
-        #                            *params, *feelings)
+
     @classmethod
     def deserialize(cls, bytes_stream, fields):
         timestamp, \
         translation_x, translation_y, translation_z, \
         rotation_x, rotation_y, rotation_z, rotation_w, \
         color_height, color_width = read_from_binary_file(bytes_stream, '<Q4d3dII')
-        #
-        # color_data = b''  # TODO: None ?
-        # if "color_image" in fields:
-        color_data = bytes_stream.read(color_height * color_width * 3)  # Not sure how to calc format_string...;'
+
+        import pdb; pdb.set_trace()  # DEBUG
+
+        color_data = b''  # TODO: None ?
+        if "color_image" in fields:
+            color_data, *_ = read_from_binary_file(bytes_stream, f'{color_height * color_width * 3}s')
 
         depth_height, depth_width = read_from_binary_file(bytes_stream, "<II")
 
-        # depth_data = b''  # TODO: None ?
-        # if "depth_image" in fields:
-        depth_data = read_from_binary_file(bytes_stream, f"<{depth_height * depth_width}f")
+        depth_data = b''  # TODO: None ?
+        if "depth_image" in fields:
+            depth_data = read_from_binary_file(bytes_stream, f"<{depth_height * depth_width}f")
 
         # feelings = (0.0, 0.0, 0.0, 0.0)
         # if "feelings" in fields:
