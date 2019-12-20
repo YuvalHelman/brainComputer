@@ -1,6 +1,7 @@
 import socket
 import contextlib
 import struct
+import io
 
 
 class Connection:
@@ -18,7 +19,7 @@ class Connection:
                f'{dest_address[0]}:{dest_address[1]}>'
 
     def __enter__(self):
-        pass
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.socket.close()
@@ -64,7 +65,8 @@ class Connection:
         MESSAGE_PREFIX_LEN = 4
         msg_len_bytes = self.socket.recv(MESSAGE_PREFIX_LEN)
         msg_len = struct.unpack('I', msg_len_bytes)[0]
-        return self.receive_size(msg_len)
+        ret = self.receive_size(msg_len)
+        return io.BytesIO(ret)  # converts to a stream of bytes
 
     def close(self):
         self.socket.close()

@@ -28,14 +28,20 @@ class Hello:
                f"gender={self.user.gender})"
 
     def serialize(self):
-        return struct.pack(f"QI{len(self.user.name)}sIc", self.user.id, self.user.name.encode(),
-                           self.user.birth_date, self.user.gender.encode())
+        try:
+            ret = struct.pack(f"<QI{len(self.user.name)}sIc",
+                              self.user.id, len(self.user.name), self.user.name.encode(),
+                              self.user.birth_date, self.user.gender.encode())
+            return ret
+        except Exception as e:
+            print("Hello message serialize failed:", e)
+            raise e
 
     @classmethod
     def deserialize(cls, bytes_stream):
-        uid, name_len = read_from_binary_file(bytes_stream, "QI")
-        name = read_from_binary_file(bytes_stream, f"{name_len}s")[0].decode()
-        birth_date, gender = read_from_binary_file(bytes_stream, "Ic")
+        uid, name_len = read_from_binary_file(bytes_stream, "<QI")
+        name = read_from_binary_file(bytes_stream, f"<{name_len}s")[0].decode()
+        birth_date, gender = read_from_binary_file(bytes_stream, "<Ic")
         gender = gender.decode()
         return Hello(User(uid, name, birth_date, gender))
 
@@ -48,21 +54,20 @@ class Config:
         """ Serialize the config into:
         The number of fields followed by a sequence of uint32 field_len and then the field"""
         args = [len(self.fields)]
-        args_format = "I"
+        args_format = "<I"
         for field in self.fields:
-            args_format += f"I%ds" % len(field)
-            args.append(len(field))
-            args.append(field)
+            args_format += f"I{len(field)}s"
+            args.extend([len(field), field.encode()])
         return struct.pack(args_format, *args)
 
     @classmethod
     def deserialize(cls, bytes_stream):
         fields_list = []
-        num_of_fields = read_from_binary_file(bytes_stream, "I")[0]
+        num_of_fields = read_from_binary_file(bytes_stream, "<I")[0]
         for i in range(num_of_fields):
-            field_len = read_from_binary_file(bytes_stream, "I")[0]
-            field = read_from_binary_file(bytes_stream, f"{field_len}s")[0]
-            fields_list.append(field)
+            field_len = read_from_binary_file(bytes_stream, "<I")[0]
+            field = read_from_binary_file(bytes_stream, f"<{field_len}s")[0]
+            fields_list.append(field.decode())
         return Config(fields_list)
 
 
@@ -118,32 +123,34 @@ class Snapshot:
         args.extend([depth_w, depth_h])
         if col_data:
             args.append(depth_data)
-        args.append(*feelings)
+        args.extend([*feelings])
+
         return struct.pack(f'<Q3d4d'  # timestamp, translation, rotation 
                            f'II{len(col_data)}s'  # color_image. len(col_data) bytes
                            f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
                            f'4f', *args)
-
+        # struct.pack(f'<QdddddddII{len(data)}sII{len(d_data)}fffff',
+        #                            *params, *feelings)
     @classmethod
     def deserialize(cls, bytes_stream, fields):
         timestamp, \
         translation_x, translation_y, translation_z, \
         rotation_x, rotation_y, rotation_z, rotation_w, \
-        color_height, color_width = read_from_binary_file(bytes_stream, 'Q4d3dII')
+        color_height, color_width = read_from_binary_file(bytes_stream, '<Q4d3dII')
+        #
+        # color_data = b''  # TODO: None ?
+        # if "color_image" in fields:
+        color_data = bytes_stream.read(color_height * color_width * 3)  # Not sure how to calc format_string...;'
 
-        color_data = b''  # TODO: None ?
-        if "color_image" in fields:
-            color_data = bytes_stream.read(color_height * color_width * 3)
+        depth_height, depth_width = read_from_binary_file(bytes_stream, "<II")
 
-        depth_height, depth_width = read_from_binary_file(bytes_stream, "II")
+        # depth_data = b''  # TODO: None ?
+        # if "depth_image" in fields:
+        depth_data = read_from_binary_file(bytes_stream, f"<{depth_height * depth_width}f")
 
-        depth_data = b''  # TODO: None ?
-        if "depth_image" in fields:
-            depth_data = read_from_binary_file(bytes_stream, f"{depth_height * depth_width}f")
-
-        feelings = (0.0, 0.0, 0.0, 0.0)
-        if "feelings" in fields:
-            feelings = read_from_binary_file(bytes_stream, "4f")
+        # feelings = (0.0, 0.0, 0.0, 0.0)
+        # if "feelings" in fields:
+        feelings = read_from_binary_file(bytes_stream, "<4f")
 
         return Snapshot(timestamp, (translation_x, translation_y, translation_z),
                         (rotation_x, rotation_y, rotation_z, rotation_w),

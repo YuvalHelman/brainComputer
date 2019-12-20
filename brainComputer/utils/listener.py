@@ -25,9 +25,12 @@ class Listener:
     #  and a stop() method, which stops listening and closes the socket.
     def start(self):
         """ which starts listening """
-        serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # create an INET, STREAMing socket
-        serversocket.bind((self.host, self.port))  # bind the socket to a public host, and a well-known port
-        serversocket.listen(self.backlog)  # start listening for connections
+        serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if self.reuseaddr:
+            serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        serversocket.bind((self.host, self.port))
+        serversocket.listen(self.backlog)
 
         self.serversocket = serversocket
 

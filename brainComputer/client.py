@@ -6,7 +6,7 @@ from .utils.protocol import Hello, Config
 
 @click.command(name='upload')
 @click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
-@click.option('--data_path', '-d', help='the file which fetches the data.')
+@click.option('--data_path', '-d', default='dataFiles/sample.mind',help='the file which fetches the data.')
 def upload_thought(address, data_path):
     ip, port = address.split(":")
     try:
@@ -15,8 +15,10 @@ def upload_thought(address, data_path):
         for snapshot in reader:
             with Connection.connect(host=ip, port=int(port)) as con:
                 con.send(hello.serialize())
-                conf = Config.deserialize(con.receive())
-                con.send(snapshot.serialize(conf.fields_list))
+                r = con.receive()
+                conf = Config.deserialize(r)
+                import pdb; pdb.set_trace()  # DEBUG
+                con.send(snapshot.serialize(conf.fields))
     except Exception as error:
         print(f'ERROR: {error}')
         return 1
