@@ -16,9 +16,10 @@ CONF_FIELDS = ['translation', 'color_image']
 
 @click.command(name='run')
 @click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
-@click.option('--data_dir', '-d', help='The directory where the server fetches data.')
+@click.option('--data_dir', '-d', default='/tmp/server/', help='The directory where the server fetches data.')
 def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
     ip, port = address.split(":")
+    import pdb; pdb.set_trace()  # DEBUG
     with Listener(ip, port) as listener:
         while True:
             con = listener.accept()

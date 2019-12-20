@@ -5,7 +5,7 @@ import socket
 class Listener:
     def __init__(self, host, port, backlog=1000, reuseaddr=True):
         self.host = host
-        self.port = port
+        self.port = int(port)
         self.backlog = backlog
         self.reuseaddr = reuseaddr
 
@@ -13,6 +13,7 @@ class Listener:
 
     def __enter__(self):
         self.start()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
@@ -35,7 +36,7 @@ class Listener:
         self.serversocket.close()
 
     def accept(self):
-        """ which waits for a connection, accepts it, and returns a Connection object. """
+        """ waits for a connection, accepts it, and returns a Connection object. """
         try:
             clientsocket, address = self.serversocket.accept()
             return Connection(clientsocket)

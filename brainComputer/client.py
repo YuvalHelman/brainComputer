@@ -13,7 +13,6 @@ def upload_thought(address, data_path):
         reader = ReaderBinary(data_path)
         hello = Hello(reader.user)
         for snapshot in reader:
-            import pdb; pdb.set_trace()  # DEBUG
             with Connection.connect(host=ip, port=int(port)) as con:
                 con.send(hello.serialize())
                 conf = Config.deserialize(con.receive())
