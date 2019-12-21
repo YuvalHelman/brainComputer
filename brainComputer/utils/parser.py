@@ -6,6 +6,7 @@ import json
 import inspect
 import parsers
 
+
 class Parser:
     """
     Parser is being used as a container. it's the "context" argument that's being passed to the
@@ -46,27 +47,30 @@ class Parser:
         return p_dir
 
 
-@Parser.parser('color_image')
-def parse_color_image(context, snapshot):
-    p = Path(f"{context.parser_path}/color_image.json")
-    width, height, data = snapshot.color_image
-    image = Image.frombytes('RGB', (width, height), data)
-
-    with open(p, mode="w") as fd:
-        image.save(p)
-
-
-@Parser.parser('translation')
-def parse_translation(context, snapshot):
-    p = Path(f"{context.parser_path}/translation.json")
-    x, y, z = snapshot.translation
-
-    with open(p, mode="w") as fd:
-        fd.write(json.dumps({"x": x, "y": y, "z": z}))
+# @Parser.parser('color_image')
+# def parse_color_image(context, snapshot):
+#     p = Path(f"{context.parser_path}/color_image.json")
+#     width, height, data = snapshot.color_image
+#     image = Image.frombytes('RGB', (width, height), data)
+#
+#     with open(p, mode="w") as fd:
+#         image.save(p)
+#
+#
+# @Parser.parser('translation')
+# def parse_translation(context, snapshot):
+#     p = Path(f"{context.parser_path}/translation.json")
+#     x, y, z = snapshot.translation
+#
+#     with open(p, mode="w") as fd:
+#         fd.write(json.dumps({"x": x, "y": y, "z": z}))
 
 
 if __name__ == "__main__":
     p = Parser(None, None, None)
-    print(p.fields_dict)
+    # print(p.fields_dict)
     # print(dir())
-    print(inspect.getmembers(parsers))
+    for first, second in inspect.getmembers(parsers):
+        print(first, second)
+        if first == 'parse_color_image':
+            print(second.field)

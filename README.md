@@ -3,7 +3,7 @@
 
 # SystemsDesignProject
 
-An example package. See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/).
+An example package. See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/). TODO
 
 ## Installation
 
@@ -32,9 +32,21 @@ An example package. See [full documentation](https://advanced-system-design-foob
     ...
     ```
 
+## Adding new Parsers
+
+Adding new parsers should be done in the following manner:
+
+- Add a new file to hold your parser's code in brainComputer/utils/parsers/..
+- The new parser's name should start with parse_* if it's a function, or end with *Parser if it's a Class.
+- Append brainComputer/utils/parsers/__init__.py (TODO: add __ __) to import your parser's Function\Class
+ in the following manner: 
+ ```pycon
+from .<YOUR_MODULE_NAME> import <YOUR_FUNCTION_OR_CLASS_NAME>
+```
+
 ## Usage
 
-The `webUtils` packages provides the following classes:
+The `brainComputer` packages provides the following classes:
 
 - `Foo`
 
@@ -69,7 +81,7 @@ The `webUtils` packages provides the following classes:
 The `webUtils` package also provides a command-line interface:
 
 ```sh
-$ python -m webUtils
+$ python -m brainComputer 
 webUtils, version 0.1.0
 ```
 

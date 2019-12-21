@@ -9,3 +9,6 @@ def parse_color_image(context, snapshot):
 
     with open(p, mode="w") as fd:
         image.save(p)
+
+
+parse_color_image.field = 'color_image'
