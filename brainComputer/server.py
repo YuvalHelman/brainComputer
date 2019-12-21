@@ -5,21 +5,18 @@ from pathlib import Path
 import click
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
-from .utils import Parser
+from .utils.parser import Parser
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']
 
 
-@click.command(name='run')
-@click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
-@click.option('--data_dir', '-d', default='/tmp/server/', help='The directory where the server fetches data.')
 def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
     ip, port = address.split(":")
     with Listener(ip, port) as listener:
         while True:
             con = listener.accept()
-            handler = ConnectionHandler(con, str(data_dir), parsers_dict)
+            handler = ConnectionHandler(con, str(data_dir))
             handler.start()  # start() invokes .run()
 
 
@@ -28,7 +25,6 @@ class ConnectionHandler(threading.Thread):
     def __init__(self, connection, data_dir, parsers_dict):
         super().__init__()
         self.connection = connection  # The current Connection Object with the client
-        self.parsers = parsers_dict
         self.data_dir = data_dir
         if data_dir.split("/")[-1] != '':  # always have a postfix '/' in the path
             self.data_dir += "/"
@@ -43,10 +39,10 @@ class ConnectionHandler(threading.Thread):
             con.send(conf.serialize())
             snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
-        parsers_context = Parser(self.data_dir, hello, snap)
-        for func_name, func in parsers_context.fields_dict.items():
-            if func_name in CONF_FIELDS:
-                func(parsers_context, snap)
+        parser = Parser(self.data_dir, hello, snap)
+        for field_name, func_handler in parser.fields_dict.items():
+            if field_name in CONF_FIELDS:
+                func_handler(parser, snap)
 
     def receive_unpack(self, expected_message_size, unpack_format_string):
         """

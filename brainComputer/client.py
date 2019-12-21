@@ -1,6 +1,6 @@
 import click
 from .utils.readers import ReaderBinary
-from .utils import Connection
+from .utils.connection import Connection
 from .utils.protocol import Hello, Config
 
 

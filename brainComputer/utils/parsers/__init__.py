@@ -1,2 +1,2 @@
-from .color_image import parse_color_image
+from .color_image import colorImageParser
 from .pose import parse_translation
