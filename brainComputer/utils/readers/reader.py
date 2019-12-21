@@ -10,7 +10,7 @@ def read_messages_to_cli(version='v2', data_path='dataFiles/sample.mind.gz'):
     if version == '2':
         r = ReaderProtobuf(data_path)
     elif version == '1':
-        r = ReaderBinary(data_path)
+        r = ReaderBinary(data_path)  # This uses a different kind of data file!
     else:
         print("Choose between version 1 or 2")
         return

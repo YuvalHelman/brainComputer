@@ -3,7 +3,8 @@ import datetime
 from pathlib import Path
 from PIL import Image
 import json
-
+import inspect
+import parsers
 
 class Parser:
     """
@@ -14,12 +15,22 @@ class Parser:
 
     def __init__(self, dir_path, hello, snapshot):
         self.dir_path = dir_path
-        self.parser_path = self.get_path_for_storage(hello, snapshot)
+        try:
+            self.parser_path = self.get_path_for_storage(hello, snapshot)
+        except Exception as e:
+            self.parser_path = None
 
     @classmethod
     def parser(cls, field_name):
         def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                return func(*args, **kwargs)
+
             Parser.fields_dict[field_name] = func
+
+            return wrapper
+
         return decorator
         # TODO: maybe need a wrapper here?
 
@@ -45,7 +56,7 @@ def parse_color_image(context, snapshot):
         image.save(p)
 
 
-@Parser.parser('color_image')
+@Parser.parser('translation')
 def parse_translation(context, snapshot):
     p = Path(f"{context.parser_path}/translation.json")
     x, y, z = snapshot.translation
@@ -53,3 +64,9 @@ def parse_translation(context, snapshot):
     with open(p, mode="w") as fd:
         fd.write(json.dumps({"x": x, "y": y, "z": z}))
 
+
+if __name__ == "__main__":
+    p = Parser(None, None, None)
+    print(p.fields_dict)
+    print(dir())
+    # print(inspect.getmembers(dir()[0]))

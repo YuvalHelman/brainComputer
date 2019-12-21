@@ -19,15 +19,16 @@ def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -
     with Listener(ip, port) as listener:
         while True:
             con = listener.accept()
-            handler = ConnectionHandler(con, str(data_dir))
+            handler = ConnectionHandler(con, str(data_dir), parsers_dict)
             handler.start()  # start() invokes .run()
 
 
 class ConnectionHandler(threading.Thread):
 
-    def __init__(self, connection, data_dir):
+    def __init__(self, connection, data_dir, parsers_dict):
         super().__init__()
         self.connection = connection  # The current Connection Object with the client
+        self.parsers = parsers_dict
         self.data_dir = data_dir
         if data_dir.split("/")[-1] != '':  # always have a postfix '/' in the path
             self.data_dir += "/"
@@ -42,10 +43,10 @@ class ConnectionHandler(threading.Thread):
             con.send(conf.serialize())
             snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
-        context_parser = Parser(self.data_dir, hello, snap)
-        for func_name, func in context_parser.fields_dict.items():
+        parsers_context = Parser(self.data_dir, hello, snap)
+        for func_name, func in parsers_context.fields_dict.items():
             if func_name in CONF_FIELDS:
-                func(context_parser, snap)
+                func(parsers_context, snap)
 
     def receive_unpack(self, expected_message_size, unpack_format_string):
         """
