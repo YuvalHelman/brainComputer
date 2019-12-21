@@ -68,5 +68,5 @@ def parse_translation(context, snapshot):
 if __name__ == "__main__":
     p = Parser(None, None, None)
     print(p.fields_dict)
-    print(dir())
-    # print(inspect.getmembers(dir()[0]))
+    # print(dir())
+    print(inspect.getmembers(parsers))
