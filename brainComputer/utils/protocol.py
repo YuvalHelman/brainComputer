@@ -1,6 +1,6 @@
 import struct
 from .binary_operations import read_from_binary_file
-
+import datetime
 
 class User:
     def __init__(self, uid, name, birth_date, gender):
@@ -83,13 +83,16 @@ class Snapshot:
         self.feelings = feelings
 
     def __repr__(self):
+        # date = datetime.datetime.fromtimestamp(self.timestamp)
+        # date = date.strftime('%Y-%m-%d_%H:%M:%S')
+
         return \
-            f"""Snapshot from {self.timestamp}, " \
-            "on translation={self.translation}, " \
-            'rotation={self.rotation}, ' \
-            'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
-            "and a {self.depth_image[0]}x{self.depth_image[1]}. " \
-            'feelings={self.feelings})"""
+            f"Snapshot from {self.timestamp}, " \
+            f"on translation={self.translation}, " \
+            f'rotation={self.rotation}, ' \
+            f'with a {self.color_image[0]}x{self.color_image[1]} color image ' \
+            f"and a {self.depth_image[0]}x{self.depth_image[1]} depth. " \
+            f'feelings={self.feelings}'
 
     def serialize(self, fields: iter):
         if 'translation' in fields:
@@ -141,7 +144,7 @@ class Snapshot:
 
         color_data = b''  # TODO: None ?
         if "color_image" in fields:
-            color_data, *_ = read_from_binary_file(bytes_stream, f'{color_height * color_width * 3}s')
+            color_data, *_ = bytes_stream.read(color_height * color_width * 3)
 
         depth_height, depth_width = read_from_binary_file(bytes_stream, "<II")
 

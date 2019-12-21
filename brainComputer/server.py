@@ -1,14 +1,11 @@
 import datetime
-import socket
 import threading
 import struct
-from PIL import Image
 from pathlib import Path
 import click
-import json
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
-from .utils.parser import Parser
+from parsers.parser import Parser
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']
