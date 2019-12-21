@@ -2,7 +2,7 @@ import click
 from .client import upload_thought
 from .server import run_server
 from .web import run_webserver
-from readers.protoReader import read_messages_to_cli
+from .utils.readers import read_messages_to_cli
 
 
 @click.group(name="brain")

@@ -1,8 +1,5 @@
-import struct
-import gzip
-import click
-from binary_operations import read_from_binary_file
-from protocol import Snapshot, User
+from ..binary_operations import read_from_binary_file
+from ..protocol import Snapshot, User
 
 
 class ReaderBinary:

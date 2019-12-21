@@ -5,7 +5,7 @@ from pathlib import Path
 import click
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
-from parsers.parser import Parser
+from .utils import Parser
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']

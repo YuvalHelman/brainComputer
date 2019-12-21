@@ -1,10 +1,8 @@
 import struct
 import gzip
-import click
-from binary_operations import read_from_binary_file
-from protocol import Snapshot, User
-from brain_pb2 import User as ProtoUser
-from brain_pb2 import Snapshot as ProtoSnapshot
+from ..protocol import Snapshot, User
+from ..brain_pb2 import User as ProtoUser
+from ..brain_pb2 import Snapshot as ProtoSnapshot
 
 
 class ReaderProtobuf:
@@ -63,9 +61,6 @@ class ReaderProtobuf:
 
     def __repr__(self):
         return f"A reader Object for the file {self.file}"
-
-
-
 
 
 if __name__ == '__main__':
