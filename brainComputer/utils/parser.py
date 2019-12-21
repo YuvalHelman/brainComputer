@@ -1,7 +1,7 @@
 import datetime
 from pathlib import Path
 import inspect
-from .parsers import __init__ as parsers
+import .parsers
 
 
 class Parser:
@@ -12,25 +12,19 @@ class Parser:
 
     def __init__(self, dir_path, hello, snapshot):
         self.dir_path = dir_path
+        self.parser_path = None
         self.fields_dict = {}
 
         for name, object in inspect.getmembers(parsers):
             if inspect.isfunction(object) and name.startswith('parse'):
                 self.fields_dict[object.field] = object
-                # print(name, object)  # DEBUG
-                # print(object.field)  # DEBUG
             if inspect.isclass(object) and name.endswith('Parser'):
                 self.fields_dict[object.field] = object.parse
-                # print(name, object)  # DEBUG
-                # print(object.field)  # DEBUG
         print(self.fields_dict)
 
-        try:
-            self.parser_path = self.get_path_for_storage(hello, snapshot)
-        except Exception as e:
-            self.parser_path = None
+        self.parser_path = self.build_snapshot_dir_path(hello, snapshot)
 
-    def get_path_for_storage(self, hello, snapshot):
+    def build_snapshot_dir_path(self, hello, snapshot):
         timestamp = snapshot.timestamp
         user_id = hello.user.id
         timeString = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
@@ -41,6 +35,13 @@ class Parser:
 
         return p_dir
 
+    def path(self, field_name: str):
+        return self.parser_path / field_name
+
+    def save(self, snapshot):
+        pass
+
 
 if __name__ == "__main__":
-    p = Parser(None, None, None)
+    p = Parser("/tmp/", None, None)
+    p.path('color_image')

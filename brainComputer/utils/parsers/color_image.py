@@ -6,7 +6,7 @@ class colorImageParser:
     field = 'color_image'
 
     def parse(self, context, snapshot):
-        p = Path(f"{context.parser_path}/color_image.json")
+        path = context.Path("color_image.jpg")
         width, height, data = snapshot.color_image
         image = Image.frombytes('RGB', (width, height), data)
 
