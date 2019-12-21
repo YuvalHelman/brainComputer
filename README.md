@@ -37,7 +37,7 @@ An example package. See [full documentation](https://advanced-system-design-foob
 Adding new parsers should be done in the following manner:
 
 - Add a new file to hold your parser's code in brainComputer/utils/parsers/..
-- The new parser's name should start with parse_* if it's a function, or end with *Parser if it's a Class.
+- The new parser's name should start with parse_* if it's a function, or end with *Parser if it's a Class. and have a "parse" function in it to do the parsing.
 - Append brainComputer/utils/parsers/__init__.py (TODO: add __ __) to import your parser's Function\Class
  in the following manner: 
  ```pycon

@@ -2,13 +2,13 @@ from pathlib import Path
 from PIL import Image
 
 
-def parse_color_image(context, snapshot):
-    p = Path(f"{context.parser_path}/color_image.json")
-    width, height, data = snapshot.color_image
-    image = Image.frombytes('RGB', (width, height), data)
+class colorImageParser:
+    field = 'color_image'
 
-    with open(p, mode="w") as fd:
-        image.save(p)
+    def parse(context, snapshot):
+        p = Path(f"{context.parser_path}/color_image.json")
+        width, height, data = snapshot.color_image
+        image = Image.frombytes('RGB', (width, height), data)
 
-
-parse_color_image.field = 'color_image'
+        with open(p, mode="w") as fd:
+            image.save(p)
