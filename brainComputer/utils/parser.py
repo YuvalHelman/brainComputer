@@ -1,7 +1,10 @@
 import datetime
 from pathlib import Path
 import inspect
-import .parsers
+import sys
+import importlib
+
+import parsers
 
 
 class Parser:
@@ -23,6 +26,14 @@ class Parser:
         print(self.fields_dict)
 
         self.parser_path = self.build_snapshot_dir_path(hello, snapshot)
+
+    def load_modules(self, root):
+        root = Path(root).absolute()
+        sys.path.insert(0, str(root.parent))
+        for path in root.iterdir():
+            if path.name.startswith('_') or not path.suffix == '.py':
+                continue
+            importlib.import_module(f'{root.name}.{path.stem}',package=root.name)
 
     def build_snapshot_dir_path(self, hello, snapshot):
         timestamp = snapshot.timestamp
