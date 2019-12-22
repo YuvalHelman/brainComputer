@@ -4,8 +4,6 @@ import inspect
 import sys
 import importlib
 
-import parsers
-
 
 class Parser:
     """
@@ -18,14 +16,14 @@ class Parser:
         self.parser_path = None
         self.fields_dict = {}
 
-        for name, object in inspect.getmembers(parsers):
-            if inspect.isfunction(object) and name.startswith('parse'):
-                self.fields_dict[object.field] = object
-            if inspect.isclass(object) and name.endswith('Parser'):
-                self.fields_dict[object.field] = object.parse
-        print(self.fields_dict)
+        self.load_modules(Path(__file__).parent.joinpath('parsers'))
 
-        self.parser_path = self.build_snapshot_dir_path(hello, snapshot)
+        #
+
+        # TODO: get this back from the dead
+        # self.parser_path = self.build_snapshot_dir_path(hello, snapshot)
+
+    # def load_parsers(self):
 
     def load_modules(self, root):
         root = Path(root).absolute()
@@ -33,7 +31,17 @@ class Parser:
         for path in root.iterdir():
             if path.name.startswith('_') or not path.suffix == '.py':
                 continue
-            importlib.import_module(f'{root.name}.{path.stem}',package=root.name)
+            importlib.import_module(f'{root.name}.{path.stem}', package=root.name)
+
+        for name, module in sys.modules.items():
+            if name.startswith('parsers.'):
+                for objName, callable_obj in module.__dict__.items():
+                    if inspect.isfunction(callable_obj) and objName.startswith('parse'):
+                        self.fields_dict[callable_obj.field] = callable_obj
+                    if inspect.isclass(callable_obj) and objName.endswith('Parser'):
+                        class_parse_method = getattr(callable_obj, "parse", None)
+                        if class_parse_method is not None and callable(class_parse_method):
+                            self.fields_dict[callable_obj.field] = callable_obj.parse
 
     def build_snapshot_dir_path(self, hello, snapshot):
         timestamp = snapshot.timestamp
@@ -55,4 +63,5 @@ class Parser:
 
 if __name__ == "__main__":
     p = Parser("/tmp/", None, None)
-    p.path('color_image')
+    print(p.fields_dict)
+

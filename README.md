@@ -32,17 +32,28 @@ An example package. See [full documentation](https://advanced-system-design-foob
     ...
     ```
 
-## Adding new Parsers
+## Adding new Parsers to the Server
 
 Adding new parsers should be done in the following manner:
 
 - Add a new file to hold your parser's code in brainComputer/utils/parsers/..
-- The new parser's name should start with parse_* if it's a function, or end with *Parser if it's a Class. and have a "parse" function in it to do the parsing.
-- Append brainComputer/utils/parsers/__init__.py (TODO: add __ __) to import your parser's Function\Class
- in the following manner: 
- ```pycon
-from .<YOUR_MODULE_NAME> import <YOUR_FUNCTION_OR_CLASS_NAME>
-```
+- The new parser's name should start with parse_* if it's a function, or end with *Parser if it's a Class. and have a "parse" function in it to do the parsing. the functions should have a certain
+signature.
+- Example:
+    ```pycon
+   def parse_function(context, snapshot):
+        pass
+   parse_function.field = 'translation'
+
+   class ClassParser:
+       field = 'color_image'
+
+       def parse(self, context, snapshot)
+           pass
+    ```
+
+- You need to add a 'field' member to your function\Class that indicates the  
+- The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
 
 ## Usage
 
