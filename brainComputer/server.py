@@ -2,10 +2,9 @@ import datetime
 import threading
 import struct
 from pathlib import Path
-import click
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
-from .utils.parser import Parser
+from .utils.parser import Parsers, ParserContext
 
 _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']
@@ -13,19 +12,21 @@ CONF_FIELDS = ['translation', 'color_image']
 
 def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
     ip, port = address.split(":")
+    parsers_dict = Parsers.load_modules()
     with Listener(ip, port) as listener:
         while True:
             con = listener.accept()
-            handler = ConnectionHandler(con, str(data_dir))
+            handler = ConnectionHandler(con, str(data_dir), parsers_dict)
             handler.start()  # start() invokes .run()
 
 
 class ConnectionHandler(threading.Thread):
 
-    def __init__(self, connection, data_dir, parsers_dict):
+    def __init__(self, connection, data_dir, parsers):
         super().__init__()
         self.connection = connection  # The current Connection Object with the client
         self.data_dir = data_dir
+        self.parsers = parsers
         if data_dir.split("/")[-1] != '':  # always have a postfix '/' in the path
             self.data_dir += "/"
 
@@ -34,60 +35,16 @@ class ConnectionHandler(threading.Thread):
         :return:
         """
         conf = Config(CONF_FIELDS)
+
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
             con.send(conf.serialize())
             snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
-        parser = Parser(self.data_dir, hello, snap)
-        for field_name, func_handler in parser.fields_dict.items():
+        parse_context = ParserContext(self.data_dir, hello, snap)
+        for field_name, func_handler in self.parsers.items():
             if field_name in CONF_FIELDS:
-                func_handler(parser, snap)
-
-    def receive_unpack(self, expected_message_size, unpack_format_string):
-        """
-        :param expected_message_size: size of the message to get from the socket.
-        :param unpack_format_string: format string argument for struct.unpack()
-        :return: A tuple of the parts that was unpacked.
-        """
-        bytes_lst = []
-        receivedSize = 0
-        leftToReceive = expected_message_size  # == 20 when called first
-        try:
-            while True:
-                current_bytes_received = self.clientsocket.recv(leftToReceive)
-                curr_bytes_len = len(current_bytes_received)
-                if curr_bytes_len == 0:
-                    raise Exception
-                bytes_lst.append(current_bytes_received)
-                receivedSize += curr_bytes_len
-                if receivedSize >= expected_message_size:
-                    break
-                leftToReceive -= curr_bytes_len
-            #  Extract certain bytes from the message:
-            messageInBytes = b"".join(bytes_lst)
-            return struct.unpack(unpack_format_string, messageInBytes)
-        except Exception as e:
-            print("recv or unpack failed: ", e)
-            return None
-
-    def write_thought_to_file_old(self, thought, userID, timeInSec):
-        timeString = datetime.datetime.fromtimestamp(timeInSec).strftime('%Y-%m-%d_%H-%M-%S')
-
-        if self.data_dir.split("/")[-1] == '':  # the path as an ending "/"
-            p_dir = Path(f"{self.data_dir}{userID}/")
-            p = Path(f"{self.data_dir}{userID}/{timeString}.txt")
-        else:
-            p_dir = Path(f"{self.data_dir}/{userID}/")
-            p = Path(f"{self.data_dir}/{userID}/{timeString}.txt")
-        if not p_dir.exists():
-            p_dir.mkdir(parents=True, exist_ok=True)
-
-        with _GLOBAL_WRITE_LOCK:  # Lock before writing
-            if p.exists():
-                thought = f"\n{thought}"
-            with p.open(mode="a") as fd:
-                fd.write(f"{thought}")
+                func_handler(parse_context, snap)
 
 
 if __name__ == '__main__':
