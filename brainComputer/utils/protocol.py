@@ -138,7 +138,7 @@ class Snapshot:
         timestamp, \
         translation_x, translation_y, translation_z, \
         rotation_x, rotation_y, rotation_z, rotation_w, \
-        color_height, color_width = read_from_binary_file(bytes_stream, '<Q4d3dII')
+        color_width, color_height = read_from_binary_file(bytes_stream, '<Q4d3dII')
 
         import pdb; pdb.set_trace()  # DEBUG
 
@@ -146,11 +146,11 @@ class Snapshot:
         if "color_image" in fields:
             color_data, *_ = bytes_stream.read(color_height * color_width * 3)
 
-        depth_height, depth_width = read_from_binary_file(bytes_stream, "<II")
+        depth_w, depth_h = read_from_binary_file(bytes_stream, "<II")
 
         depth_data = b''  # TODO: None ?
         if "depth_image" in fields:
-            depth_data = read_from_binary_file(bytes_stream, f"<{depth_height * depth_width}f")
+            depth_data = read_from_binary_file(bytes_stream, f"<{depth_w * depth_h}f")
 
         # feelings = (0.0, 0.0, 0.0, 0.0)
         # if "feelings" in fields:
@@ -159,5 +159,5 @@ class Snapshot:
         return Snapshot(timestamp, (translation_x, translation_y, translation_z),
                         (rotation_x, rotation_y, rotation_z, rotation_w),
                         (color_height, color_width, color_data),
-                        (depth_height, depth_width, depth_data),
+                        (depth_h, depth_w, depth_data),
                         feelings)

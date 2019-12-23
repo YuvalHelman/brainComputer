@@ -1,24 +1,18 @@
-from pathlib import Path
-import json
 from ..parser import ParserContext
 from matplotlib.pyplot import imshow
 import matplotlib.cm
+import numpy
 
-def parse_pose(context: ParserContext, snapshot):
-    hunger, thirst, exhaustion, happiness = snapshot.feelings
 
-    context.save('feelings.json',
-                 json.dumps({'feelings': {"hunger": hunger, "thirst": thirst,
-                                          "exhaustion": exhaustion, "happiness": happiness},
-                             })
-                 )
-
+def parse_depth_image(context: ParserContext, snapshot):
     width, height, data = snapshot.image_depth
-    path = f'{self.get_path(user_id, snapshot.timestamp)}/depth_image.jpg'
+
+    path = context.path('depth_image.jpg')
+
     imshow(numpy.reshape(data, (width, height)), cmap=matplotlib.cm.RdYlGn)
     matplotlib.pyplot.savefig(path)
 
+    # TODO: do this function... Hate matplotlib :(
 
-parse_pose.field = 'feelings'
 
-
+parse_pose.field = 'depth_image'
