@@ -43,15 +43,6 @@ cli.add_command(read_messages_to_cli)
 cli.add_command(run_webserver)
 cli.add_command(upload_thought)
 
-# @click.group(name="client")
-# def client_cli():
-#     pass
-
-
-# @click.group(name="server")
-# def server_cli():
-#     pass
-
 
 if __name__ == '__main__':
     cli()

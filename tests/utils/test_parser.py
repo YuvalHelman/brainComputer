@@ -4,8 +4,8 @@ from brainComputer.utils.parser import Parsers, ParserContext
 
 
 @pytest.fixture
-def a():
-    return 'Hey'  # TODO: see if this is useful
+def hello():
+    return hello()  # TODO: see if this is useful
 
 
 def test_load_modules():

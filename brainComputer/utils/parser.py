@@ -10,14 +10,15 @@ class ParserContext:
     This is the "context" argument that's being passed to the parse functions.
     """
 
-    def __init__(self, dir_path, hello, snapshot):
+    def __init__(self, dir_path, user_id, snapshot):
         self.dir_path = dir_path
 
-        self.parser_path = self.build_snapshot_dir_path(hello, snapshot)
+        try:
+            self.parser_path = self.build_snapshot_dir_path(user_id, snapshot.timestamp)
+        except Exception as e:
+            print('Creating context Object failed.', e)
 
-    def build_snapshot_dir_path(self, hello, snapshot):
-        timestamp = snapshot.timestamp
-        user_id = hello.user.id
+    def build_snapshot_dir_path(self, user_id, timestamp):
         timeString = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d_%H-%M-%S')
         p_dir = Path(f"{self.dir_path}{user_id}/{timeString}")
 
@@ -29,8 +30,9 @@ class ParserContext:
     def path(self, field_name: str):
         return self.parser_path / field_name
 
-    def save(self, snapshot):
-        pass
+    def save(self, field_name: str, what_to_write: str):
+        with open(self.path(field_name), mode="w") as fd:
+            fd.write(what_to_write)
 
 
 class Parsers:
@@ -67,4 +69,3 @@ class Parsers:
 
 if __name__ == "__main__":
     p = Parsers()
-

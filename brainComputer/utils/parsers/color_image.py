@@ -1,17 +1,17 @@
 from pathlib import Path
 from PIL import Image
+from ..parser import ParserContext
 
 
 class colorImageParser:
     field = 'color_image'
 
-    def parse(self, context, snapshot):
-        path = context.Path("color_image.jpg")
+    def parse(self, context: ParserContext, snapshot):
+        path = context.path("color_image.jpg")
         width, height, data = snapshot.color_image
         image = Image.frombytes('RGB', (width, height), data)
 
-        with open(p, mode="w") as fd:
-            image.save(p)
+        image.save(path)
 
 # @Parser.parser('color_image')
 # def parse_color_image(context, snapshot):
