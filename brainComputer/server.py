@@ -1,7 +1,4 @@
-import datetime
 import threading
-import struct
-from pathlib import Path
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
 from .utils.parser import Parsers, ParserContext
@@ -39,6 +36,7 @@ class ConnectionHandler(threading.Thread):
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
             con.send(conf.serialize())
+            import pdb; pdb.set_trace()  # DEBUG
             snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
         parse_context = ParserContext(self.data_dir, hello, snap)
