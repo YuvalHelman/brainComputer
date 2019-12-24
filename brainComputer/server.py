@@ -21,10 +21,10 @@ class ConnectionHandler(threading.Thread):
 
     def __init__(self, connection, data_dir, parsers):
         super().__init__()
-        self.connection = connection  # The current Connection Object with the client
+        self.connection = connection
         self.data_dir = data_dir
         self.parsers = parsers
-        if data_dir.split("/")[-1] != '':  # always have a postfix '/' in the path
+        if data_dir.split("/")[-1] != '':
             self.data_dir += "/"
 
     def run(self):
@@ -36,7 +36,6 @@ class ConnectionHandler(threading.Thread):
         with self.connection as con:
             hello = Hello.deserialize(con.receive())
             con.send(conf.serialize())
-            import pdb; pdb.set_trace()  # DEBUG
             snap = Snapshot.deserialize(con.receive(), CONF_FIELDS)
 
         parse_context = ParserContext(self.data_dir, hello, snap)

@@ -1,6 +1,8 @@
 import struct
+import io
+
 from .binary_operations import read_from_binary_file
-import datetime
+
 
 class User:
     def __init__(self, uid, name, birth_date, gender):
@@ -94,31 +96,26 @@ class Snapshot:
             f"and a {self.depth_image[0]}x{self.depth_image[1]} depth. " \
             f'feelings={self.feelings}'
 
-    def serialize(self, fields: iter):
+    def serialize(self, fields: iter) -> bytes:
+        translation = (0, 0, 0)
         if 'translation' in fields:
             translation = self.translation
-        else:
-            translation = (0, 0, 0)
 
+        rotation = (0, 0, 0, 0)
         if 'rotation' in fields:
             rotation = self.rotation
-        else:
-            rotation = (0, 0, 0, 0)
 
+        col_w, col_h, col_data = (0, 0, b'')
         if "color_image" in fields:
             col_w, col_h, col_data = self.color_image
-        else:
-            col_w, col_h, col_data = (0, 0, b'')
 
+        depth_w, depth_h, depth_data = (0, 0, b'')
         if "depth_image" in fields:
             depth_w, depth_h, depth_data = self.depth_image
-        else:
-            depth_w, depth_h, depth_data = (0, 0, b'')
 
+        feelings = (0, 0, 0, 0)
         if "feelings" in fields:
             feelings = self.feelings
-        else:
-            feelings = (0, 0, 0, 0)
 
         args = [self.timestamp, *translation, *rotation, col_w, col_h]
         if col_data:
@@ -128,36 +125,35 @@ class Snapshot:
             args.append(depth_data)
         args.extend([*feelings])
 
-        return struct.pack(f'<Q3d4d'  # timestamp, translation, rotation 
+        return struct.pack(f'<Qddddddd'  # timestamp, translation, rotation 
                            f'II{len(col_data)}s'  # color_image. len(col_data) bytes
                            f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
-                           f'4f', *args)
+                           f'ffff', *args)
 
     @classmethod
-    def deserialize(cls, bytes_stream, fields):
+    def deserialize(cls, bytes_stream: io.BytesIO, fields):
         timestamp, \
         translation_x, translation_y, translation_z, \
         rotation_x, rotation_y, rotation_z, rotation_w, \
-        color_width, color_height = read_from_binary_file(bytes_stream, '<Q4d3dII')
-
-        import pdb; pdb.set_trace()  # DEBUG
+        color_width, color_height = read_from_binary_file(bytes_stream, '<QdddddddII')
 
         color_data = b''  # TODO: None ?
         if "color_image" in fields:
-            color_data, *_ = bytes_stream.read(color_height * color_width * 3)
+            color_data = bytes_stream.read(color_height * color_width * 3)
 
         depth_w, depth_h = read_from_binary_file(bytes_stream, "<II")
 
         depth_data = b''  # TODO: None ?
         if "depth_image" in fields:
-            depth_data = read_from_binary_file(bytes_stream, f"<{depth_w * depth_h}f")
+            depth_data, *_ = read_from_binary_file(bytes_stream, f"<{depth_w * depth_h}f")
 
         # feelings = (0.0, 0.0, 0.0, 0.0)
         # if "feelings" in fields:
         feelings = read_from_binary_file(bytes_stream, "<4f")
 
-        return Snapshot(timestamp, (translation_x, translation_y, translation_z),
+        return Snapshot(timestamp,
+                        (translation_x, translation_y, translation_z),
                         (rotation_x, rotation_y, rotation_z, rotation_w),
-                        (color_height, color_width, color_data),
-                        (depth_h, depth_w, depth_data),
+                        (color_width, color_height, color_data),
+                        (depth_w, depth_h, depth_data),
                         feelings)

@@ -1,6 +1,6 @@
 from pathlib import Path
 from PIL import Image
-from ..parser import ParserContext
+from brainComputer.utils.parser import ParserContext  # TODO: change to relative (other parsers too )
 
 
 class colorImageParser:

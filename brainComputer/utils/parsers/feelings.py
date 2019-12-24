@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from ..parser import ParserContext
+from brainComputer.utils.parser import ParserContext
 
 
 def parse_pose(context: ParserContext, snapshot):
