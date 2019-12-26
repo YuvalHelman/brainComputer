@@ -147,8 +147,6 @@ class Snapshot:
         if "depth_image" in fields:
             depth_data, *_ = read_from_binary_file(bytes_stream, f"<{depth_w * depth_h}f")
 
-        # feelings = (0.0, 0.0, 0.0, 0.0)
-        # if "feelings" in fields:
         feelings = read_from_binary_file(bytes_stream, "<4f")
 
         return Snapshot(timestamp,
