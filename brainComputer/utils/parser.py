@@ -53,7 +53,7 @@ class Parsers:
         for path in root.iterdir():
             if path.name.startswith('_') or not path.suffix == '.py':
                 continue
-            importlib.import_module(f'{root.name}.{path.stem}', package=root.name)
+            importlib.import_module(f'brainComputer.utils.parsers.{path.stem}')
 
         for name, module in sys.modules.items():
             if name.startswith('parsers.'):
@@ -68,4 +68,6 @@ class Parsers:
 
 
 if __name__ == "__main__":
-    p = Parsers()
+    print(Parsers.root)
+    Parsers.load_modules()
+

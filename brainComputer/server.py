@@ -45,4 +45,4 @@ class ConnectionHandler(threading.Thread):
 
 
 if __name__ == '__main__':
-    pass
+    parsers_dict = Parsers.load_modules()
