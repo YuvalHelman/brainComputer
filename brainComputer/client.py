@@ -2,6 +2,8 @@ import click
 from .utils.readers import ReaderBinary, ReaderProtobuf
 from .utils.connection import Connection
 from .utils.protocol import Hello, Config
+import requests
+import json
 
 
 def upload_thought(address, data_path, version):
@@ -13,11 +15,16 @@ def upload_thought(address, data_path, version):
             reader = ReaderBinary(data_path)
         hello = Hello(reader.user)
         for snapshot in reader:
-            with Connection.connect(host=ip, port=int(port)) as con:
-                con.send(hello.serialize())
-                conf = Config.deserialize(con.receive())
-                snap = snapshot.serialize(conf.fields)
-                con.send(snap)
+            session = requests.session()
+            r = session.get(f"http://{address}", params=hello.to_json(), verify=False)
+            import pdb; pdb.set_trace()
+            print(json.loads(r.content))
+            print(2)
+            # with Connection.connect(host=ip, port=int(port)) as con:
+            #     con.send(hello.serialize())
+            #     conf = Config.deserialize(con.receive())
+            #     snap = snapshot.serialize(conf.fields)
+            #     con.send(snap)
     except Exception as error:
         print(f'ERROR: {error}')
         return 1

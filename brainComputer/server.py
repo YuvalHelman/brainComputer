@@ -2,19 +2,33 @@ import threading
 from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
 from .utils.parser import Parsers, ParserContext
+import json
+from flask import Flask
 
+app = Flask(__name__)
 _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']
 
 
-def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
-    ip, port = address.split(":")
-    parsers_dict = Parsers.load_modules()
-    with Listener(ip, port) as listener:
-        while True:
-            con = listener.accept()
-            handler = ConnectionHandler(con, str(data_dir), parsers_dict)
-            handler.start()  # start() invokes .run()
+def run_server(address, data_dir):
+    @app.route('/snapshot', methods=['POST'])
+    def snapshot():
+        pass
+
+    @app.route('/')
+    def send_my_config():
+        return json.dumps(CONF_FIELDS)
+
+    app.run()
+
+# def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
+#     ip, port = address.split(":")
+#     parsers_dict = Parsers.load_modules()
+#     with Listener(ip, port) as listener:
+#         while True:
+#             con = listener.accept()
+#             handler = ConnectionHandler(con, str(data_dir), parsers_dict)
+#             handler.start()  # start() invokes .run()
 
 
 class ConnectionHandler(threading.Thread):

@@ -43,11 +43,12 @@ _INDEX_USER_HTML = '''
 def run_webserver(address, data_dir):
     @app.route('/')
     def index():
-        users_html = []
-        p = Path(data_dir)
-        for user_dir in p.iterdir():
-            users_html.append(_USER_LINE_HTML.format(user_id=user_dir.name))
-        return _INDEX_HTML.format(users='\n'.join(users_html))
+        # users_html = []
+        # p = Path(data_dir)
+        # for user_dir in p.iterdir():
+        #     users_html.append(_USER_LINE_HTML.format(user_id=user_dir.name))
+        # return _INDEX_HTML.format(users='\n'.join(users_html))
+        return _INDEX_HTML.format(users='hi')
 
     @app.route('/users/<user_id>')
     def user(user_id):

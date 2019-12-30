@@ -1,6 +1,6 @@
 import struct
 import io
-
+import json
 from .binary_operations import read_from_binary_file
 
 
@@ -28,6 +28,19 @@ class Hello:
                f"user_name={self.user.name}, " \
                f"birth={self.user.birth_date}, " \
                f"gender={self.user.gender})"
+
+    def to_json(self):
+        return dict(
+            user_id=self.user.id,
+            user_name=self.user.name,
+            birth=self.user.birth_date,
+            gender=self.user.gender
+            )
+
+    @classmethod
+    def from_json(self, binary_json):
+        data_dict = json.loads(binary_json)
+        return Hello(User(data_dict['user_id'], data_dict['user_name'], data_dict['birth'], data_dict['gender']))
 
     def serialize(self):
         try:
