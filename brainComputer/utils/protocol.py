@@ -109,6 +109,20 @@ class Snapshot:
             f"and a {self.depth_image[0]}x{self.depth_image[1]} depth. " \
             f'feelings={self.feelings}'
 
+    # def to_json(self):
+    #     return dict(
+    #         timestamp=self.user.id,
+    #         user_name=self.user.name,
+    #         birth=self.user.birth_date,
+    #         gender=self.user.gender
+    #         )
+    #
+    # @classmethod
+    # def from_json(self, binary_json):
+    #     data_dict = json.loads(binary_json)
+    #     return Hello(User(data_dict['user_id'], data_dict['user_name'], data_dict['birth'], data_dict['gender']))
+
+
     def serialize(self, fields: iter) -> bytes:
         translation = (0, 0, 0)
         if 'translation' in fields:

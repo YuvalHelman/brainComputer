@@ -3,7 +3,7 @@ from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
 from .utils.parser import Parsers, ParserContext
 import json
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 _GLOBAL_WRITE_LOCK = threading.Lock()
@@ -13,10 +13,16 @@ CONF_FIELDS = ['translation', 'color_image']
 def run_server(address, data_dir):
     @app.route('/snapshot', methods=['POST'])
     def snapshot():
-        pass
+        json_snapshot = request.get_json()
+        snap = Snapshot.from_json(json_snapshot)
 
-    @app.route('/')
+        import pdb; pdb.set_trace()
+        print(2)
+
+    @app.route('/config')
     def send_my_config():
+        h = request
+        print(h)
         return json.dumps(CONF_FIELDS)
 
     app.run()

@@ -14,12 +14,18 @@ def upload_thought(address, data_path, version):
         else:
             reader = ReaderBinary(data_path)
         hello = Hello(reader.user)
+
+        session = requests.session()
+        session.params = hello.to_json()
+        session.verify = False
         for snapshot in reader:
-            session = requests.session()
-            r = session.get(f"http://{address}", params=hello.to_json(), verify=False)
-            import pdb; pdb.set_trace()
-            print(json.loads(r.content))
+            r = session.get(f"http://{address}/config")
+            response_dict = json.loads(r.content)
+            r = session.post(f"http://{address}/snapshot", json=snapshot.to_json())
+            import pdb;
+            pdb.set_trace()
             print(2)
+
             # with Connection.connect(host=ip, port=int(port)) as con:
             #     con.send(hello.serialize())
             #     conf = Config.deserialize(con.receive())
