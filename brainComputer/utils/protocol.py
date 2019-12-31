@@ -35,11 +35,10 @@ class Hello:
             user_name=self.user.name,
             birth=self.user.birth_date,
             gender=self.user.gender
-            )
+        )
 
     @classmethod
-    def from_json(self, binary_json):
-        data_dict = json.loads(binary_json)
+    def from_json(cls, data_dict):
         return Hello(User(data_dict['user_id'], data_dict['user_name'], data_dict['birth'], data_dict['gender']))
 
     def serialize(self):
@@ -109,21 +108,68 @@ class Snapshot:
             f"and a {self.depth_image[0]}x{self.depth_image[1]} depth. " \
             f'feelings={self.feelings}'
 
-    # def to_json(self):
-    #     return dict(
-    #         timestamp=self.user.id,
-    #         user_name=self.user.name,
-    #         birth=self.user.birth_date,
-    #         gender=self.user.gender
-    #         )
-    #
-    # @classmethod
-    # def from_json(self, binary_json):
-    #     data_dict = json.loads(binary_json)
-    #     return Hello(User(data_dict['user_id'], data_dict['user_name'], data_dict['birth'], data_dict['gender']))
+    def to_json(self, fields: list):
+        translation = (0, 0, 0)
+        if 'translation' in fields:
+            translation = self.translation
 
+        rotation = (0, 0, 0, 0)
+        if 'rotation' in fields:
+            rotation = self.rotation
 
-    def serialize(self, fields: iter) -> bytes:
+        color_image = (0, 0, None)
+        if "color_image" in fields:
+            color_image = self.color_image
+
+        depth_image = (0, 0, None)
+        if "depth_image" in fields:
+            depth_image = self.depth_image
+
+        feelings = (0, 0, 0, 0)
+        if "feelings" in fields:
+            feelings = self.feelings
+
+        return dict(
+            timestamp=self.timestamp,
+            translation=dict(
+                x=translation[0],
+                y=translation[1],
+                z=translation[2]
+            ),
+            rotation=dict(
+                x=rotation[0],
+                y=rotation[1],
+                z=rotation[2],
+                w=rotation[3]
+            ),
+            color_image=dict(
+                width=color_image[0],
+                height=color_image[1],
+                data=color_image[2]
+            ),
+            depth_image=dict(
+                width=depth_image[0],
+                height=depth_image[1],
+                data=depth_image[2]
+            ),
+            feelings=dict(
+                hunger=feelings[0], thirst=feelings[1],
+                exhaustion=feelings[2], happiness=feelings[3]
+            )
+        )
+
+    @classmethod
+    def from_json(cls, binary_json):
+        data_dict = json.loads(binary_json)
+
+        return Snapshot(timestamp,
+                        (translation_x, translation_y, translation_z),
+                        (rotation_x, rotation_y, rotation_z, rotation_w),
+                        (color_width, color_height, color_data),
+                        (depth_w, depth_h, depth_data),
+                        feelings)
+
+    def serialize(self, fields: list) -> bytes:
         translation = (0, 0, 0)
         if 'translation' in fields:
             translation = self.translation

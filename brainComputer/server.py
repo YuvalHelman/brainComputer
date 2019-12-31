@@ -13,16 +13,15 @@ CONF_FIELDS = ['translation', 'color_image']
 def run_server(address, data_dir):
     @app.route('/snapshot', methods=['POST'])
     def snapshot():
-        json_snapshot = request.get_json()
+        json_snapshot = request.get_json()['snapshot']
+        
         snap = Snapshot.from_json(json_snapshot)
 
         import pdb; pdb.set_trace()
         print(2)
 
-    @app.route('/config')
+    @app.route('/config', methods=['POST'])
     def send_my_config():
-        h = request
-        print(h)
         return json.dumps(CONF_FIELDS)
 
     app.run()
