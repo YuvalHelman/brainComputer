@@ -14,7 +14,7 @@ def run_server(address, data_dir):
     @app.route('/snapshot', methods=['POST'])
     def snapshot():
         json_snapshot = request.get_json()['snapshot']
-        
+
         snap = Snapshot.from_json(json_snapshot)
 
         import pdb; pdb.set_trace()

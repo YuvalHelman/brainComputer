@@ -23,7 +23,7 @@ def upload_thought(address, data_path, version):
 
             snap_json = snapshot.to_json(config_list)
 
-            r = session.post(f"http://{address}/snapshot", json=snapshot.to_json())
+            r = session.post(f"http://{address}/snapshot", json=snap_json)
             import pdb; pdb.set_trace()
 
             print(2)
