@@ -1,5 +1,4 @@
 import threading
-from .utils.listener import Listener
 from .utils.protocol import Hello, Config, Snapshot
 from .utils.parser import Parsers, ParserContext
 import json
@@ -10,12 +9,16 @@ _GLOBAL_WRITE_LOCK = threading.Lock()
 CONF_FIELDS = ['translation', 'color_image']
 
 
-def run_server(address, data_dir):
+def run_server(address='127.0.0.1', port=5000, publish=None):
+    """
+    :param address:
+    :param port:
+    :param publish:
+    :return:
+    """
     @app.route('/snapshot', methods=['POST'])
     def snapshot():
-        json_snapshot = request.get_json()['snapshot']
-
-        snap = Snapshot.from_json(json_snapshot)
+        snap = Snapshot.deserialize(request.get_data(), CONF_FIELDS)
 
         import pdb; pdb.set_trace()
         print(2)
@@ -24,7 +27,7 @@ def run_server(address, data_dir):
     def send_my_config():
         return json.dumps(CONF_FIELDS)
 
-    app.run()
+    app.run(host=address, port=port, debug=True)  # DEBUG: debug mode False later
 
 # def run_server(address, data_dir):  # python -m server run -a "127.0.0.1:5000" -d data/
 #     ip, port = address.split(":")

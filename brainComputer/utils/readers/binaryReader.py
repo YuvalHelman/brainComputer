@@ -3,7 +3,10 @@ from ..protocol import Snapshot, User
 
 
 class ReaderBinary:
-    """ A Reader of Snapshot's objects """
+    """ A Reader of Snapshot's objects
+        Once initialized, the user's info is automatically read from the path given, and consecutive
+        snapshots are read using an iterator or with the read_next_snapshot() function.
+        """
 
     def __init__(self, path):
         self.file = open(path, 'rb')

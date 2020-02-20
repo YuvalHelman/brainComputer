@@ -1,7 +1,7 @@
 ![build status](https://travis-ci.org/YuvalHelman/SystemsDesignProject.svg?branch=master)
 ![coverage](https://codecov.io/gh/YuvalHelman/SystemsDesignProject/branch/master/graph/badge.svg)
 
-# SystemsDesignProject
+# brainComputer 
 
 An example package. See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/). TODO
 

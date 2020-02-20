@@ -11,10 +11,11 @@ def cli():
 
 
 @click.command(name='run')
-@click.option('--address', '-a', default='127.0.0.1:5000', help="address of the server")
-@click.option('--data_dir', '-d', default='/tmp/server/', help='The directory where the server saves it\'s data.')
-def run_server_cli(address, data_dir):
-    run_server(address, data_dir)
+@click.option('--host', '-h', default='127.0.0.1', help="address of the server")
+@click.option('--port', '-p', default='/tmp/server/', help='The directory where the server saves it\'s data.')
+@click.argument('--port', '-p', default='/tmp/server/', help='The directory where the server saves it\'s data.')
+def run_server_cli(address, port, ):
+    run_server(address, port, )
 
 
 cli.add_command(run_server_cli)

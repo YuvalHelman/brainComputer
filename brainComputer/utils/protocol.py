@@ -159,7 +159,7 @@ class Snapshot:
         )
 
     @classmethod
-    def from_json(cls, binary_json):
+    def from_json(cls, binary_json):  # TODO
         data_dict = json.loads(binary_json)
 
         return Snapshot(timestamp,
