@@ -198,7 +198,7 @@ class Snapshot:
             args.append(depth_data)
         args.extend([*feelings])
 
-        return struct.pack(f'<Qddddddd'  # timestamp, translation, rotation 
+        return struct.pack(f'Qddddddd'  # timestamp, translation, rotation 
                            f'II{len(col_data)}s'  # color_image. len(col_data) bytes
                            f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
                            f'ffff', *args)
@@ -208,23 +208,25 @@ class Snapshot:
         timestamp, \
         translation_x, translation_y, translation_z, \
         rotation_x, rotation_y, rotation_z, rotation_w, \
-        color_width, color_height = read_from_binary_file(bytes_stream, '<QdddddddII')
+        color_w, color_h = read_from_binary_file(bytes_stream, 'QdddddddII')
 
         color_data = b''  # TODO: None ?
-        if "color_image" in fields:
-            color_data = bytes_stream.read(color_height * color_width * 3)
+        import pdb;  pdb.set_trace()  # DEBUG
 
-        depth_w, depth_h = read_from_binary_file(bytes_stream, "<II")
+        if "color_image" in fields:
+            color_data = read_from_binary_file(bytes_stream, f'{3 * color_w * color_h}s')  #  bytes_stream.read(color_height * color_width * 3)
+
+        depth_w, depth_h = read_from_binary_file(bytes_stream, "II")
 
         depth_data = b''  # TODO: None ?
         if "depth_image" in fields:
-            depth_data, *_ = read_from_binary_file(bytes_stream, f"<{depth_w * depth_h}f")
+            depth_data, *_ = read_from_binary_file(bytes_stream, f"{depth_w * depth_h}f")
 
-        feelings = read_from_binary_file(bytes_stream, "<4f")
+        feelings = read_from_binary_file(bytes_stream, "4f")
 
         return Snapshot(timestamp,
                         (translation_x, translation_y, translation_z),
                         (rotation_x, rotation_y, rotation_z, rotation_w),
-                        (color_width, color_height, color_data),
+                        (color_w, color_h, color_data),
                         (depth_w, depth_h, depth_data),
                         feelings)

@@ -41,29 +41,27 @@ class Connection:
         self.socket.sendall(msg_len)
         self.socket.sendall(data)
 
-    def receive_size(self, expected_message_size):
+    def receive_size(self, expected_msg_size):
         """ receives as many bytes as were specified by size, or throws an exception if
         the connection was closed before all the data was received. """
         bytes_lst = []
         receivedSize = 0
         while True:
-            current_bytes_received = self.socket.recv(expected_message_size)
-            curr_bytes_len = len(current_bytes_received)
-            if curr_bytes_len == 0:
-                raise Exception
-            bytes_lst.append(current_bytes_received)
-            receivedSize += curr_bytes_len
-            if receivedSize >= expected_message_size:
+            data = self.socket.recv(expected_msg_size)
+            if not data or len(data) == 0:
+                raise Exception('Connection Failed')
+            bytes_lst.append(data)
+            receivedSize += len(data)
+            if receivedSize >= expected_msg_size:
                 break
-            expected_message_size -= curr_bytes_len
+            expected_msg_size -= len(data)
         #  Extract certain bytes from the message:
         messageInBytes = b"".join(bytes_lst)
         return messageInBytes
 
     def receive(self):
         """ receives a uint32 indicating the length of the message to be sent and recieves that amount of bytes """
-        MESSAGE_PREFIX_LEN = 4
-        msg_len_bytes = self.socket.recv(MESSAGE_PREFIX_LEN)
+        msg_len_bytes = self.socket.recv(4)
         msg_len, *_ = struct.unpack('I', msg_len_bytes)
         ret = self.receive_size(msg_len)
         return io.BytesIO(ret)  # converts to a stream of bytes
