@@ -34,6 +34,7 @@ An example package. See [full documentation](https://advanced-system-design-foob
 
 ## Adding new Parsers to the Server
 
+We use an "Aspect oriented programming" for ease of use.
 Adding new parsers should be done in the following manner:
 
 - Add a new file to hold your parser's code in brainComputer/utils/parsers/..

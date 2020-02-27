@@ -4,7 +4,7 @@ from .utils.parser import Parsers, ParserContext
 import json
 import threading
 import click
-from flask import Flask, request
+import pika
 
 CONF_FIELDS = ['pose']
 
@@ -55,6 +55,7 @@ class ConnectionHandler(threading.Thread):
                 snap_bytes = con.receive()
                 import pdb; pdb.set_trace()  # DEBUG
                 snap = Snapshot.deserialize(snap_bytes, CONF_FIELDS)
+
         except Exception as e:
             print("Abort connection to failed client.")
 
@@ -65,4 +66,19 @@ class ConnectionHandler(threading.Thread):
 
 
 if __name__ == '__main__':
-    cli()
+    # cli()  # TODO: this should be the only thing here.
+    # DEBUG mode for testing Rabbitmq :
+
+    queue_name = 'hello'
+    message = "Hello World!"
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue=queue_name)
+
+    channel.basic_publish(exchange='',
+                          routing_key=queue_name,
+                          body=message)
+
+    print(" [x] Sent 'Hello World!'")
+    connection.close()
