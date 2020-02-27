@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name = 'SystemsDesignProject',
+    name = 'brainComputer',
     version = '0.1.0',
     author = 'Yuval Helman',
-    description = 'An example project for the Advanced-System-Design course in TAU.',
+    description = 'A module of a centralized queue-based system based on Snapshots from users',
     packages = find_packages(),
     install_requires = ['click', 'flask', 'flake8'],
     tests_require = ['pytest', 'pytest-cov'],

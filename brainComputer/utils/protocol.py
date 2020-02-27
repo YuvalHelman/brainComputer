@@ -5,7 +5,7 @@ from .binary_operations import read_from_binary_file
 
 
 class User:
-    def __init__(self, uid, name, birth_date, gender):
+    def __init__(self, uid: int, name: str, birth_date: int, gender: str):
         self.id = uid
         self.name = name
         self.birth_date = birth_date
@@ -171,18 +171,16 @@ class Snapshot:
 
     def serialize(self, fields: list) -> bytes:
         translation = (0, 0, 0)
-        if 'translation' in fields:
-            translation = self.translation
-
         rotation = (0, 0, 0, 0)
-        if 'rotation' in fields:
+        if 'pose' in fields:
+            translation = self.translation
             rotation = self.rotation
 
         col_w, col_h, col_data = (0, 0, b'')
         if "color_image" in fields:
             col_w, col_h, col_data = self.color_image
 
-        depth_w, depth_h, depth_data = (0, 0, b'')
+        depth_w, depth_h, depth_data = (0, 0, [])
         if "depth_image" in fields:
             depth_w, depth_h, depth_data = self.depth_image
 
@@ -193,12 +191,10 @@ class Snapshot:
         args = [self.timestamp, *translation, *rotation, col_w, col_h]
         if col_data:
             args.append(col_data)
-        args.extend([depth_w, depth_h])
-        if depth_data:
-            args.append(depth_data)
+        args.extend([depth_w, depth_h, depth_data])  # list with args or empty list
         args.extend([*feelings])
-
-        return struct.pack(f'Qddddddd'  # timestamp, translation, rotation 
+        # 16
+        return struct.pack(f'<Q7d'  # timestamp, translation, rotation 
                            f'II{len(col_data)}s'  # color_image. len(col_data) bytes
                            f'II{len(depth_data)}f'  # width_image. len(depth_data) floats
                            f'ffff', *args)
@@ -208,17 +204,17 @@ class Snapshot:
         timestamp, \
         translation_x, translation_y, translation_z, \
         rotation_x, rotation_y, rotation_z, rotation_w, \
-        color_w, color_h = read_from_binary_file(bytes_stream, 'QdddddddII')
+        color_w, color_h = read_from_binary_file(bytes_stream, '<QdddddddII')
 
-        color_data = b''  # TODO: None ?
+        color_data = b''
         import pdb;  pdb.set_trace()  # DEBUG
 
         if "color_image" in fields:
-            color_data = read_from_binary_file(bytes_stream, f'{3 * color_w * color_h}s')  #  bytes_stream.read(color_height * color_width * 3)
+            color_data, *_ = read_from_binary_file(bytes_stream, f'<{3 * color_w * color_h}s')  #  bytes_stream.read(color_height * color_width * 3)
 
         depth_w, depth_h = read_from_binary_file(bytes_stream, "II")
 
-        depth_data = b''  # TODO: None ?
+        depth_data = []
         if "depth_image" in fields:
             depth_data, *_ = read_from_binary_file(bytes_stream, f"{depth_w * depth_h}f")
 

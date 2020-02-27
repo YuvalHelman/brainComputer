@@ -3,9 +3,9 @@ import socket
 
 
 class Listener:
-    def __init__(self, host, port, backlog=1000, reuseaddr=True):
+    def __init__(self, host, port: int, backlog=1000, reuseaddr=True):
         self.host = host
-        self.port = int(port)
+        self.port = port
         self.backlog = backlog
         self.reuseaddr = reuseaddr
 

@@ -6,7 +6,7 @@ import threading
 import click
 from flask import Flask, request
 
-CONF_FIELDS = ['translation', 'color_image']
+CONF_FIELDS = ['pose']
 
 
 @click.group()
@@ -19,6 +19,12 @@ def cli():
 @click.option('--port', '-p', default='8000', help='port of the server')
 @click.argument('publish')
 def run_server(host, port, publish):
+    try:
+        port = int(port)
+    except ValueError as e:
+        print(f'bad port argument: {e}')
+        return 1
+
     address = f'{host}:{port}'
     parsers_dict = Parsers.load_modules()
     with Listener(host, port) as listener:
@@ -41,14 +47,16 @@ class ConnectionHandler(threading.Thread):
         """ Handle the connection and then print to stdout
         :return:
         """
-        conf = Config(CONF_FIELDS)
-
-        with self.connection as con:
-            hello = Hello.deserialize(con.receive())
-            con.send(conf.serialize())
-            # import pdb; pdb.set_trace()  # DEBUG
-            snap_bytes = con.receive()
-            snap = Snapshot.deserialize(snap_bytes, CONF_FIELDS)
+        try:
+            conf = Config(CONF_FIELDS)
+            with self.connection as con:
+                hello = Hello.deserialize(con.receive())
+                con.send(conf.serialize())
+                snap_bytes = con.receive()
+                import pdb; pdb.set_trace()  # DEBUG
+                snap = Snapshot.deserialize(snap_bytes, CONF_FIELDS)
+        except Exception as e:
+            print("Abort connection to failed client.")
 
         # parse_context = ParserContext(self.data_dir, hello, snap)
         # for field_name, func_handler in self.parsers.items():

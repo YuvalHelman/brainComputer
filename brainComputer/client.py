@@ -26,12 +26,13 @@ def upload_sample(host, port, path='dataFiles/sample.mind.gz'):
         reader = ReaderProtobuf(path)
         hello = Hello(reader.user)
         for snapshot in reader:
+            # import pdb;pdb.set_trace()  # DEBUG
             with Connection.connect(host, port) as con:
                 con.send(hello.serialize())
                 conf = Config.deserialize(con.receive())
                 snap = snapshot.serialize(conf.fields)
+
                 con.send(snap)
-                import pdb; pdb.set_trace()  # DEBUG
     except Exception as error:
         print(f'ERROR: {error}')
         return 1
