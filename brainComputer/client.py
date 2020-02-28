@@ -4,6 +4,7 @@ from .utils.connection import Connection
 from .utils.protocol import Hello, Config
 import requests
 import json
+import pika
 
 
 @click.group()
@@ -47,4 +48,22 @@ def upload_sample(host, port, path='dataFiles/sample.mind.gz'):
 
 
 if __name__ == '__main__':
-    cli()
+    # cli()
+
+    def callback(ch, method, properties, body):
+        print(" [x] Received %r" % body)
+        import time; time.sleep(body.count(b'.'))
+        print(" [x] Done")
+
+
+    queue_name = 'task_queue'
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+
+    channel.queue_declare(queue=queue_name, durable=True)
+
+    channel.basic_consume(queue=queue_name,
+                          on_message_callback=callback)
+    print(' [*] Waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()

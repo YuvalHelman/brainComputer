@@ -1,6 +1,6 @@
-from .utils.listener import Listener
-from .utils.protocol import Hello, Config, Snapshot
-from .utils.parser import Parsers, ParserContext
+from brainComputer.utils.listener import Listener
+from brainComputer.utils.protocol import Hello, Config, Snapshot
+from brainComputer.utils.parser import Parsers, ParserContext
 import json
 import threading
 import click
@@ -26,19 +26,17 @@ def run_server(host, port, publish):
         return 1
 
     address = f'{host}:{port}'
-    parsers_dict = Parsers.load_modules()
     with Listener(host, port) as listener:
         while True:
             con = listener.accept()
-            handler = ConnectionHandler(con, parsers_dict)
+            handler = ConnectionHandler(con)
             handler.start()  # start() invokes .run()
 
 
 class ConnectionHandler(threading.Thread):
-    def __init__(self, connection, parsers):
+    def __init__(self, connection):
         super().__init__()
         self.connection = connection
-        self.parsers = parsers
         # self.data_dir = data_dir
         # if data_dir.split("/")[-1] != '':
         #     self.data_dir += "/"
@@ -53,7 +51,8 @@ class ConnectionHandler(threading.Thread):
                 hello = Hello.deserialize(con.receive())
                 con.send(conf.serialize())
                 snap_bytes = con.receive()
-                import pdb; pdb.set_trace()  # DEBUG
+                import pdb;
+                pdb.set_trace()  # DEBUG
                 snap = Snapshot.deserialize(snap_bytes, CONF_FIELDS)
 
         except Exception as e:
@@ -68,17 +67,21 @@ class ConnectionHandler(threading.Thread):
 if __name__ == '__main__':
     # cli()  # TODO: this should be the only thing here.
     # DEBUG mode for testing Rabbitmq :
+    import sys
 
-    queue_name = 'hello'
-    message = "Hello World!"
+    message = ' '.join(sys.argv[1:]) or "Hello World!"
 
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-    channel = connection.channel()
-    channel.queue_declare(queue=queue_name)
+    ch = connection.channel()
 
-    channel.basic_publish(exchange='',
-                          routing_key=queue_name,
-                          body=message)
+    snapshots_exchange = 'snapshot_exchange'
+    ch.exchange_declare(exchange=snapshots_exchange, exchange_type='fanout')
 
-    print(" [x] Sent 'Hello World!'")
+    ch.basic_publish(exchange=snapshots_exchange,
+                     routing_key='',  # ignored for 'fanout' exchanges
+                     body=message,
+                     properties=pika.BasicProperties(delivery_mode=2, )  # make message persistent
+                     )
+
+    print(f" [x] Sent '{message}'")
     connection.close()

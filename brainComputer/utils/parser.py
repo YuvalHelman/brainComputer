@@ -66,8 +66,13 @@ class Parsers:
                             parsers_dict[callable_obj.field] = callable_obj.parse
         return parsers_dict
 
+    @classmethod
+    def consume_snapshots(self):
+        """ Load all parsers in the parsers directory and consume from rabbitmq """
+        parsers_dict = Parsers.load_modules()
+
 
 if __name__ == "__main__":
     print(Parsers.root)
-    Parsers.load_modules()
+    # Parsers.load_modules()
 
