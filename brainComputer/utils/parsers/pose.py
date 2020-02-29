@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # Set parameters for publishing back to the queue
     # declare a queue for publishing to the saver
     saver_queue = 'saver-queue'
-    ch.queue_declare(queue=saver_queue, durable=True)
+    ch.queue_declare(queue=saver_queue, durable=False)
 
     # Set parameters for consuming snapshots from the server
     snapshots_exchange = 'snapshot_exchange'
