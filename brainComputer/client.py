@@ -39,31 +39,6 @@ def upload_sample(host, port, path='dataFiles/sample.mind.gz'):
         return 1
 
 
-# r = sess.post(f"http://{address}/config", json=json_user_info)
-# config_list = json.loads(r.content)
-# import pdb; pdb.set_trace()
-# snap_json = snapshot.serialize(config_list)
-#
-# r = sess.post(f"http://{address}/snapshot", data=snap_json, )
-
-
 if __name__ == '__main__':
-    # cli()
+    cli()
 
-    def callback(ch, method, properties, body):
-        print(" [x] Received %r" % body)
-        import time; time.sleep(body.count(b'.'))
-        print(" [x] Done")
-
-
-    queue_name = 'task_queue'
-
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-    channel = connection.channel()
-
-    channel.queue_declare(queue=queue_name, durable=True)
-
-    channel.basic_consume(queue=queue_name,
-                          on_message_callback=callback)
-    print(' [*] Waiting for messages. To exit press CTRL+C')
-    channel.start_consuming()
