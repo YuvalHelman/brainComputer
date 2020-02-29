@@ -1,1 +1,1 @@
-python -m brainComputer.client upload-sample dataFiles/sample.mind.gz
+python -m brainComputer.client upload-sample ~/Downloads/sample.mind.gz

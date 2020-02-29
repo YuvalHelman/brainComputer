@@ -64,8 +64,4 @@ class ReaderProtobuf:
 
 
 if __name__ == '__main__':
-    r = ReaderProtobuf('../../../dataFiles/sample.mind')
-    print(r.user)
-    for snapshot in r:
-        print(snapshot)
-    # pass
+    pass
