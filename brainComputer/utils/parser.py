@@ -42,6 +42,9 @@ class Parsers:
     """
     root = Path(__file__).parent.joinpath('parsers')
 
+    def __init__(self, parsers_dict):
+        self.funcs_dict = parsers_dict
+
     @classmethod
     def load_modules(cls):
         """ loads all of the modules in the parsers/ submodule and returns them as a dictionary of
@@ -64,15 +67,19 @@ class Parsers:
                         class_parse_method = getattr(callable_obj, "parse", None)
                         if class_parse_method is not None and callable(class_parse_method):
                             parsers_dict[callable_obj.field] = callable_obj.parse
-        return parsers_dict
+        return Parsers(parsers_dict)
 
     @classmethod
-    def consume_snapshots(self):
+    def consume_snapshots(cls):
         """ Load all parsers in the parsers directory and consume from rabbitmq """
         parsers_dict = Parsers.load_modules()
 
 
 if __name__ == "__main__":
     print(Parsers.root)
-    # Parsers.load_modules()
-
+    root = Parsers.root
+    parsers_dict = {}
+    root = Path(root).absolute()
+    print(root)
+    sys.path.insert(0, str(root.parent))
+    print(root.parent)
