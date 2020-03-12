@@ -1,9 +1,8 @@
 import threading
 
 from brainComputer.utils.listener import Listener
-from brainComputer.utils.protocol import Config, Hello, Snapshot
-
-CONF_FIELDS = ['pose']
+from brainComputer.utils.protocol import Config, User, Snapshot
+from .utils import rabbitmq_publish_snapshots
 
 
 def run_server(host: str, port: int, publish):
@@ -25,12 +24,14 @@ class ConnectionHandler(threading.Thread):
         :return:
         """
         try:
-            conf = Config(CONF_FIELDS)
+            # conf = Config(CONF_FIELDS)
             with self.connection as con:
-                hello = Hello.deserialize(con.receive())
+                user = User.deserialize(con.receive())
                 con.send(conf.serialize())
                 snap_bytes = con.receive()
                 snap = Snapshot.deserialize(snap_bytes, CONF_FIELDS)
+
+        # TODO: publish to queue. with rabbitmq_publish_snapshots() and Pika or something?
 
         except Exception as e:
             print(f"Abort connection to failed client. {e}")

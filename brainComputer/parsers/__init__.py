@@ -9,6 +9,3 @@ from .utils import load_parsers
 
 def run_parser(parser_name, data):
     pass
-
-
-

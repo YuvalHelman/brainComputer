@@ -1,42 +1,43 @@
 import struct
 import gzip
 from ..protocol import Snapshot, User
-from ..brain_pb2 import User as ProtoUser
-from ..brain_pb2 import Snapshot as ProtoSnapshot
+from ..brain_pb2 import User as PbUser
+from ..brain_pb2 import Snapshot as PbSnapshot
 
 
 class ReaderProtobuf:
-    """ A Reader of Snapshot's objects using the protobuf module """
+    """ A Reader of Snapshot's objects from the hardware file.
+        data read is being converted into the protocol's objects """
 
     def __init__(self, path):
         self.file = gzip.open(path, 'rb')
         self.user = self.read_user_info()
 
     def read_user_info(self):
-        proto_user = ProtoUser()
-        if self.read_message_from_protobuf(proto_user) == -1:
+        pb_user = PbUser()
+        if self.read_message_from_protobuf(pb_user) == -1:
             print("parsing User failed")
             return None
-        return User(proto_user.user_id, proto_user.username, proto_user.birthday,
-                    'f' if proto_user.gender == 1 else 'm')
+        return User(pb_user.user_id, pb_user.username, pb_user.birthday,
+                    'f' if pb_user.gender == 1 else 'm')
 
     def read_next_snapshot(self):
-        proto_snapshot = ProtoSnapshot()
-        if self.read_message_from_protobuf(proto_snapshot) == -1:
+        pb_snapshot = PbSnapshot()
+        if self.read_message_from_protobuf(pb_snapshot) == -1:
             print("parsing User failed")
             return None
 
-        return Snapshot(proto_snapshot.datetime,
-                        (proto_snapshot.pose.translation.x, proto_snapshot.pose.translation.y,
-                         proto_snapshot.pose.translation.z),
-                        (proto_snapshot.pose.rotation.x, proto_snapshot.pose.rotation.y,
-                         proto_snapshot.pose.rotation.z, proto_snapshot.pose.rotation.w),
-                        (proto_snapshot.color_image.width, proto_snapshot.color_image.height,
-                         proto_snapshot.color_image.data),
-                        (proto_snapshot.depth_image.width, proto_snapshot.depth_image.height,
-                         proto_snapshot.depth_image.data),
-                        (proto_snapshot.feelings.hunger, proto_snapshot.feelings.thirst,
-                         proto_snapshot.feelings.exhaustion, proto_snapshot.feelings.happiness))
+        return Snapshot(pb_snapshot.datetime,
+                        (pb_snapshot.pose.translation.x, pb_snapshot.pose.translation.y,
+                         pb_snapshot.pose.translation.z),
+                        (pb_snapshot.pose.rotation.x, pb_snapshot.pose.rotation.y,
+                         pb_snapshot.pose.rotation.z, pb_snapshot.pose.rotation.w),
+                        (pb_snapshot.color_image.width, pb_snapshot.color_image.height,
+                         pb_snapshot.color_image.data),
+                        (pb_snapshot.depth_image.width, pb_snapshot.depth_image.height,
+                         pb_snapshot.depth_image.data),
+                        (pb_snapshot.feelings.hunger, pb_snapshot.feelings.thirst,
+                         pb_snapshot.feelings.exhaustion, pb_snapshot.feelings.happiness))
 
     def read_message_from_protobuf(self, protoObject):
         """ Reads a 'message' which could be the user's info, or a snapshot with the appropriate

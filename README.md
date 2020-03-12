@@ -32,14 +32,17 @@ An example package. See [full documentation](https://advanced-system-design-foob
     ...
     ```
 
-## Adding new Parsers to the Server
+## Adding new Parsers
 
 We use an "Aspect oriented programming" for ease of use.
 Adding new parsers should be done in the following manner:
 
-- Add a new file to hold your parser's code in brainComputer/utils/parsers/..
-- The new parser's name should start with parse_* if it's a function, or end with *Parser if it's a Class. and have a "parse" function in it to do the parsing. the functions should have a certain
+- Add a new file to hold your parser's code under 'brainComputer/parsers/', or use one of the files already in there.
+- The new parser's name should start with 'parse_' if it's a function, or end with 'Parser' if it's a Class. 
+  In the case of a class, it has to have a "parse" function in it to do the parsing. the functions should have a certain
 signature.
+- There has to be a 'field' member to your function\Class that indicates the type of parsing data it returns.
+
 - Example:
     ```pycon
    def parse_function(context, snapshot):
@@ -53,8 +56,9 @@ signature.
            pass
     ```
 
-- You need to add a 'field' member to your function\Class that indicates the  
 - The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
+- Adding new functionalities should be done in the 'utils' module.
+- A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen.
 
 ## Usage
 

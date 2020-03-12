@@ -5,8 +5,9 @@ import importlib
 
 
 def load_parsers():
-    """ loads all of the parsers in the parsers/ directory and returns them as a dictionary of
-    {parser_functionality_string : function_object} """
+    """ loads all of the parsers in the parsers/ directory.
+    returns: {parser_functionality_string : function_object}
+    """
     parsers_dict = {}
 
     root = Path(__file__).parent.absolute()
@@ -14,23 +15,27 @@ def load_parsers():
     for path in root.iterdir():
         if path.name.startswith('_') or not path.suffix == '.py':
             continue
-        importlib.import_module(f'brainComputer.utils.parsers.{path.stem}')
+        importlib.import_module(f'brainComputer.parsers.{path.stem}')
 
-    for name, module in sys.modules.items():
-        if name.startswith('parsers.'):  # TODO: I think this needs to be erased... because of folders changes
-            for objName, callable_obj in module.__dict__.items():
-                if inspect.isfunction(callable_obj) and objName.startswith('parse'):
-                    parsers_dict[callable_obj.field] = callable_obj
-                if inspect.isclass(callable_obj) and objName.endswith('Parser'):
-                    class_parse_method = getattr(callable_obj, "parse", None)
-                    if class_parse_method is not None and callable(class_parse_method):
-                        parsers_dict[callable_obj.field] = callable_obj.parse
+    parse_modules = [(name, module) for name, module in sys.modules.items() if name.startswith('brainComputer.parsers.')]
+    for name, module in parse_modules:
+        for objName, callable_obj in module.__dict__.items():
+            if inspect.isfunction(callable_obj) and objName.startswith('parse_'):
+                parsers_dict[callable_obj.field] = callable_obj
+            if inspect.isclass(callable_obj) and objName.endswith('Parser'):
+                class_parse_method = getattr(callable_obj, "parse", None)
+                if class_parse_method is not None and callable(class_parse_method):
+                    parsers_dict[callable_obj.field] = callable_obj.parse
     return parsers_dict
+
+
+def enlist_parsers_to_queue():
+    pass
 
 
 if __name__ == "__main__":
     print(Path(__file__).parent)
-
+    load_parsers()
 
 # class ParserContext:
 #     """
@@ -97,4 +102,3 @@ if __name__ == "__main__":
 #     def consume_snapshots(cls):
 #         """ Load all parsers in the parsers directory and consume from rabbitmq """
 #         parsers_dict = Parsers.load_parsers()
-

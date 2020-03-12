@@ -2,6 +2,8 @@ import struct
 import io
 import json
 from .binary_operations import read_from_binary_file
+from .brain_pb2 import User as PbUser
+from .brain_pb2 import Snapshot as PbSnapshot
 
 
 class User:
@@ -18,46 +20,47 @@ class User:
             f"birth_date={self.birth_date}, " \
             f"gender={self.gender})"
 
-
-class Hello:
-    def __init__(self, user):
-        self.user = user
-
-    def __repr__(self):
-        return f"Hello(user_id={self.user.id}, " \
-               f"user_name={self.user.name}, " \
-               f"birth={self.user.birth_date}, " \
-               f"gender={self.user.gender})"
-
     def to_json(self):
         return dict(
-            user_id=self.user.id,
-            user_name=self.user.name,
-            birth=self.user.birth_date,
-            gender=self.user.gender
+            user_id=self.id,
+            user_name=self.name,
+            birth=self.birth_date,
+            gender=self.gender
         )
 
     @classmethod
     def from_json(cls, data_dict):
-        return Hello(User(data_dict['user_id'], data_dict['user_name'], data_dict['birth'], data_dict['gender']))
+        return User(data_dict['user_id'], data_dict['user_name'], data_dict['birth'], data_dict['gender'])
 
     def serialize(self):
-        try:
-            ret = struct.pack(f"<QI{len(self.user.name)}sIc",
-                              self.user.id, len(self.user.name), self.user.name.encode(),
-                              self.user.birth_date, self.user.gender.encode())
-            return ret
-        except Exception as e:
-            print("Hello message serialize failed:", e)
-            raise e
+        """ Create a new PbUser() object from the current User object"""
+        SerializeToString()
+
+        #
+        # try:
+        #     ret = struct.pack(f"<QI{len(self.name)}sIc",
+        #                       self.id, len(self.name), self.name.encode(),
+        #                       self.birth_date, self.gender.encode())
+        #     return ret
+        # except Exception as e:
+        #     print("User message serialization failed:", e)
+        #     raise e
 
     @classmethod
-    def deserialize(cls, bytes_stream):
-        uid, name_len = read_from_binary_file(bytes_stream, "<QI")
-        name = read_from_binary_file(bytes_stream, f"<{name_len}s")[0].decode()
-        birth_date, gender = read_from_binary_file(bytes_stream, "<Ic")
-        gender = gender.decode()
-        return Hello(User(uid, name, birth_date, gender))
+    def deserialize(cls, stream):
+        pb_user = PbUser()
+        try:
+            pb_user.ParseFromString(stream.read())
+        except Exception as e:
+            print("error deserialize User,", e)
+        return User(pb_user.user_id, pb_user.username, pb_user.birthday,
+                    'f' if pb_user.gender == 1 else 'm')
+
+        # uid, name_len = read_from_binary_file(bytes_stream, "<QI")
+        # name = read_from_binary_file(bytes_stream, f"<{name_len}s")[0].decode()
+        # birth_date, gender = read_from_binary_file(bytes_stream, "<Ic")
+        # gender = gender.decode()
+        # return Hello(User(uid, name, birth_date, gender))
 
 
 class Config:
