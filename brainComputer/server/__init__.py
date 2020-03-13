@@ -6,6 +6,7 @@ from brainComputer.server.utils import rabbitmq_publish_snapshots
 
 
 def run_server(host: str, port: int, publish=print):
+    print(f"## listening on {host}:{port} and passing received messages to publish ##")
     with Listener(host, port) as listener:
         while True:
             con = listener.accept()
