@@ -41,31 +41,32 @@ class Connection:
         self.socket.sendall(msg_len)
         self.socket.sendall(data)
 
-    def receive_size(self, expected_msg_size):
+    def receive_size(self, size):
         """ receives as many bytes as were specified by size, or throws an exception if
         the connection was closed before all the data was received. """
+        expected_msg_size = size
         bytes_lst = []
         receivedSize = 0
         while True:
             data = self.socket.recv(expected_msg_size)
             if not data or len(data) == 0:
-                raise Exception('Connection Failed')
+                break
             bytes_lst.append(data)
             receivedSize += len(data)
-            if receivedSize >= expected_msg_size:
-                break
             expected_msg_size -= len(data)
-        #  Extract certain bytes from the message:
+        if expected_msg_size > 0:
+            raise Exception("Receive failed")
         messageInBytes = b"".join(bytes_lst)
         return messageInBytes
 
     def receive(self):
         """ receives a uint32 indicating the length of the message to be sent and recieves that amount of bytes """
-        msg_len_bytes = self.socket.recv(4)
-        msg_len, *_ = struct.unpack('I', msg_len_bytes)
-        ret = self.receive_size(msg_len)
-        return ret
-        # return io.BytesIO(ret)  # converts to a stream of bytes
+        try:
+            msg_len_bytes = self.socket.recv(4)
+            msg_len, *_ = struct.unpack('I', msg_len_bytes)
+            return self.receive_size(msg_len)
+        except Exception as e:
+            print(f"receive failed: {e}")
 
     def close(self):
         self.socket.close()

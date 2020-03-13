@@ -6,6 +6,7 @@ from .brain_pb2 import User as PbUser
 from .brain_pb2 import Snapshot as PbSnapshot
 
 
+
 class User:
     def __init__(self, uid: int, name: str, birth_date: int, gender: str):
         self.id = uid
@@ -34,6 +35,7 @@ class User:
 
     def serialize(self):
         """ Create a new PbUser() object from the current User object"""
+        pb_user = PbUser()
         SerializeToString()
 
         #

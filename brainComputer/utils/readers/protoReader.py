@@ -15,33 +15,34 @@ class ReaderProtobuf:
 
     def read_user_info(self):
         pb_user = PbUser()
-        if self.read_message_from_protobuf(pb_user) == -1:
+        if self.read_message_from_file(pb_user) == -1:
             print("parsing User failed")
             return None
-        return User(pb_user.user_id, pb_user.username, pb_user.birthday,
-                    'f' if pb_user.gender == 1 else 'm')
+        return pb_user
+        # return User(pb_user.user_id, pb_user.username, pb_user.birthday,
+        #             'f' if pb_user.gender == 1 else 'm')
 
     def read_next_snapshot(self):
         pb_snapshot = PbSnapshot()
-        if self.read_message_from_protobuf(pb_snapshot) == -1:
-            print("parsing User failed")
+        if self.read_message_from_file(pb_snapshot) == -1:
+            print("parsing Snapshot failed")
             return None
 
-        return Snapshot(pb_snapshot.datetime,
-                        (pb_snapshot.pose.translation.x, pb_snapshot.pose.translation.y,
-                         pb_snapshot.pose.translation.z),
-                        (pb_snapshot.pose.rotation.x, pb_snapshot.pose.rotation.y,
-                         pb_snapshot.pose.rotation.z, pb_snapshot.pose.rotation.w),
-                        (pb_snapshot.color_image.width, pb_snapshot.color_image.height,
-                         pb_snapshot.color_image.data),
-                        (pb_snapshot.depth_image.width, pb_snapshot.depth_image.height,
-                         pb_snapshot.depth_image.data),
-                        (pb_snapshot.feelings.hunger, pb_snapshot.feelings.thirst,
-                         pb_snapshot.feelings.exhaustion, pb_snapshot.feelings.happiness))
+        return pb_snapshot
+        # return Snapshot(pb_snapshot.datetime,
+        #                 (pb_snapshot.pose.translation.x, pb_snapshot.pose.translation.y,
+        #                  pb_snapshot.pose.translation.z),
+        #                 (pb_snapshot.pose.rotation.x, pb_snapshot.pose.rotation.y,
+        #                  pb_snapshot.pose.rotation.z, pb_snapshot.pose.rotation.w),
+        #                 (pb_snapshot.color_image.width, pb_snapshot.color_image.height,
+        #                  pb_snapshot.color_image.data),
+        #                 (pb_snapshot.depth_image.width, pb_snapshot.depth_image.height,
+        #                  pb_snapshot.depth_image.data),
+        #                 (pb_snapshot.feelings.hunger, pb_snapshot.feelings.thirst,
+        #                  pb_snapshot.feelings.exhaustion, pb_snapshot.feelings.happiness))
 
-    def read_message_from_protobuf(self, protoObject):
-        """ Reads a 'message' which could be the user's info, or a snapshot with the appropriate
-            hardware specifications for exercise 7
+    def read_message_from_file(self, protoObject):
+        """ Reads a 'message' from the file given from the hardware specifications for exercise 7
         :return:
         """
         try:
