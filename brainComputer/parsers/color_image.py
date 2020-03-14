@@ -1,17 +1,19 @@
 from pathlib import Path
 from PIL import Image
-from brainComputer.utils.parser import ParserContext  # TODO: change to relative (other parsers too )
+import json
 
 
 class colorImageParser:
     field = 'color_image'
 
-    def parse(self, context: ParserContext, snapshot):
-        path = context.path("color_image.jpg")
-        width, height, data = snapshot.color_image
+    def parse(self, json_snap_user):
+        snap_user = json.loads(json_snap_user)
+
+
         image = Image.frombytes('RGB', (width, height), data)
 
         image.save(path)
+        # TODO: save the image itself to a path.
 
 # @Parser.parser('color_image')
 # def parse_color_image(context, snapshot):

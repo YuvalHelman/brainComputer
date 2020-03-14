@@ -1,18 +1,16 @@
 from pathlib import Path
 import json
-from brainComputer.utils.parser import ParserContext
 import pika
 
 
-def parse_pose(context: ParserContext, snapshot):
-    x, y, z = snapshot.translation
-    a, b, c, d = snapshot.rotation
+def parse_pose(json_snap_user):
+    snap_user = json.loads(json_snap_user)
 
-    return json.dumps(
-        {'translation': {"x": x, "y": y, "z": z},
-         'rotation': {"x": a, "y": b, "z": c, "w": d}
-         }
-    )
+    return json.dumps({'user': snap_user["user"],
+                       'datetime': snap_user["snapshot"]["datetime"],
+                       'pose': snap_user["snapshot"]["pose"],
+                       }
+                      )
 
 
 parse_pose.field = 'pose'
@@ -44,6 +42,7 @@ if __name__ == "__main__":
 
     # Set parameters for publishing back to the queue into the saver queue
     saver_queue = 'saver-queue'
+    # TODO: each parser should have a different queue (not sure if same Exchange..)
     ch.queue_declare(queue=saver_queue, durable=False)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')

@@ -1,17 +1,20 @@
 from pathlib import Path
 
 
-def get_saving_path(user_pb, snap_pb):
+def get_saving_path(user, snap, is_proto=True):
     """ Creates a unique path for each user and snapshot for saving its content.
-        arguments are protobuf objects sent from the client """
+        arguments are protobuf objects sent from the client or json objects """
     p = Path("/tmp/brainComputer/")
     if p.exists() is False:
         p.mkdir()
-    user = user_pb.user_id + "_" + user_pb.username
+    id = user.user_id if is_proto else user["user_id"]
+    username = user.username if is_proto else user["username"]
+    user = id + "_" + username
     p = p / user
     if p.exists() is False:
         p.mkdir()
-    p = p / snap_pb.datetime
+    date = snap.datetime if is_proto else snap["datetime"]
+    p = p / date
     if p.exists() is False:
         p.mkdir()
     return p
@@ -20,7 +23,7 @@ def get_saving_path(user_pb, snap_pb):
 def pbuser_to_dict(pb_user):
     return dict(
         user_id=pb_user.user_id,
-        user_name=pb_user.username,
+        username=pb_user.username,
         birthday=pb_user.birthday,
         gender=pb_user.gender
     )
