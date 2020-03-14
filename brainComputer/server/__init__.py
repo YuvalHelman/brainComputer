@@ -1,9 +1,10 @@
 import threading
 import json
-from .utils import pbsnapshot_to_dict, pbuser_to_dict, get_saving_path
+from brainComputer.utils import get_saving_path
 from brainComputer.utils.listener import Listener
 from brainComputer.utils.brain_pb2 import User as PbUser
 from brainComputer.utils.brain_pb2 import Snapshot as PbSnapshot
+from brainComputer.utils.protocol import pbsnapshot_to_dict, pbuser_to_dict
 import brainComputer.utils.rabbitmq as rabmq
 
 
@@ -35,7 +36,7 @@ class ConnectionHandler(threading.Thread):
                 snap.ParseFromString(con.receive())
 
             user_dict = pbuser_to_dict(user)
-            snap_dict = pbsnapshot_to_dict(snap, get_saving_path(user, snap))
+            snap_dict = pbsnapshot_to_dict(snap, get_saving_path(user, snap, is_proto=True))
             self.publish(json.dumps(dict(user=user_dict, snapshot=snap_dict)))
 
         except Exception as e:
