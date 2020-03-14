@@ -1,8 +1,10 @@
 import threading
+import json
+from .utils import pbsnapshot_to_dict, pbuser_to_dict, get_saving_path
 from brainComputer.utils.listener import Listener
 from brainComputer.utils.brain_pb2 import User as PbUser
 from brainComputer.utils.brain_pb2 import Snapshot as PbSnapshot
-from brainComputer.server.utils import rabbitmq_publish_snapshots
+import brainComputer.utils.rabbitmq as rabmq
 
 
 def run_server(host: str, port: int, publish=print):
@@ -32,7 +34,9 @@ class ConnectionHandler(threading.Thread):
                 user.ParseFromString(con.receive())
                 snap.ParseFromString(con.receive())
 
-        # TODO: publish to queue. with rabbitmq_publish_snapshots() and Pika or something?
+            user_dict = pbuser_to_dict(user)
+            snap_dict = pbsnapshot_to_dict(snap, get_saving_path(user, snap))
+            self.publish(json.dumps(dict(user=user_dict, snapshot=snap_dict)))
 
         except Exception as e:
             print(f"Abort connection to failed client. {e}")

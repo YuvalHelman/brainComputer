@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
-
+    # Set parameters for consuming snapshots from parsers
     saver_queue = 'saver-queue'
     channel.queue_declare(queue=saver_queue, durable=False)
 

@@ -1,5 +1,5 @@
 from . import run_server
-from .utils import rabbitmq_publish_snapshots
+import  brainComputer.utils.rabbitmq as rabmq
 import click
 import pika
 import furl
@@ -18,9 +18,13 @@ def run_server_cli(host, port, publish_url):
     publisher_url = furl.furl(publish_url)
 
     def publish(message):
-        con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
-        if publish_url.scheme == 'rabbitmq':
-            rabbitmq_publish_snapshots(connection=con, message=message)
+        try:
+            con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
+            if publish_url.scheme == 'rabbitmq':
+                rabmq.publish_snapshots(connection=con, message=message)
+            con.close()
+        except Exception as e:
+            print(f"publish from server to queue failed: {e}")
 
     run_server(host, port, publish)
 
