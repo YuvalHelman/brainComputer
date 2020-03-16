@@ -16,22 +16,14 @@ class colorImageParser:
             data = fd.read(width * height)
             image = Image.frombytes('RGB', (width, height), data)
         data_dir = get_saving_path(snap_user["user"], snap_user["snapshot"], is_proto=False)
-        color_path = data_dir / "color_image"
-        image.save(color_path)
+        color_image_path = data_dir / "color_image"w
+        image.save(color_image_path)
 
         return json.dumps(dict(
+            user=snap_user["user"],
+            datetime=snap_user["snapshot"]["datetime"],
             width=width,
             height=height,
             data_path=data_path,
-            image=color_path, # TODO: add user and timestamp
-        )
-
-                          )
-# @Parser.parser('color_image')
-# def parse_color_image(context, snapshot):
-#     p = Path(f"{context.parser_path}/color_image.json")
-#     width, height, data = snapshot.color_image
-#     image = Image.frombytes('RGB', (width, height), data)
-#
-#     with open(p, mode="w") as fd:
-#         image.save(p)
+            image=color_image_path,
+        ))

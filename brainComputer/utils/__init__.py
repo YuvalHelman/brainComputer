@@ -9,12 +9,12 @@ def get_saving_path(user, snap, is_proto=True):
         p.mkdir()
     u_id = user.user_id if is_proto else user["user_id"]
     username = user.username if is_proto else user["username"]
-    user = u_id + "_" + username
+    user = str(u_id) + "_" + username
     p = p / user
     if p.exists() is False:
         p.mkdir()
     date = snap.datetime if is_proto else snap["datetime"]
-    p = p / date
+    p = p / str(date)
     if p.exists() is False:
         p.mkdir()
-    return p
+    return str(p)

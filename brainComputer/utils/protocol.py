@@ -13,12 +13,12 @@ def pbuser_to_dict(pb_user):
 def pbsnapshot_to_dict(pb_snapshot, save_path):
     p = Path(save_path)
     color_data_p = p / 'color_data'
-    with color_data_p.open() as f:
+    with open(color_data_p, 'wb') as f:
         f.write(pb_snapshot.color_image.data)
 
     depth_data_p = p / 'depth_data'
-    with depth_data_p.open() as f:
-        f.write(pb_snapshot.depth_image.data)
+    with open(depth_data_p, 'w') as f:
+        f.write('\n'.join(str(num) for num in pb_snapshot.depth_image.data))
 
     return dict(
         datetime=pb_snapshot.datetime,

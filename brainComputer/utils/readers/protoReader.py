@@ -1,6 +1,5 @@
 import struct
 import gzip
-from ..protocol import Snapshot, User
 from ..brain_pb2 import User as PbUser
 from ..brain_pb2 import Snapshot as PbSnapshot
 

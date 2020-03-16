@@ -1,4 +1,4 @@
-from brainComputer.utils.readers import ReaderBinary, ReaderProtobuf
+from brainComputer.utils.readers import ReaderProtobuf
 from brainComputer.utils.connection import Connection
 from brainComputer.client.utils import convert_to_protocol_user, convert_to_protocol_snapshot
 
@@ -13,6 +13,7 @@ def upload_sample(host: str, port: int, path: str):
             with Connection.connect(host, port) as con:
                 con.send(pb_user.SerializeToString())
                 con.send(pb_snap.SerializeToString())
+                import pdb; pdb.set_trace()
     except Exception as e:
         print(f'ERROR: {e}')
 
