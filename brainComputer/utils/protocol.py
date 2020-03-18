@@ -10,13 +10,18 @@ def pbuser_to_dict(pb_user):
     )
 
 
-def pbsnapshot_to_dict(pb_snapshot, save_path):
-    p = Path(save_path)
+def pbsnapshot_to_dict(pb_snapshot, pb_user):
+    p = Path("/tmp/brainComputer/")
+    p = p / str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(pb_snapshot.datetime)  # /42_Ron Dan/15423/
+
     color_data_p = p / 'color_data'
+    color_image_p = p / 'color_image.rgb'
     with open(color_data_p, 'wb') as f:
         f.write(pb_snapshot.color_image.data)
 
     depth_data_p = p / 'depth_data'
+    depth_image_p = p / 'depth_image'
+
     with open(depth_data_p, 'w') as f:
         f.write('\n'.join(str(num) for num in pb_snapshot.depth_image.data))
 
@@ -39,11 +44,14 @@ def pbsnapshot_to_dict(pb_snapshot, save_path):
             width=pb_snapshot.color_image.width,
             height=pb_snapshot.color_image.height,
             data_path=str(color_data_p),
+            color_image_path=str(color_image_p)
         ),
         depth_image=dict(
             width=pb_snapshot.depth_image.width,
             height=pb_snapshot.depth_image.height,
             data_path=str(depth_data_p),
+            depth_image_path=str(depth_image_p),
+
         ),
         feelings=dict(
             hunger=pb_snapshot.feelings.hunger, thirst=pb_snapshot.feelings.thirst,

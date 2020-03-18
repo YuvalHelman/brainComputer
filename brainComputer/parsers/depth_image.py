@@ -1,6 +1,7 @@
 import matplotlib.cm
 import numpy
 import json
+from PIL import Image
 from brainComputer.utils import get_saving_path
 
 

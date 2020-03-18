@@ -36,8 +36,8 @@ class ConnectionHandler(threading.Thread):
                 snap.ParseFromString(con.receive())
 
             user_dict = pbuser_to_dict(user)
-            s = get_saving_path(user, snap, is_proto=True)
-            snap_dict = pbsnapshot_to_dict(snap, s)
+            # s = get_saving_path(user, snap, is_proto=True)
+            snap_dict = pbsnapshot_to_dict(snap, user)
             self.publish(json.dumps(dict(user=user_dict, snapshot=snap_dict)))
 
         except Exception as e:
