@@ -58,7 +58,7 @@ signature.
 
 - The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
 - Adding new functionalities should be done in the 'utils' module.
-- A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen.
+- A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen arbitrarily.
 
 ## Usage
 

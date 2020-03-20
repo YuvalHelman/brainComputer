@@ -2,13 +2,15 @@ import pytest
 import os
 from brainComputer.parsers.color_image import colorImageParser
 from brainComputer.parsers.depth_image import depthImageParser
+from brainComputer.parsers.pose import parse_pose
+from brainComputer.parsers.feelings import parse_feelings
 import json
 
 
 @pytest.fixture()
 def snapshot_user_encoded():
     """ Json Snapshot example """
-    test_snapshot_dir = "/tests/snapshots/42_Dan Gittik/1575446887339/"
+    test_snapshot_dir = "tests/snapshots/42_Dan Gittik/1575446887339/"
     return json.dumps(
         {"user": {"user_id": 42, "username": "Dan Gittik", "birthday": 699746400, "gender": 0},
          "snapshot": {"datetime": 1575446887339,
@@ -62,3 +64,40 @@ def test_depth_image_parser_result(snapshot_user_encoded):
     assert res_json["depth_image"]["depth_image_path"] == snap_user["snapshot"]["depth_image"]["depth_image_path"]
 
     assert os.path.exists(res_json["depth_image"]["depth_image_path"]) is True
+
+
+def test_pose_parser_result(snapshot_user_encoded):
+    snap_user = json.loads(snapshot_user_encoded)
+
+    parse_func = parse_pose
+    res_json = json.loads(parse_func(snapshot_user_encoded))
+
+    assert res_json["user"]["user_id"] == snap_user["user"]["user_id"]
+    assert res_json["user"]["username"] == snap_user["user"]["username"]
+    assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
+    assert res_json["user"]["gender"] == snap_user["user"]["gender"]
+    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
+    assert res_json["pose"]["translation"]["x"] == snap_user["snapshot"]["pose"]["translation"]["x"]
+    assert res_json["pose"]["translation"]["y"] == snap_user["snapshot"]["pose"]["translation"]["y"]
+    assert res_json["pose"]["translation"]["z"] == snap_user["snapshot"]["pose"]["translation"]["z"]
+    assert res_json["pose"]["rotation"]["x"] == snap_user["snapshot"]["pose"]["rotation"]["x"]
+    assert res_json["pose"]["rotation"]["y"] == snap_user["snapshot"]["pose"]["rotation"]["y"]
+    assert res_json["pose"]["rotation"]["z"] == snap_user["snapshot"]["pose"]["rotation"]["z"]
+    assert res_json["pose"]["rotation"]["w"] == snap_user["snapshot"]["pose"]["rotation"]["w"]
+
+
+def test_feelings_parser_result(snapshot_user_encoded):
+    snap_user = json.loads(snapshot_user_encoded)
+
+    parse_func = parse_feelings
+    res_json = json.loads(parse_func(snapshot_user_encoded))
+
+    assert res_json["user"]["user_id"] == snap_user["user"]["user_id"]
+    assert res_json["user"]["username"] == snap_user["user"]["username"]
+    assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
+    assert res_json["user"]["gender"] == snap_user["user"]["gender"]
+    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
+    assert res_json["feelings"]["hunger"] == snap_user["snapshot"]["feelings"]["hunger"]
+    assert res_json["feelings"]["thirst"] == snap_user["snapshot"]["feelings"]["thirst"]
+    assert res_json["feelings"]["exhaustion"] == snap_user["snapshot"]["feelings"]["exhaustion"]
+    assert res_json["feelings"]["happiness"] == snap_user["snapshot"]["feelings"]["happiness"]

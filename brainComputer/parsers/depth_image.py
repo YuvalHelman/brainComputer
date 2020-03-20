@@ -3,7 +3,7 @@ import json
 from PIL import Image
 import matplotlib
 from matplotlib import cm
-from matplotlib.pyplot import imshow
+from matplotlib.pyplot import imshow, savefig
 
 
 class depthImageParser:
@@ -18,9 +18,8 @@ class depthImageParser:
         with open(data_path, "r") as data:
             str_data = data.read()
         floats_data = [float(x) for x in str_data.split(sep='\n')]
-        imshow(numpy.reshape(floats_data, (width, height)),
-                                 cmap=cm.RdYlGn)
-        matplotlib.pyplot.savefig(image_path)
+        imshow(numpy.reshape(floats_data, (width, height)), cmap=cm.RdYlGn)
+        savefig(image_path)
         return json.dumps(
             dict(user=snap_user["user"],
                  datetime=snap_user["snapshot"]["datetime"],

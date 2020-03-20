@@ -1,16 +1,17 @@
-from pathlib import Path
 import json
-from brainComputer.utils.parser import ParserContext
 
 
-def parse_pose(context: ParserContext, snapshot):
-    hunger, thirst, exhaustion, happiness = snapshot.feelings
+def parse_feelings(json_snap_user):
+    snap_user = json.loads(json_snap_user)
 
-    context.save('feelings.json',
-                 json.dumps({'feelings': {"hunger": hunger, "thirst": thirst,
-                                          "exhaustion": exhaustion, "happiness": happiness},
-                             })
-                 )
+    return json.dumps({'user': snap_user["user"],
+                       'datetime': snap_user["snapshot"]["datetime"],
+                       'feelings': snap_user["snapshot"]["feelings"],
+                       }
+                      )
 
 
-parse_pose.field = 'feelings'
+parse_feelings.field = 'feelings'
+
+
+
