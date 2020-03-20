@@ -8,7 +8,7 @@ import json
 @pytest.fixture()
 def snapshot_user_encoded():
     """ Json Snapshot example """
-    test_snapshot_dir = "/home/user/work/brainComputer/tests/snapshots/42_Dan Gittik/1575446887339/"
+    test_snapshot_dir = "/tests/snapshots/42_Dan Gittik/1575446887339/"
     return json.dumps(
         {"user": {"user_id": 42, "username": "Dan Gittik", "birthday": 699746400, "gender": 0},
          "snapshot": {"datetime": 1575446887339,
