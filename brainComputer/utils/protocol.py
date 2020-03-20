@@ -16,11 +16,11 @@ def pbsnapshot_to_dict(pb_snapshot, pb_user):
 
     color_data_p = p / 'color_data'
     color_image_p = p / 'color_image.png'
-    with open(color_data_p, 'wb') as f:
-        f.write(pb_snapshot.color_image.data)
-
     depth_data_p = p / 'depth_data'
     depth_image_p = p / 'depth_image.png'
+
+    with open(color_data_p, 'wb') as f:
+        f.write(pb_snapshot.color_image.data)
 
     with open(depth_data_p, 'w') as f:
         f.write('\n'.join(str(num) for num in pb_snapshot.depth_image.data))
