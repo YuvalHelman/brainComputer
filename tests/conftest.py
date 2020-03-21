@@ -2,10 +2,10 @@ import pytest
 import json
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def snapshot_user_json_encoded():
     """ Json Snapshot example """
-    test_snapshot_dir = "tests/snapshots/42_Dan Gittik/1575446887339/"
+    test_snapshot_dir = "tests/data/snapshots/42_Dan Gittik/1575446887339/"
 
     snapshot_user_dict = {"user": {"user_id": 42, "username": "Dan Gittik", "birthday": 699746400, "gender": 0},
                           "snapshot": {"datetime": 1575446887339,
@@ -24,3 +24,19 @@ def snapshot_user_json_encoded():
                                        "feelings": {"hunger": 0.0, "thirst": 0.0, "exhaustion": 0.0, "happiness": 0.0}}}
 
     return json.dumps(snapshot_user_dict)
+
+
+@pytest.fixture(scope='session')
+def db_session(tmpdir_factory):
+    """Connect to db before tests, disconnect after."""
+    temp_dir = tmpdir_factory.mktemp('temp')
+    # system.start_db(str(temp_dir), 'tiny')
+    yield
+    # system.stop_db()
+
+
+@pytest.fixture()
+def db_new(db_session):
+    """ An empty DB """
+    pass
+    # system.empty_all_data()
