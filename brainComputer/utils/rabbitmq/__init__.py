@@ -16,7 +16,7 @@ def publish_fanout(connection, exchange_name='', data=None):
     print(f" [x] Sent '{data}'")
 
 
-def consume_retrieve(rabmq_url, consume_exchange_name, publish_exchange_name='', pre_publish_func=None):
+def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_exchange_name='', pre_publish_func=None):
     def parse_callback(ch, method, properties, body):
         if pre_publish_func is not None:
             res = pre_publish_func(body)
@@ -29,7 +29,6 @@ def consume_retrieve(rabmq_url, consume_exchange_name, publish_exchange_name='',
                          routing_key='',  # the queue name
                          body=res)
 
-    publisher_url = furl.furl(rabmq_url)
     con = None
     try:
         con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
@@ -46,7 +45,8 @@ def consume_retrieve(rabmq_url, consume_exchange_name, publish_exchange_name='',
         ch.basic_consume(queue=consume_queue_name, on_message_callback=parse_callback, auto_ack=True)
         ch.start_consuming()
     finally:
-        con.close()
+        if con is not None:
+            con.close()
 
 
 if __name__ == "__main__":

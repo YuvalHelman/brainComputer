@@ -37,4 +37,4 @@ def get_parser_function(parser_name):
 
 if __name__ == "__main__":
     print(Path(__file__).parent)
-    load_parsers()
+    print(load_parsers())
