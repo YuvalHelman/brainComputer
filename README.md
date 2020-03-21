@@ -21,14 +21,14 @@ An example package. See [full documentation](https://advanced-system-design-foob
     $ ./scripts/install.sh
     ...
     $ source .env/bin/activate
-    [SystemsDesignProject] $ # you're good to go!
+    [brainComputer] $ # you're good to go!
     ```
 
 3. To check that everything is working as expected, run the tests:
 
 
     ```sh
-    $ pytest tests/
+    $ pyton -m pytest tests/
     ...
     ```
 
