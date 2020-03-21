@@ -1,5 +1,5 @@
 ![build status](https://travis-ci.org/YuvalHelman/brainComputer.svg?branch=master)
-![coverage](https://codecov.io/gh/YuvalHelman/SystemsDesignProject/branch/master/graph/badge.svg)
+![coverage](https://codecov.io/gh/YuvalHelman/brainComputer/branch/master/graph/badge.svg)
 
 # brainComputer 
 
