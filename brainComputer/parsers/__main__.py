@@ -1,7 +1,6 @@
-import brainComputer.utils.rabbitmq as rabmq
 import click
-import pika
-import furl
+
+import brainComputer.utils.rabbitmq as rabmq
 from . import run_parser
 from .utils import get_parser_function
 
@@ -32,9 +31,8 @@ def run_parser_cli(parser_name, publish_url):
         return 1
 
     if publish_url.scheme == 'rabbitmq':
-        rabmq.consume_retrieve(rabmq_url=publish_url, is_retrieve=True,
-                               consume_exchange_name='snapshot_exchange', consume_exchange_type='fanout',
-                               publish_queue_name=parser_name, pre_publish_func=parser_func)
+        rabmq.consume_retrieve(rabmq_url=publish_url, consume_exchange_name=rabmq.SNAPSHOT_EXCHANGE,
+                               publish_exchange_name=parser_name, pre_publish_func=parser_func)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-![build status](https://travis-ci.org/YuvalHelman/SystemsDesignProject.svg?branch=master)
+![build status](https://travis-ci.org/YuvalHelman/brainComputer.svg?branch=master)
 ![coverage](https://codecov.io/gh/YuvalHelman/SystemsDesignProject/branch/master/graph/badge.svg)
 
 # brainComputer 
@@ -10,9 +10,9 @@ An example package. See [full documentation](https://advanced-system-design-foob
 1. Clone the repository and enter it:
 
     ```sh
-    $ git clone https://github.com/YuvalHelman/SystemsDesignProject.git  
+    $ git clone https://github.com/YuvalHelman/brainComputer.git
     ...
-    $ cd SystemsDesignProject/
+    $ cd brainComputer/
     ```
 
 2. Run the installation script and activate the virtual environment:
