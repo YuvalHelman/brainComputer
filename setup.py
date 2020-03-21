@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 
-
 setup(
     name = 'brainComputer',
     version = '0.1.0',

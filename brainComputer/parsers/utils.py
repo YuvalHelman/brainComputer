@@ -29,8 +29,10 @@ def load_parsers():
     return parsers_dict
 
 
-def enlist_parsers_to_queue():
-    pass
+def get_parser_function(parser_name):
+    parsers_dict = load_parsers()
+    parser_func = parsers_dict[parser_name]
+    return parser_func
 
 
 if __name__ == "__main__":

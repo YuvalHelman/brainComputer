@@ -1,8 +1,8 @@
-from . import run_server
-import  brainComputer.utils.rabbitmq as rabmq
+import brainComputer.utils.rabbitmq as rabmq
 import click
 import pika
 import furl
+from . import run_server
 
 
 @click.group()
@@ -21,7 +21,8 @@ def run_server_cli(host, port, publish_url):
         try:
             con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
             if publish_url.scheme == 'rabbitmq':
-                rabmq.publish_snapshots(connection=con, message=message)
+                rabmq.publish_snapshots(connection=con, exchange_name='snapshot_exchange',
+                                        exchange_type='fanout', data=message)
             con.close()
         except Exception as e:
             print(f"publish from server to queue failed: {e}")
