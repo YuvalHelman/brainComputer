@@ -1,4 +1,4 @@
-from .utils import get_parser_function
+from .utils import get_parser_function, load_parsers
 
 
 def run_parser(parser_name, data):
@@ -11,4 +11,3 @@ def run_parser(parser_name, data):
     except Exception as e:
         print(f"run_parser {parser_name} failed: {e}")
         return 1
-
