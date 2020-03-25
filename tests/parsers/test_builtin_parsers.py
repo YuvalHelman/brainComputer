@@ -1,6 +1,7 @@
 import pytest
 import os
 import json
+
 from brainComputer.parsers.color_image import colorImageParser
 from brainComputer.parsers.depth_image import depthImageParser
 from brainComputer.parsers.pose import parse_pose

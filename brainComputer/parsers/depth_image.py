@@ -29,6 +29,9 @@ class depthImageParser:
                          depth_image_path=image_path)
                      )
             )
+        except FileNotFoundError as e:
+            print(f"Given data path in snapshot does not exist: {e}")
+            raise e
         except Exception as e:
             print(f"parsing depth_image failed: {e}")
             raise e

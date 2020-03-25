@@ -3,9 +3,15 @@ import json
 
 
 @pytest.fixture(scope='session')
-def encoded_snapshot_user_json_real_data():
+def test_data_path():
+    import tests
+    return tests.ROOT_DIR + 'data/'
+
+
+@pytest.fixture(scope='session')
+def encoded_snapshot_user_json_real_data(test_data_path):
     """ Json Snapshot example """
-    test_snapshot_dir = "tests/data/snapshots/42_Dan Gittik/1575446887338/"
+    test_snapshot_dir = test_data_path + 'snapshots/42_Dan Gittik/1575446887338/'
 
     snapshot_user_dict = {"user": {"user_id": 42, "username": "Dan Gittik", "birthday": 699746400, "gender": 0},
                           "snapshot": {"datetime": 1575446887338,
@@ -27,12 +33,13 @@ def encoded_snapshot_user_json_real_data():
 
 
 @pytest.fixture(scope='session')
-def encoded_snapshot_user_json_no_data():
+def encoded_snapshot_user_json_no_data(test_data_path):
     """ Json Snapshot example without real data for color_image and depth_image"""
-    test_snapshot_dir = "tests/data/snapshots/42_Dan Gittik/1575446887339/"
+    test_snapshot_dir = test_data_path + 'snapshots/42_Dan Gittik/1575446887339/'
 
     snapshot_user_dict = {"user": {"user_id": 42, "username": "Dan Gittik", "birthday": 699746400, "gender": 0},
-                          "snapshot": {"datetime": 1575446887339,  # changed datetime to a different one from encoded_snapshot_user_json_real_data
+                          "snapshot": {"datetime": 1575446887339,
+                                       # changed datetime to a different one from encoded_snapshot_user_json_real_data
                                        "pose": {
                                            "translation": {"x": 0.4873843491077423, "y": 0.007090016733855009,
                                                            "z": -1.1306129693984985},
@@ -43,7 +50,7 @@ def encoded_snapshot_user_json_no_data():
                                                        "data_path": test_snapshot_dir + "color_data",
                                                        "color_image_path": test_snapshot_dir + "color_image.png"},
                                        "depth_image": {"width": 0, "height": 0,
-                                                       "data_path": "depth_data",
+                                                       "data_path": test_snapshot_dir + "depth_data",
                                                        "depth_image_path": test_snapshot_dir + "depth_image.png"},
                                        "feelings": {"hunger": 0.0, "thirst": 0.0, "exhaustion": 0.0, "happiness": 0.0}}}
 
@@ -64,3 +71,4 @@ def db_new(db_session):
     """ An empty DB """
     pass
     # system.empty_all_data()
+

@@ -1,13 +1,14 @@
 import threading
 import json
 
+import brainComputer
 from brainComputer.utils.listener import Listener
 from brainComputer.utils.brain_pb2 import User as PbUser
 from brainComputer.utils.brain_pb2 import Snapshot as PbSnapshot
 from brainComputer.utils.protocol import pbsnapshot_to_dict, pbuser_to_dict
 
 
-def run_server(host: str, port: int, data_path='/tmp/brainComputer/', publish=print):
+def run_server(host: str, port: int, data_path=brainComputer.ROOT_DIR+"data/", publish=print):
     print(f"## listening on {host}:{port} and passing received messages to publish ##")
     with Listener(host, port) as listener:
         while True:
@@ -35,8 +36,8 @@ class ConnectionHandler(threading.Thread):
                 snap.ParseFromString(con.receive())
             user_dict = pbuser_to_dict(user)
             snap_dict = pbsnapshot_to_dict(snap, user, self.data_path)
-            # self.publish(json.dumps(dict(user=user_dict, snapshot=snap_dict)))  # DEBUG
-            print(json.dumps(dict(user=user_dict, snapshot=snap_dict)))
+            # self.publish(json.dumps(dict(user=user_dict, snapshot=snap_dict)))
+            print(json.dumps(dict(user=user_dict, snapshot=snap_dict)))  # DEBUG
         except Exception as e:
             print(f"Abort connection to failed client. {e}")
 

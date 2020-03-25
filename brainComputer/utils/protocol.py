@@ -11,19 +11,9 @@ def pbuser_to_dict(pb_user):
 
 
 def pbsnapshot_to_dict(pb_snapshot, pb_user, data_path):
-    breakpoint()
-    print(5)
     try:
         p = str(data_path) + str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(pb_snapshot.datetime) + '/'  # /42_Ron Dan/15423/
-        path_p = Path(str(p))
-
-        done = False
-        while done:
-            try:
-                path_p.mkdir(0o777, True)
-                done = True
-            except FileExistsError as e:
-                pass
+        os.makedirs(p, exist_ok=True)
 
         color_data_p = p + 'color_data'
         color_image_p = p + 'color_image.png'

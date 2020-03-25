@@ -2,6 +2,7 @@ import pytest
 import threading
 import time
 
+import tests
 from brainComputer.server import run_server
 
 
@@ -13,12 +14,16 @@ def dummy_client(host: str, port: int):
             b'\x08\xab\xf7\xce\xff\xec-\x12C\n\x1b\t\x00\x00\x00 N1\xdf?\x11\x00\x00\x00\xe0k\n}?\x19\x00\x00\x00\xa0\xfd\x16\xf2\xbf\x12$\t\xd5yw\xc0\x00\xe0\xbb\xbf\x11\x1deI\xc0\xb3\x1f\xd1\xbf\x19\xdf[]\xa0\x18\xc8\x95\xbf!\xd1F\x83\xa0\xd4\xa0\xee?\x1a\x00"\x00*\x00')
 
 
-def test_run_server(capsys, monkeypatch, encoded_snapshot_user_json_no_data):
-    # serv = threading.Thread(target=run_server, args=('127.0.0.1', 8888, './data/snapshots/', print))
-    # serv.start()
-    # time.sleep(0.01)  # let server go up
-    dummy_client('127.0.0.1', 8000)
-
+def test_run_server(capsys, monkeypatch, encoded_snapshot_user_json_no_data, test_data_path):
+    host = '127.0.0.1'
+    port = 8888
+    serv = threading.Thread(target=run_server, args=(host, port,
+                                                     test_data_path + 'snapshots/', print))
+    serv.daemon = True
+    serv.start()
+    time.sleep(0.1)  # let server go up
+    dummy_client(host, port)
+    time.sleep(0.1)  # let server compute output
     captured = capsys.readouterr()
-    expected = encoded_snapshot_user_json_no_data
-    assert expected in captured.out
+    l = captured.out.split('\n')
+    assert encoded_snapshot_user_json_no_data in captured.out
