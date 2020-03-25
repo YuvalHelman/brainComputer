@@ -23,13 +23,13 @@ class ReaderProtobuf:
 
     def read_next_snapshot(self):
         pb_snapshot = PbSnapshot()
-        if self.read_message_from_file(pb_snapshot) == -1:
+        if self.read_message_from_file(pb_snapshot, True) == -1:
             print("parsing Snapshot failed")
             return None
 
         return pb_snapshot
 
-    def read_message_from_file(self, protoObject):
+    def read_message_from_file(self, protoObject, is_write=False):
         """ Reads a 'message' from the file given from the hardware specifications for exercise 7
         :return:
         """
@@ -38,6 +38,9 @@ class ReaderProtobuf:
             len_raw = self.file.read(UINT_32_LEN_IN_BYTES)
             message_length, *_ = struct.unpack('I', len_raw)
             msg_raw = self.file.read(message_length)
+            if is_write:
+                with open('/tmp/snapshot.bin', 'wb') as f:
+                    f.write(msg_raw)
             protoObject.ParseFromString(msg_raw)
             return 0
         except Exception as e:

@@ -3,17 +3,18 @@ from brainComputer.utils.connection import Connection
 from brainComputer.client.utils import convert_to_protocol_user, convert_to_protocol_snapshot
 
 
-def upload_sample(host: str, port: int, path: str):
+def upload_sample(host: str, port: int, file_path: str):
     """ """
     try:
-        reader = ReaderProtobuf(path)
+        reader = ReaderProtobuf(file_path)
         pb_user = convert_to_protocol_user(reader.user)
         for snapshot in reader:
             pb_snap = convert_to_protocol_snapshot(snapshot)
             with Connection.connect(host, port) as con:
                 con.send(pb_user.SerializeToString())
                 con.send(pb_snap.SerializeToString())
-                import pdb; pdb.set_trace()
+                import pdb; pdb.set_trace()  # DEBUG
+        print("completed sending all snapshots")
     except Exception as e:
         print(f'ERROR: {e}')
 

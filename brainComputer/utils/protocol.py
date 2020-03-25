@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import os
 
 def pbuser_to_dict(pb_user):
     return dict(
@@ -10,20 +10,34 @@ def pbuser_to_dict(pb_user):
     )
 
 
-def pbsnapshot_to_dict(pb_snapshot, pb_user):
-    p = Path("/tmp/brainComputer/")
-    p = p / str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(pb_snapshot.datetime)  # /42_Ron Dan/15423/
+def pbsnapshot_to_dict(pb_snapshot, pb_user, data_path):
+    breakpoint()
+    print(5)
+    try:
+        p = str(data_path) + str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(pb_snapshot.datetime) + '/'  # /42_Ron Dan/15423/
+        path_p = Path(str(p))
 
-    color_data_p = p / 'color_data'
-    color_image_p = p / 'color_image.png'
-    depth_data_p = p / 'depth_data'
-    depth_image_p = p / 'depth_image.png'
+        done = False
+        while done:
+            try:
+                path_p.mkdir(0o777, True)
+                done = True
+            except FileExistsError as e:
+                pass
 
-    with open(color_data_p, 'wb') as f:
-        f.write(pb_snapshot.color_image.data)
+        color_data_p = p + 'color_data'
+        color_image_p = p + 'color_image.png'
+        depth_data_p = p + 'depth_data'
+        depth_image_p = p + 'depth_image.png'
 
-    with open(depth_data_p, 'w') as f:
-        f.write('\n'.join(str(num) for num in pb_snapshot.depth_image.data))
+        with open(color_data_p, 'wb') as f:
+            f.write(pb_snapshot.color_image.data)
+
+        with open(depth_data_p, 'w') as f:
+            f.write('\n'.join(str(num) for num in pb_snapshot.depth_image.data))
+    except Exception as e:
+        print(f"writing color or depth data failed: {e}")
+        raise e
 
     return dict(
         datetime=pb_snapshot.datetime,

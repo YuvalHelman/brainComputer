@@ -5,11 +5,11 @@ import string
 from brainComputer.parsers import run_parser, load_parsers
 
 
-def test_run_parser_works(snapshot_user_json_encoded):
+def test_run_parser_works(encoded_snapshot_user_json_real_data):
     # GIVEN pose builtin parser
-    snap_user = json.loads(snapshot_user_json_encoded)
+    snap_user = json.loads(encoded_snapshot_user_json_real_data)
     # WHEN running a parser from run_parser
-    res = run_parser('pose', snapshot_user_json_encoded)
+    res = run_parser('pose', encoded_snapshot_user_json_real_data)
     # THEN returned an encoded json appropriate to the pose_parse function
     res_json = json.loads(res)
     assert res_json["user"]["user_id"] == snap_user["user"]["user_id"]
