@@ -1,6 +1,7 @@
 import pytest
 import threading
 import time
+import random
 
 import tests
 from brainComputer.server import run_server
@@ -16,7 +17,7 @@ def dummy_client(host: str, port: int):
 
 def test_run_server(capsys, monkeypatch, encoded_snapshot_user_json_no_data, test_data_path):
     host = '127.0.0.1'
-    port = 8888
+    port = random.randint(6000, 10000)
     serv = threading.Thread(target=run_server, args=(host, port,
                                                      test_data_path + 'snapshots/', print))
     serv.daemon = True
