@@ -15,8 +15,8 @@ def cli():
 @click.argument('parser_name')
 @click.argument('data')
 def parse_cli(parser_name, data):
-    """  accepts a parser name and a path to some raw data and prints the result.
-         This way of invocation runs the parser exactly once """
+    """  accepts a parser name and some raw data and prints the result.
+         This way of invocation runs the parser exactly once            """
     run_parser(parser_name, data)
 
 

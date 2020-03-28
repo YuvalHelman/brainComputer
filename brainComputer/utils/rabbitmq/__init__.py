@@ -49,5 +49,29 @@ def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_ex
             con.close()
 
 
+def consume_topic(publisher_url: furl.furl, topic_exchange_name, on_consume_func):
+    def callback(ch, method, properties, body):
+        on_consume_func(body)
+
+    con = None
+    try:
+        con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
+        ch = con.channel()
+
+        # Set parameters for consuming snapshots from the server
+        ch.exchange_declare(exchange=topic_exchange_name, exchange_type='fanout')
+        result = ch.queue_declare(queue='', exclusive=True)
+        consume_queue_name = result.method.queue
+        ch.queue_bind(exchange=topic_exchange_name, queue=consume_queue_name)
+
+        print(' [*] Consuming from rabbitmq. To exit press CTRL+C')
+        ch.basic_qos(prefetch_count=1)
+        ch.basic_consume(queue=consume_queue_name, on_message_callback=callback, auto_ack=True)
+        ch.start_consuming()
+    finally:
+        if con is not None:
+            con.close()
+
+
 if __name__ == "__main__":
     pass
