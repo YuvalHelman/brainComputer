@@ -52,9 +52,19 @@ def encoded_snapshot_user_json_no_data(test_data_path):
                                        "depth_image": {"width": 0, "height": 0,
                                                        "data_path": test_snapshot_dir + "depth_data",
                                                        "depth_image_path": test_snapshot_dir + "depth_image.png"},
-                                       "feelings": {"hunger": 0.0, "thirst": 0.0, "exhaustion": 0.0, "happiness": 0.0}}}
-
+                                       "feelings": {"hunger": 0.0, "thirst": 0.0, "exhaustion": 0.0,
+                                                    "happiness": 0.0}}}
     return json.dumps(snapshot_user_dict)
+
+
+@pytest.fixture(scope='session')
+def pb_protocol_user_data():
+    return b'\x08*\x12\nDan Gittik\x18\xe0\x90\xd5\xcd\x02'
+
+
+@pytest.fixture(scope='session')
+def pb_protocol_snapshot_data():
+    return b'\x08\xab\xf7\xce\xff\xec-\x12C\n\x1b\t\x00\x00\x00 N1\xdf?\x11\x00\x00\x00\xe0k\n}?\x19\x00\x00\x00\xa0\xfd\x16\xf2\xbf\x12$\t\xd5yw\xc0\x00\xe0\xbb\xbf\x11\x1deI\xc0\xb3\x1f\xd1\xbf\x19\xdf[]\xa0\x18\xc8\x95\xbf!\xd1F\x83\xa0\xd4\xa0\xee?\x1a\x00"\x00*\x00'
 
 
 @pytest.fixture(scope='session')
@@ -71,4 +81,3 @@ def db_new(db_session):
     """ An empty DB """
     pass
     # system.empty_all_data()
-
