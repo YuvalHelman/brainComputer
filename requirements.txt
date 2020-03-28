@@ -3,7 +3,6 @@ click==7.1.1
 cycler==0.10.0
 Flask==1.1.1
 furl==2.1.0
-importlib==1.0.4
 itsdangerous==1.1.0
 Jinja2==2.11.1
 kiwisolver==1.1.0
