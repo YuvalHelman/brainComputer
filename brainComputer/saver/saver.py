@@ -1,11 +1,12 @@
 import pika
+import json
 
 
 if __name__ == "__main__":
     def callback(ch, method, properties, body):
         parsed_data = body
         print('parsed data: ', parsed_data)
-
+        return json.loads(parsed_data)
 
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()

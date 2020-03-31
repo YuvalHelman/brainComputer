@@ -59,15 +59,18 @@ signature.
 - The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
 - Adding new functionalities should be done in the 'utils' module.
 - A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen arbitrarily.
-- A parser should return an encoded json object of the following format:
-
+- A parser should return an encoded json object of the following json format, or assist the given function:
  ```pycon
 { 'user': {'user_id': '...' , '...' }
    'snapshots'= [
                  {'datetime': '..', parsedResult }
                 ]
 }
-```
+ ``` 
+Or use this builtin function:
+ ```pycon
+ from brainComputer.utils import formatted_encoded_one_data
+ ```
 
 ## Usage
 
