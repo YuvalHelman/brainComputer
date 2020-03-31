@@ -1,6 +1,8 @@
 from PIL import Image
 import json
 
+from brainComputer.utils import formatted_encoded_one_data
+
 
 class colorImageParser:
     field = 'color_image'
@@ -18,18 +20,10 @@ class colorImageParser:
             image = Image.frombytes('RGB', (width, height), img_data)
             image.save(image_path)
 
-            return json.dumps(
-                dict(user=snap_user["user"],
-                     snapshots=[
-                         dict(datetime=snap_user["snapshot"]["datetime"],
-                              color_image=dict(
-                                  width=width,
-                                  height=height,
-                                  data_path=data_path,
-                                  color_image_path=image_path)),
-                     ]
-                )
-            )
+            return formatted_encoded_one_data(
+                user=snap_user["user"], datetime=snap_user["snapshot"]["datetime"],
+                item_key='color_image',
+                item_val=dict(width=width, height=height, data_path=data_path, color_image_path=image_path))
         except FileNotFoundError as e:
             print(f"Given data path in snapshot does not exist: {e}")
             raise e

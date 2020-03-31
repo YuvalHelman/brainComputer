@@ -1,7 +1,7 @@
 import struct
 
 
-def read_from_binary_file(bytes_stream, unpack_format_string):
+def read_from_binary_file(bytes_stream, unpack_format_string):  # TODO: erase ?
     """ Returns a tuple, even if one item returned """
     try:
         size = struct.calcsize(unpack_format_string)
