@@ -6,24 +6,18 @@ from brainComputer.parsers import run_parser, load_parsers
 
 
 def test_run_parser_works(encoded_snapshot_user_json_real_data):
+    """ check that loading a parser works """
     # GIVEN pose builtin parser
     snap_user = json.loads(encoded_snapshot_user_json_real_data)
-    # WHEN running a parser from run_parser
+    # WHEN loading a parser from run_parser
     res = run_parser('pose', encoded_snapshot_user_json_real_data)
-    # THEN returned an encoded json appropriate to the pose_parse function
+    # THEN returned json matches the expected.
     res_json = json.loads(res)
     assert res_json["user"]["user_id"] == snap_user["user"]["user_id"]
     assert res_json["user"]["username"] == snap_user["user"]["username"]
     assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
     assert res_json["user"]["gender"] == snap_user["user"]["gender"]
-    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
-    assert res_json["pose"]["translation"]["x"] == snap_user["snapshot"]["pose"]["translation"]["x"]
-    assert res_json["pose"]["translation"]["y"] == snap_user["snapshot"]["pose"]["translation"]["y"]
-    assert res_json["pose"]["translation"]["z"] == snap_user["snapshot"]["pose"]["translation"]["z"]
-    assert res_json["pose"]["rotation"]["x"] == snap_user["snapshot"]["pose"]["rotation"]["x"]
-    assert res_json["pose"]["rotation"]["y"] == snap_user["snapshot"]["pose"]["rotation"]["y"]
-    assert res_json["pose"]["rotation"]["z"] == snap_user["snapshot"]["pose"]["rotation"]["z"]
-    assert res_json["pose"]["rotation"]["w"] == snap_user["snapshot"]["pose"]["rotation"]["w"]
+    assert res_json["snapshots"][0]["pose"] == snap_user["snapshot"]["pose"]
 
 
 def test_run_parser_throws(capsys):

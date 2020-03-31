@@ -19,13 +19,13 @@ def test_color_image_parser_result(encoded_snapshot_user_json_real_data):
     assert res_json["user"]["username"] == snap_user["user"]["username"]
     assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
     assert res_json["user"]["gender"] == snap_user["user"]["gender"]
-    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
-    assert res_json["color_image"]["height"] == snap_user["snapshot"]["color_image"]["height"]
-    assert res_json["color_image"]["width"] == snap_user["snapshot"]["color_image"]["width"]
-    assert res_json["color_image"]["data_path"] == snap_user["snapshot"]["color_image"]["data_path"]
-    assert res_json["color_image"]["color_image_path"] == snap_user["snapshot"]["color_image"]["color_image_path"]
+    assert res_json["snapshots"][0]["datetime"] == snap_user["snapshot"]["datetime"]
+    assert res_json["snapshots"][0]["color_image"]["height"] == snap_user["snapshot"]["color_image"]["height"]
+    assert res_json["snapshots"][0]["color_image"]["width"] == snap_user["snapshot"]["color_image"]["width"]
+    assert res_json["snapshots"][0]["color_image"]["data_path"] == snap_user["snapshot"]["color_image"]["data_path"]
+    assert res_json["snapshots"][0]["color_image"]["color_image_path"] == snap_user["snapshot"]["color_image"]["color_image_path"]
 
-    assert os.path.exists(res_json["color_image"]["color_image_path"]) is True
+    assert os.path.exists(res_json["snapshots"][0]["color_image"]["color_image_path"]) is True
 
 
 def test_depth_image_parser_result(encoded_snapshot_user_json_real_data):
@@ -39,16 +39,19 @@ def test_depth_image_parser_result(encoded_snapshot_user_json_real_data):
     assert res_json["user"]["username"] == snap_user["user"]["username"]
     assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
     assert res_json["user"]["gender"] == snap_user["user"]["gender"]
-    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
-    assert res_json["depth_image"]["height"] == snap_user["snapshot"]["depth_image"]["height"]
-    assert res_json["depth_image"]["width"] == snap_user["snapshot"]["depth_image"]["width"]
-    assert res_json["depth_image"]["data_path"] == snap_user["snapshot"]["depth_image"]["data_path"]
-    assert res_json["depth_image"]["depth_image_path"] == snap_user["snapshot"]["depth_image"]["depth_image_path"]
+    assert res_json["snapshots"][0]["datetime"] == snap_user["snapshot"]["datetime"]
+    assert res_json["snapshots"][0]["depth_image"]["height"] == snap_user["snapshot"]["depth_image"]["height"]
+    assert res_json["snapshots"][0]["depth_image"]["width"] == snap_user["snapshot"]["depth_image"]["width"]
+    assert res_json["snapshots"][0]["depth_image"]["data_path"] == snap_user["snapshot"]["depth_image"]["data_path"]
+    assert res_json["snapshots"][0]["depth_image"]["depth_image_path"] == snap_user["snapshot"]["depth_image"]["depth_image_path"]
 
-    assert os.path.exists(res_json["depth_image"]["depth_image_path"]) is True
+    assert os.path.exists(res_json["snapshots"][0]["depth_image"]["depth_image_path"]) is True
 
 
 def test_pose_parser_result(encoded_snapshot_user_json_real_data):
+    # GIVEN pose builtin parser
+    # WHEN running a parser from run_parser
+    # THEN returned an encoded json appropriate to the pose_parse function
     snap_user = json.loads(encoded_snapshot_user_json_real_data)
 
     parse_func = parse_pose
@@ -58,14 +61,14 @@ def test_pose_parser_result(encoded_snapshot_user_json_real_data):
     assert res_json["user"]["username"] == snap_user["user"]["username"]
     assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
     assert res_json["user"]["gender"] == snap_user["user"]["gender"]
-    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
-    assert res_json["pose"]["translation"]["x"] == snap_user["snapshot"]["pose"]["translation"]["x"]
-    assert res_json["pose"]["translation"]["y"] == snap_user["snapshot"]["pose"]["translation"]["y"]
-    assert res_json["pose"]["translation"]["z"] == snap_user["snapshot"]["pose"]["translation"]["z"]
-    assert res_json["pose"]["rotation"]["x"] == snap_user["snapshot"]["pose"]["rotation"]["x"]
-    assert res_json["pose"]["rotation"]["y"] == snap_user["snapshot"]["pose"]["rotation"]["y"]
-    assert res_json["pose"]["rotation"]["z"] == snap_user["snapshot"]["pose"]["rotation"]["z"]
-    assert res_json["pose"]["rotation"]["w"] == snap_user["snapshot"]["pose"]["rotation"]["w"]
+    assert res_json["snapshots"][0]["datetime"] == snap_user["snapshot"]["datetime"]
+    assert res_json["snapshots"][0]["pose"]["translation"]["x"] == snap_user["snapshot"]["pose"]["translation"]["x"]
+    assert res_json["snapshots"][0]["pose"]["translation"]["y"] == snap_user["snapshot"]["pose"]["translation"]["y"]
+    assert res_json["snapshots"][0]["pose"]["translation"]["z"] == snap_user["snapshot"]["pose"]["translation"]["z"]
+    assert res_json["snapshots"][0]["pose"]["rotation"]["x"] == snap_user["snapshot"]["pose"]["rotation"]["x"]
+    assert res_json["snapshots"][0]["pose"]["rotation"]["y"] == snap_user["snapshot"]["pose"]["rotation"]["y"]
+    assert res_json["snapshots"][0]["pose"]["rotation"]["z"] == snap_user["snapshot"]["pose"]["rotation"]["z"]
+    assert res_json["snapshots"][0]["pose"]["rotation"]["w"] == snap_user["snapshot"]["pose"]["rotation"]["w"]
 
 
 def test_feelings_parser_result(encoded_snapshot_user_json_real_data):
@@ -78,8 +81,8 @@ def test_feelings_parser_result(encoded_snapshot_user_json_real_data):
     assert res_json["user"]["username"] == snap_user["user"]["username"]
     assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
     assert res_json["user"]["gender"] == snap_user["user"]["gender"]
-    assert res_json["datetime"] == snap_user["snapshot"]["datetime"]
-    assert res_json["feelings"]["hunger"] == snap_user["snapshot"]["feelings"]["hunger"]
-    assert res_json["feelings"]["thirst"] == snap_user["snapshot"]["feelings"]["thirst"]
-    assert res_json["feelings"]["exhaustion"] == snap_user["snapshot"]["feelings"]["exhaustion"]
-    assert res_json["feelings"]["happiness"] == snap_user["snapshot"]["feelings"]["happiness"]
+    assert res_json["snapshots"][0]["datetime"] == snap_user["snapshot"]["datetime"]
+    assert res_json["snapshots"][0]["feelings"]["hunger"] == snap_user["snapshot"]["feelings"]["hunger"]
+    assert res_json["snapshots"][0]["feelings"]["thirst"] == snap_user["snapshot"]["feelings"]["thirst"]
+    assert res_json["snapshots"][0]["feelings"]["exhaustion"] == snap_user["snapshot"]["feelings"]["exhaustion"]
+    assert res_json["snapshots"][0]["feelings"]["happiness"] == snap_user["snapshot"]["feelings"]["happiness"]

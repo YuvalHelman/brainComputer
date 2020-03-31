@@ -63,11 +63,10 @@ signature.
 
  ```pycon
 { 'user': {'user_id': '...' , '...' }
-  'snapshots'= {
-                {'datetime': '..', 'data': '...' }
-                }
+   'snapshots'= [
+                 {'datetime': '..', parsedResult }
+                ]
 }
-   parse_function.field = 'translation'
 ```
 
 ## Usage
