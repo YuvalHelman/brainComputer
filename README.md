@@ -45,20 +45,30 @@ signature.
 
 - Example:
     ```pycon
-   def parse_function(context, snapshot):
+   def parse_function(snapshot):
         pass
    parse_function.field = 'translation'
 
    class ClassParser:
        field = 'color_image'
 
-       def parse(self, context, snapshot)
+       def parse(self,snapshot)
            pass
     ```
 
 - The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
 - Adding new functionalities should be done in the 'utils' module.
 - A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen arbitrarily.
+- A parser should return an encoded json object of the following format:
+
+ ```pycon
+{ 'user': {'user_id': '...' , '...' }
+  'snapshots'= {
+                {'datetime': '..', 'data': '...' }
+                }
+}
+   parse_function.field = 'translation'
+```
 
 ## Usage
 

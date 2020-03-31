@@ -18,16 +18,17 @@ class colorImageParser:
             image = Image.frombytes('RGB', (width, height), img_data)
             image.save(image_path)
 
-            return json.dumps(
-                dict(user=snap_user["user"],
-                     datetime=snap_user["snapshot"]["datetime"],
-                     color_image=dict(
-                         width=width,
-                         height=height,
-                         data_path=data_path,
-                         color_image_path=image_path)
-                     )
-            )
+            return json.dumps(dict(
+                user=snap_user["user"],
+                datetime=snap_user["snapshot"]["datetime"],
+                data=dict(
+                    color_image=dict(
+                        width=width,
+                        height=height,
+                        data_path=data_path,
+                        color_image_path=image_path),
+                ),
+            ))
         except FileNotFoundError as e:
             print(f"Given data path in snapshot does not exist: {e}")
             raise e

@@ -1,4 +1,12 @@
 import os
+import json
+
+
+def user_snap_pb_to_json(pb_user, pb_snapshot, data_path):
+    user_dict = pbuser_to_dict(pb_user)
+    snap_dict = pbsnapshot_to_dict(pb_snapshot, pb_user, data_path)
+    return json.dumps(dict(user=user_dict, snapshot=snap_dict))
+
 
 def pbuser_to_dict(pb_user):
     return dict(
@@ -11,7 +19,8 @@ def pbuser_to_dict(pb_user):
 
 def pbsnapshot_to_dict(pb_snapshot, pb_user, data_path):
     try:
-        p = str(data_path) + str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(pb_snapshot.datetime) + '/'  # /42_Ron Dan/15423/
+        p = str(data_path) + str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(
+            pb_snapshot.datetime) + '/'  # /42_Ron Dan/15423/
         os.makedirs(p, exist_ok=True)
 
         color_data_p = p + 'color_data'

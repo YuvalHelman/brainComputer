@@ -13,10 +13,13 @@ def cli():
 @cli.command(name='save')
 @click.option('--database', '-d', default='mongodb://127.0.0.1:27017', help="url of the database")
 @click.argument('topic_name')
-@click.argument('data')
-def save_cli(database, topic_name, data):
+@click.argument('data_path')
+def save_cli(database, topic_name, data_path):
     """  accepts a parser name and a path to some raw data and prints the result.
          This way of invocation runs the parser exactly once """
+    with open(data_path, 'r') as f:
+        data = f.read()
+
     s = Saver(database)
     s.save(topic_name, data)
 

@@ -22,12 +22,13 @@ class depthImageParser:
             return json.dumps(
                 dict(user=snap_user["user"],
                      datetime=snap_user["snapshot"]["datetime"],
-                     depth_image=dict(
-                         width=width,
-                         height=height,
-                         data_path=data_path,
-                         depth_image_path=image_path)
-                     )
+                     data=dict(
+                         depth_image=dict(
+                             width=width,
+                             height=height,
+                             data_path=data_path,
+                             depth_image_path=image_path)
+                     ))
             )
         except FileNotFoundError as e:
             print(f"Given data path in snapshot does not exist: {e}")

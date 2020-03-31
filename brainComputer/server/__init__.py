@@ -5,7 +5,7 @@ import brainComputer
 from brainComputer.utils.listener import Listener
 from brainComputer.utils.brain_pb2 import User as PbUser
 from brainComputer.utils.brain_pb2 import Snapshot as PbSnapshot
-from brainComputer.utils.protocol import pbsnapshot_to_dict, pbuser_to_dict
+from brainComputer.utils.protocol import user_snap_pb_to_json
 
 
 def run_server(host: str, port: int, data_path=brainComputer.ROOT_DIR+"data/", publish=print):
@@ -30,14 +30,12 @@ class ConnectionHandler(threading.Thread):
         """
         try:
             with self.connection as con:
-                user = PbUser()
-                snap = PbSnapshot()
-                user.ParseFromString(con.receive())
-                snap.ParseFromString(con.receive())
-            user_dict = pbuser_to_dict(user)
-            snap_dict = pbsnapshot_to_dict(snap, user, self.data_path)
-            # self.publish(json.dumps(dict(user=user_dict, snapshot=snap_dict)))
-            print(json.dumps(dict(user=user_dict, snapshot=snap_dict)))  # DEBUG
+                pb_user = PbUser()
+                pb_snapshot = PbSnapshot()
+                pb_user.ParseFromString(con.receive())
+                pb_snapshot.ParseFromString(con.receive())
+            # self.publish(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))
+            print(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))  # DEBUG
         except Exception as e:
             print(f"Abort connection to failed client. {e}")
 
