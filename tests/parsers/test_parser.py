@@ -17,7 +17,6 @@ def test_run_parser_works(encoded_snapshot_user_json_real_data):
     assert res_json["user"]["username"] == snap_user["user"]["username"]
     assert res_json["user"]["birthday"] == snap_user["user"]["birthday"]
     assert res_json["user"]["gender"] == snap_user["user"]["gender"]
-    assert res_json["snapshots"][0]["pose"] == snap_user["snapshot"]["pose"]
 
 
 def test_run_parser_throws(capsys):

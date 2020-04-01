@@ -13,12 +13,10 @@ class Mongo:
     def save(self, topic_name: str, data: dict):
         """
         { 'user': {'user_id': '...' , '...' }
-          'snapshots'= [
-                 {'datetime': '..',
-                  'pose': '...'
-                 }
-                ]
-}
+          'snapshots'= {
+                        datetime: {'pose': '...'}
+                       }
+        }
         """
         try:
             user_id = data['user']['user_id']
@@ -30,19 +28,24 @@ class Mongo:
             probe = None
             if user is None:
                 # TODO: if user doesn't exist, create a formatted json with '_id: user_id' and push it in
-                json_to_insert = formatted_encoded_one_data(data['user']['user_id'], data["snapshots"][0]["datetime"],
-                                                  extracted_new_key, data["snapshots"][0][extracted_new_key])
-                probe = json.loads(json_to_insert)
-                probe['_id'] = data['user']['user_id']
+                for datetime in list(data["snapshots"].keys()):
+                    json_to_insert = formatted_encoded_one_data(data['user']['user_id'], data["snapshots"][0]["datetime"],
+                                                      extracted_new_key, data["snapshots"][0][extracted_new_key])
+                    probe = json.loads(json_to_insert)
+                    probe['_id'] = data['user']['user_id']
                 # TODO: Insert the probe into the DB
 
             else:
-                # TODO: if the user exists, update his
+                # TODO: if the user exists, check if the datetime exists,
+                #  and then update his probe on the datetime sub-dictionary provided.
                 pass
         except KeyError as e:
             print(f"db can't save this data format: {e}")
             return
 
     @classmethod
-    def convert_to_save_format(cls, data: dict):
-        pass
+    def convert_to_saved_format(cls, data: dict):
+        json_to_insert = formatted_encoded_one_data(data['user']['user_id'], data["snapshots"][0]["datetime"],
+                                                    extracted_new_key, data["snapshots"][0][extracted_new_key])
+        probe = json.loads(json_to_insert)
+        probe['_id'] = data['user']['user_id']

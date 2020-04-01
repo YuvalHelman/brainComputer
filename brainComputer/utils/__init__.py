@@ -23,5 +23,7 @@ def get_saving_path(user, snap, dir_path: str, is_proto=True):  # TODO: erase ?
 
 def formatted_encoded_one_data(user, datetime, item_key, item_val):
     """ Given a single data probe builds the agreed format for json data transfered in the queue """
-    return json.dumps(dict(user=user, snapshots=[{'datetime': datetime, item_key: item_val}]))
-
+    return json.dumps(dict(user=user, snapshots={
+                                                datetime: {item_key: item_val}
+                                                }
+                           ))
