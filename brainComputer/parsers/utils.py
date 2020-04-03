@@ -31,8 +31,7 @@ def load_parsers():
 
 def get_parser_function(parser_name):
     parsers_dict = load_parsers()
-    parser_func = parsers_dict[parser_name]
-    return parser_func
+    return parsers_dict[parser_name]
 
 
 if __name__ == "__main__":

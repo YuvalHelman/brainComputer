@@ -2,6 +2,7 @@ import click
 import furl
 
 import brainComputer.utils.rabbitmq as rabmq
+from brainComputer.parsers import load_parsers
 from . import Saver
 
 
@@ -31,11 +32,10 @@ def run_saver_cli(db_url, publish_url):
     """ running the parser as a service, which works with a message queue indefinitely """
     publisher_url = furl.furl(publish_url)
 
-    # TODO
+    s = Saver(db_url)
 
-    # if publisher_url.scheme == 'rabbitmq':
-    #     rabmq.consume_topic(publisher_url=publisher_url, topic_exchange_name=rabmq.SNAPSHOT_EXCHANGE,
-    #                            publish_exchange_name=parser_name, pre_publish_func=parser_func)
+    if publisher_url.scheme == 'rabbitmq':
+        rabmq.consume_topics(publisher_url=publisher_url, topics_dict=load_parsers(), callback_func=s.save)
 
 
 if __name__ == "__main__":

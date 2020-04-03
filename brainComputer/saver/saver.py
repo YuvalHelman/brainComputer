@@ -2,7 +2,7 @@ import pika
 import json
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # TODO: erase?
     def callback(ch, method, properties, body):
         parsed_data = body
         print('parsed data: ', parsed_data)

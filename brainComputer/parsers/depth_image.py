@@ -22,10 +22,12 @@ class depthImageParser:
             imshow(numpy.reshape(floats_data, (width, height)), cmap=cm.RdYlGn)
             savefig(image_path)
 
-            return formatted_encoded_one_data(
+            ret = formatted_encoded_one_data(
                 user=snap_user["user"], datetime=snap_user["snapshot"]["datetime"],
                 item_key='depth_image',
                 item_val=dict(width=width, height=height, data_path=data_path, depth_image_path=image_path))
+            print(f"parser {self.field} finished")
+            return ret
         except FileNotFoundError as e:
             print(f"Given data path in snapshot does not exist: {e}")
             raise e

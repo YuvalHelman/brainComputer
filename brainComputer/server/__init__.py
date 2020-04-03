@@ -34,8 +34,8 @@ class ConnectionHandler(threading.Thread):
                 pb_snapshot = PbSnapshot()
                 pb_user.ParseFromString(con.receive())
                 pb_snapshot.ParseFromString(con.receive())
-            # self.publish(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))
-            print(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))  # DEBUG
+            self.publish(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))
+            # print(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))  # DEBUG
         except Exception as e:
             print(f"Abort connection to failed client. {e}")
 

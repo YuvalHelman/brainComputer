@@ -1,4 +1,5 @@
 import furl
+import json
 
 from brainComputer.db import Mongo
 
@@ -9,8 +10,10 @@ class Saver:
         self.db_url = db_url
         self.handler = get_db_from_url(self.db_url)
 
-    def save(self, topic_name, data):
+    def save(self, topic_name, enc_data):
+        data = json.loads(enc_data)
         self.handler.save(topic_name, data)
+        print("data probe saved to DB")
 
 
 def get_db_from_url(db_url: str):

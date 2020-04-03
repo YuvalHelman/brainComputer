@@ -1,9 +1,11 @@
-from pymongo import MongoClient
+import pymongo
+from pymongo import errors as mongoErrors
 import json
+
 
 class Mongo:
     def __init__(self, url: str):
-        client = MongoClient(url)
+        client = pymongo.MongoClient(url)
         db = client['brain_db']
         self.users = db['users']
 
@@ -19,9 +21,10 @@ class Mongo:
         try:
             user_id = data['user']['user_id']
 
-            datetime_val = data["snapshots"].keys()[0]
-            datetime_data_key = data["snapshots"][datetime_val].keys()[0]
+            datetime_val = list(data["snapshots"].keys())[0]
+            datetime_data_key = list(data["snapshots"][datetime_val].keys())[0]
             datetime_data_val = data["snapshots"][datetime_val][datetime_data_key]
+            import pdb; pdb.set_trace()  # DEBUG
 
             if datetime_data_key != topic_name:
                 raise Exception("Given topic name doesn't match the data given")
@@ -37,6 +40,12 @@ class Mongo:
         except KeyError as e:
             print(f"db can't save this data format: {e}")
             raise e
-        except Exception as e:
-            print(f"mongo save failed: {e}")
+        except TypeError as e:
+            print(f"unauthorised access to data: {e}")
+            raise e
+        except mongoErrors.ConnectionFailure as e:
+            print(f"Connection to DB failed: {e}")
+            raise e
+        except mongoErrors.PyMongoError as e:
+            print(f"Mongo operation failed: {e}")
             raise e

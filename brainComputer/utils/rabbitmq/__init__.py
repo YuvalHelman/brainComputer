@@ -1,14 +1,13 @@
 import pika
 import furl
 import typing
-
-from brainComputer.parsers import load_parsers
-
+import json
 
 SNAPSHOT_EXCHANGE = 'snapshot-exchange'
 
 
 def publish_fanout(connection, exchange_name='', data=None):
+    """ publish data to a dedicated exchange in rabbitmq"""
     ch = connection.channel()
 
     ch.exchange_declare(exchange=exchange_name, exchange_type='fanout')
@@ -21,7 +20,11 @@ def publish_fanout(connection, exchange_name='', data=None):
 
 
 def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_exchange_name='', pre_publish_func=None):
-    def parse_callback(ch, method, properties, body):
+    """ Consume from a single exchange with a dedicated queue. make a precomputation before with pre_publish_func
+        before sending it back to the queue.
+        used for the parsers module that consumes messages from the server parse them, and send them to be saved """
+
+    def callback(ch, body, pre_publish_func):
         if pre_publish_func is not None:
             res = pre_publish_func(body)
         else:
@@ -46,19 +49,18 @@ def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_ex
 
         print(' [*] Consuming from rabbitmq. To exit press CTRL+C')
         ch.basic_qos(prefetch_count=1)
-        ch.basic_consume(queue=consume_queue_name, on_message_callback=parse_callback, auto_ack=True)
+        ch.basic_consume(queue=consume_queue_name,
+                         on_message_callback=lambda ch, method, properties, body: callback(ch, body, pre_publish_func),
+                         auto_ack=True)
         ch.start_consuming()
     finally:
         if con is not None:
             con.close()
 
 
-def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typing.Callable]):
+def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typing.Callable], callback_func):
     """ Consume from various exchanges with a queue for each one and a function for each one.
         used for the saver module that consumes multiple parsers """
-    def callback(on_consume_func, body):
-        on_consume_func(body)
-
     con = None
     try:
         con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
@@ -72,8 +74,8 @@ def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typin
             consume_queue_name = result.method.queue
             ch.queue_bind(exchange=topic_name, queue=consume_queue_name)
             ch.basic_consume(queue=consume_queue_name,
-                             on_message_callback=lambda ch, method, properties, body: callback(func, body)
-                             , auto_ack=True)
+                             on_message_callback=lambda ch, method, properties, body: callback_func(topic_name, body),
+                             auto_ack=True)
         print(' [*] Consuming from rabbitmq. To exit press CTRL+C')
         ch.start_consuming()
     finally:
