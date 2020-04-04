@@ -1,7 +1,6 @@
-import furl
 import json
 
-from brainComputer.db import Mongo
+from brainComputer.db import Mongo, get_db_from_url
 
 
 class Saver:
@@ -14,13 +13,3 @@ class Saver:
         data = json.loads(enc_data)
         self.handler.save(topic_name, data)
         print("data probe saved to DB")
-
-
-def get_db_from_url(db_url: str):
-    """ Get DB from url from what's supported
-    """
-    url = furl.furl(db_url)
-    if url.scheme == 'mongodb':
-        return Mongo(db_url)
-    else:
-        raise Exception("given database scheme is not supported.")

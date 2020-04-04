@@ -1,6 +1,5 @@
 import pymongo
 from pymongo import errors as mongoErrors
-import json
 
 
 class Mongo:
@@ -49,3 +48,14 @@ class Mongo:
         except mongoErrors.PyMongoError as e:
             print(f"Mongo operation failed: {e}")
             raise e
+
+    def get_users(self):
+        try:
+            return self.users.find().distinct('_id')
+        except mongoErrors.ConnectionFailure as e:
+            print(f"Connection to DB failed: {e}")
+            raise e
+        except mongoErrors.PyMongoError as e:
+            print(f"Mongo operation failed: {e}")
+            raise e
+
