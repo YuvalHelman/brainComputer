@@ -28,7 +28,6 @@ def run_server_cli(host, port, data_path, publish_url):
         except Exception as e:
             print(f"publish from server to queue failed: {e}")
 
-
     run_server(host, port, data_path, publish)
 
 
