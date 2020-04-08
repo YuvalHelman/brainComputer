@@ -1,4 +1,6 @@
 import pymongo
+from typing import List
+
 from pymongo import errors as mongoErrors
 
 
@@ -49,9 +51,30 @@ class Mongo:
             print(f"Mongo operation failed: {e}")
             raise e
 
-    def get_users(self):
+    def get_users(self) -> List[str]:
         try:
-            return self.users.find().distinct('_id')
+            return self.users.distinct('_id')
+        except mongoErrors.ConnectionFailure as e:
+            print(f"Connection to DB failed: {e}")
+            raise e
+        except mongoErrors.PyMongoError as e:
+            print(f"Mongo operation failed: {e}")
+            raise e
+
+    def get_user_id(self, user_id):
+        try:
+            return self.users.find_one({'_id': user_id})
+        except mongoErrors.ConnectionFailure as e:
+            print(f"Connection to DB failed: {e}")
+            raise e
+        except mongoErrors.PyMongoError as e:
+            print(f"Mongo operation failed: {e}")
+            raise e
+
+    def get_user_snapshot_ids(self, user_id):
+        try:
+            snapshots = self.users.find_one({'_id': user_id}, {'snapshots': 1})
+            return [snapshots.keys()]
         except mongoErrors.ConnectionFailure as e:
             print(f"Connection to DB failed: {e}")
             raise e
