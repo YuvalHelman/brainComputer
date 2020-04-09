@@ -1,6 +1,6 @@
 import json
 
-from brainComputer.db import Mongo, get_db_handler
+from brainComputer.db import get_db_handler
 
 
 class Saver:

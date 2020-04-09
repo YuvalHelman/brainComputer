@@ -1,7 +1,6 @@
 from brainComputer.api.app import app
+import flask
 
-
-# https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 
 @app.route('/users', methods=['GET'])
 def get_users_list():
@@ -46,13 +45,29 @@ def get_user_snapshot_details(user_id, snapshot_id):
         return "operation failed", 404
 
 
-@app.route('/users/<int:user_id>/snapshots/<int:snapshot_id>/<result_name>', methods=['GET'])
+@app.route('/users/<int:user_id>/snapshots/<snapshot_id>/<result_name>', methods=['GET'])
 def get_snapshot_result(user_id, snapshot_id, result_name):
     """ Returns the specified snapshot's result. currently supports pose, color-image, depth-image and feelings.
         """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
-        results = user_dict['snapshots'][snapshot_id].keys()
-        return ", ".join('')
+        res = user_dict['snapshots'][snapshot_id][result_name]
+        return res
     except Exception as e:
         return "operation failed", 404
+
+
+@app.route('/users/<int:user_id>/snapshots/<snapshot_id>/<result_name>/data', methods=['GET'])
+def get_snapshot_result_data(user_id, snapshot_id, result_name):
+    """ Returns the specified snapshot's result image data. currently supports color-image, depth-image.
+        """
+    if result_name != 'color_image' and result_name != 'depth_image':
+        raise Exception
+    path_key_str = result_name + '_path'
+    try:
+        user_dict = app.config['db_handler'].get_user_id(user_id)
+        image_path = user_dict['snapshots'][snapshot_id][result_name][path_key_str]
+
+        return flask.send_file(image_path, mimetype='image/png')
+    except Exception as e:
+        return f"operation failed: {e}", 404

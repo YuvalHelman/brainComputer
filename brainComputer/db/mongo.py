@@ -70,14 +70,3 @@ class Mongo:
         except mongoErrors.PyMongoError as e:
             print(f"Mongo operation failed: {e}")
             raise e
-
-    def get_user_snapshot_ids(self, user_id):
-        try:
-            snapshots = self.users.find_one({'_id': user_id}, {'snapshots': 1})
-            return [snapshots.keys()]
-        except mongoErrors.ConnectionFailure as e:
-            print(f"Connection to DB failed: {e}")
-            raise e
-        except mongoErrors.PyMongoError as e:
-            print(f"Mongo operation failed: {e}")
-            raise e

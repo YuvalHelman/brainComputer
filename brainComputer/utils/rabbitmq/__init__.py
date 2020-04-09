@@ -41,7 +41,6 @@ def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_ex
         con = pika.BlockingConnection(pika.ConnectionParameters(publisher_url.host, publisher_url.port))
         ch = con.channel()
 
-        # Set parameters for consuming snapshots from the server
         ch.exchange_declare(exchange=consume_exchange_name, exchange_type='fanout')
         result = ch.queue_declare(queue='', exclusive=True)
         consume_queue_name = result.method.queue
@@ -67,7 +66,6 @@ def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typin
         ch = con.channel()
         ch.basic_qos(prefetch_count=1)
 
-        # Set parameters for consuming
         for topic_name, func in topics_dict.items():
             ch.exchange_declare(exchange=topic_name, exchange_type='fanout')
             result = ch.queue_declare(queue='', exclusive=True)
