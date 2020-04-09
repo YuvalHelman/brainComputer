@@ -2,7 +2,7 @@ from brainComputer.db.mongo import Mongo
 import furl
 
 
-def get_db_from_url(db_url: str):
+def get_db_handler(db_url: str):
     """ Get DB from url from what's supported
     """
     url = furl.furl(db_url)
