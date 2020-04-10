@@ -1,6 +1,6 @@
 from brainComputer.gui.app import app
-import flask
-
+from flask import render_template
+from collections import OrderedDict
 
 @app.route('/users', methods=['GET'])
 def get_users_list():
@@ -10,7 +10,8 @@ def get_users_list():
         res = dict()
         for user in user_list:
             res.update({user['user_id']: user['username']})
-        return res
+        res = OrderedDict(res)
+        return render_template('users.html', data=res)
     except Exception as e:
         return "operation failed", 404
 

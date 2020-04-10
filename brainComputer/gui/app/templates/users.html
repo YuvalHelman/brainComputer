@@ -20,6 +20,13 @@
     <title>users</title>
 </head>
 <body>
+<h1> The Users </h1>
+
+    <ul>
+    {% for id, name in data.items() %}
+        <li><a href="users/{{ id }}">{{ id }}:{{ name }}</a></li>
+    {% endfor %}
+    </ul>
 
 </body>
 </html>
