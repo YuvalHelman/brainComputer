@@ -1,32 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-    body {
-      background-color: lightblue;
-    }
-
-    h1 {
-      color: white;
-      text-align: center;
-    }
-
-    p {
-      font-family: verdana;
-      font-size: 20px;
-    }
-</style>
-    <meta charset="UTF-8">
-    <title>users</title>
-</head>
-<body>
-<h1> The Users </h1>
-
+{% extends 'base.html' %}
+{% block title %}users list{% endblock %}
+{% block body %}
+<h1>The Users List</h1>
+<p>Click on an ID to see user's details</p>
     <ul>
     {% for id, name in data.items() %}
-        <li><a href="users/{{ id }}">{{ id }}:{{ name }}</a></li>
+        <li><a href="users/{{ id }}">{{ id }}</a> - {{ name }}</li>
     {% endfor %}
     </ul>
-
-</body>
-</html>
+{% endblock %}

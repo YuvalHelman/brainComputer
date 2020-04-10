@@ -2,6 +2,7 @@ from brainComputer.gui.app import app
 from flask import render_template
 from collections import OrderedDict
 
+
 @app.route('/users', methods=['GET'])
 def get_users_list():
     """ Returns the list of all the supported users, including their IDs and names only. """
