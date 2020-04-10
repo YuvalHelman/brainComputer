@@ -8,15 +8,14 @@ SNAPSHOT_EXCHANGE = 'snapshot-exchange'
 
 def publish_fanout(connection, exchange_name='', data=None):
     """ publish data to a dedicated exchange in rabbitmq"""
-    ch = connection.channel()
-
-    ch.exchange_declare(exchange=exchange_name, exchange_type='fanout')
-
-    ch.basic_publish(exchange=exchange_name,  # empty string is the default exchange
-                     routing_key='',  # the queue name
-                     body=data)
-
-    print(f" [x] Sent '{data}'")
+    try:
+        ch = connection.channel()
+        ch.exchange_declare(exchange=exchange_name, exchange_type='fanout')
+        ch.basic_publish(exchange=exchange_name,  # empty string is the default exchange
+                         routing_key='',  # the queue name
+                         body=data)
+    except Exception as e:
+        print("publishing to RabbitMq failed")
 
 
 def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_exchange_name='', pre_publish_func=None):
@@ -52,6 +51,8 @@ def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_ex
                          on_message_callback=lambda ch, method, properties, body: callback(ch, body, pre_publish_func),
                          auto_ack=True)
         ch.start_consuming()
+    except Exception as e:
+        print("connecting to RabbitMq failed")
     finally:
         if con is not None:
             con.close()
@@ -76,6 +77,8 @@ def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typin
                              auto_ack=True)
         print(' [*] Consuming from rabbitmq. To exit press CTRL+C')
         ch.start_consuming()
+    except Exception as e:
+        print("connecting to RabbitMq failed")
     finally:
         if con is not None:
             con.close()

@@ -58,6 +58,22 @@ def encoded_snapshot_user_json_no_data(test_data_path):
 
 
 @pytest.fixture(scope='session')
+def json_db_document_user43(db_url='mongodb://127.0.0.1:27017'):
+    return {'_id': 42, 'user': {'user_id': 42, 'username': 'Dan Gittik', 'birthday': 699746400, 'gender': 0},
+            'snapshots': {'1575446887339': {
+                'pose': {'translation': {'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985},
+                         'rotation': {'x': -0.10888676356214629, 'y': -0.26755994585035286, 'z': -0.021271118915446748,
+                                      'w': 0.9571326384559261}},
+                'feelings': {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0, 'happiness': 0.0},
+                'depth_image': {'width': 224, 'height': 172,
+                                'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_data',
+                                'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_image.png'},
+                'color_image': {'width': 1920, 'height': 1080,
+                                'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_data',
+                                'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_image.png'}}}}
+
+
+@pytest.fixture(scope='session')
 def pb_protocol_user_data():
     return b'\x08*\x12\nDan Gittik\x18\xe0\x90\xd5\xcd\x02'
 
