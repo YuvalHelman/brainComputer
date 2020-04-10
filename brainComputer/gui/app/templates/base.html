@@ -10,7 +10,15 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+<!-- Page title -->
+<div class="jumbotron jumbotron-fluid text-center">
+  <div class="container p-3 my-3 bg-dark text-white">
+    <h1 class="display-2">{% block main_title %}{% endblock %}</h1>
+      <p>{% block main_title_info %}{% endblock %}</p>
+  </div>
+</div>
 {% block body %}{% endblock %}
+
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <!-- Popper JS -->

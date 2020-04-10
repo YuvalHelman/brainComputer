@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}users list{% endblock %}
+{% block main_title %} User #{{ user.user_id }}{% endblock %}
+{% block main_title_info %}{% endblock %}
+{% block body %}
+
+<ul class="pagination justify-content-center" style="margin:20px 0">
+  <li class="page-item"><a class="page-link" href="/users">Users</a></li>
+  <li class="page-item"><a class="page-link" href="{{ user.user_id }}/snapshots">Snapshots</a></li>
+</ul>
+
+<div class="container">
+    <div><pre>Information about the user</pre></div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <ul class="list-group list-group-horizontal">
+      <li class="list-group-item list-group-item-info">User ID:</li>
+      <li class="list-group-item">{{ user.user_id }}</li>
+    </ul>
+  </div>
+  <div class="row">
+    <ul class="list-group list-group-horizontal">
+      <li class="list-group-item list-group-item-info">Name:</li>
+      <li class="list-group-item">{{ user.username }}</li>
+    </ul>
+  </div>
+  <div class="row">
+    <ul class="list-group list-group-horizontal">
+      <li class="list-group-item list-group-item-info">Birthday:</li>
+      <li class="list-group-item">{{ user.birthday }}</li>
+    </ul>
+  </div>
+  <div class="row">
+    <ul class="list-group list-group-horizontal">
+      <li class="list-group-item list-group-item-info">Gender</li>
+      <li class="list-group-item">{{ user.gender }}</li>
+    </ul>
+  </div>
+</div>
+<!--<div class="container">-->
+<!--  <div class="row">-->
+<!--    <div class="well well-sm">User ID:</div>-->
+<!--  </div>-->
+<!--</div>-->
+
+{% endblock %}

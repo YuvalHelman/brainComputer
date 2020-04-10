@@ -1,27 +1,29 @@
 {% extends 'base.html' %}
 {% block title %}users list{% endblock %}
+{% block main_title %}Users{% endblock %}
+{% block main_title_info %}{% endblock %}
 {% block body %}
-<div class="jumbotron text-center">
-  <h1>Users</h1>
+
+<div class="container">
+<!--  <div class="bg-info">-->
+    <div><pre>Click an ID to see details about a user</pre></div>
+<!--  </div>-->
 </div>
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-4">
-      <h3>ID</h3>
-        <ul>
-    {% for id, name in data.items() %}
-        <p><a href="users/{{ id }}">{{ id }}</a></p>
-    {% endfor %}
-    </ul>
-    </div>
-    <div class="col-sm-4">
-      <h3>Name</h3>
-        {% for id, name in data.items() %}
-        <p>{{ name }}</p>
-    {% endfor %}
-<!--      <p>Lorem ipsum dolor..  - {{ name }}</p>-->
-    </div>
+    <div class="col-sm-4"><strong>ID</strong></div>
+    <div class="col"><strong>Name</strong></div>
+  <div class="row">
+    <div class="col"></div>
+  </div>
+  </div>
+
+  {% for id, name in data.items() %}
+  <div class="row">
+    <div class="col-sm-4" style="background-color:lavender;"><a href="users/{{ id }}"># {{ id }}</a></div>
+    <div class="col-sm-8" style="background-color:orange;">{{ name }}</div>
+  {% endfor %}
   </div>
 </div>
 

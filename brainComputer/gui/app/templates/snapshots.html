@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}users list{% endblock %}
+{% block main_title %} User #{{ user.user_id }}{% endblock %}
+{% block main_title_info %}{% endblock %}
+{% block body %}
+
+<ul class="pagination justify-content-center" style="margin:20px 0">
+  <li class="page-item"><a class="page-link" href="/users/{{ user.user_id }}">User info</a></li>
+  <li class="page-item"><a class="page-link" href="{{ user.user_id }}/snapshots">Snapshots</a></li>
+</ul>
+
+<div class="container">
+    <div><pre>The user snapshot IDs</pre></div>
+</div>
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col" style="background-color:lavender;">.col</div>
+    <div class="col" style="background-color:orange;">.col</div>
+  </div>
+</div>
+
+
+
+{% endblock %}

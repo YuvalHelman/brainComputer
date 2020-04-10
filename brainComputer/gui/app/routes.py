@@ -22,7 +22,7 @@ def get_user_id(user_id):
     """ Returns the specified user's details: ID, name, birthday and gender. """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
-        return user_dict['user']
+        return render_template('user_id.html', user=user_dict['user'])
     except Exception as e:
         return "operation failed", 404
 
@@ -32,7 +32,7 @@ def get_user_snapshot_ids(user_id):
     """ Returns the list of the specified user's snapshot IDs and datetimes only. """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
-        return ", ".join(user_dict['snapshots'].keys())
+        return render_template('snapshots.html', snapshots=user_dict['snapshots'], user=user_dict['user'])
     except Exception as e:
         return "operation failed", 404
 
