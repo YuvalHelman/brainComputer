@@ -1,6 +1,8 @@
 import pytest
 import json
 
+from brainComputer import api
+
 
 @pytest.fixture(scope='session')
 def test_data_path():
@@ -83,9 +85,9 @@ def pb_protocol_snapshot_data():
     return b'\x08\xab\xf7\xce\xff\xec-\x12C\n\x1b\t\x00\x00\x00 N1\xdf?\x11\x00\x00\x00\xe0k\n}?\x19\x00\x00\x00\xa0\xfd\x16\xf2\xbf\x12$\t\xd5yw\xc0\x00\xe0\xbb\xbf\x11\x1deI\xc0\xb3\x1f\xd1\xbf\x19\xdf[]\xa0\x18\xc8\x95\xbf!\xd1F\x83\xa0\xd4\xa0\xee?\x1a\x00"\x00*\x00'
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def db_mock_mongo(monkeypatch):
-    """ Connect to db before tests, disconnect after.
+    """ Mocks the Mongo Client Class in the db module for testing without the DB on air.
     Works on the function level so other tests can work with the real DB """
     from brainComputer.db import Mongo
 
@@ -97,16 +99,36 @@ def db_mock_mongo(monkeypatch):
             pass
 
         def get_users(self):
+            return [
+                {'user_id': 42, 'username': 'Dan Gittik', 'birthday': 699746400, 'gender': 'm'},
+                {'user_id': 43, 'username': 'Yuval Helman', 'birthday': 699746401, 'gender': 'm'},
+                {'user_id': 44, 'username': 'Yael Livne', 'birthday': 239746402, 'gender': 'f'},
+            ]
 
-
+        def get_user_id(self, user_id):
+            return {'_id': user_id, 'user': {'user_id': user_id, 'username': 'usernameMock', 'birthday': 699746400, 'gender': 'm'},
+                    'snapshots': {'1575446887339': {'pose': {
+                        'translation': {'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985},
+                        'rotation': {'x': -0.10888676356214629, 'y': -0.26755994585035286, 'z': -0.021271118915446748,
+                                     'w': 0.9571326384559261}}, 'depth_image': {'width': 224, 'height': 172,
+                                                                                'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_data',
+                                                                                'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_image.png'},
+                                                    'feelings': {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0,
+                                                                 'happiness': 0.0},
+                                                    'color_image': {'width': 1920, 'height': 1080,
+                                                                    'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_data',
+                                                                    'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_image.png'}}}}
 
     monkeypatch.setattr(Mongo, "__init__", value=mockedMongo.__init__)
     monkeypatch.setattr(Mongo, "save", value=mockedMongo.save)
-    # system.stop_db()
+    monkeypatch.setattr(Mongo, "get_users", value=mockedMongo.get_users)
+    monkeypatch.setattr(Mongo, "get_user_id", value=mockedMongo.get_user_id)
 
 
-@pytest.fixture()
-def db_new(db_session):
-    """ An empty DB """
-    pass
-    # system.empty_all_data()
+@pytest.fixture
+def api_flask_client():
+    api.app.config['TESTING'] = True
+    with api.app.test_client() as client:
+        with api.app.app_context():
+            yield client
+
