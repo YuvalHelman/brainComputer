@@ -58,8 +58,8 @@ def encoded_snapshot_user_json_no_data(test_data_path):
 
 
 @pytest.fixture(scope='session')
-def json_db_document_user43(db_url='mongodb://127.0.0.1:27017'):
-    return {'_id': 42, 'user': {'user_id': 42, 'username': 'Dan Gittik', 'birthday': 699746400, 'gender': 0},
+def json_db_document_user43():
+    return {'_id': 43, 'user': {'user_id': 43, 'username': 'Dan Gittik', 'birthday': 699746400, 'gender': 0},
             'snapshots': {'1575446887339': {
                 'pose': {'translation': {'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985},
                          'rotation': {'x': -0.10888676356214629, 'y': -0.26755994585035286, 'z': -0.021271118915446748,
@@ -83,12 +83,25 @@ def pb_protocol_snapshot_data():
     return b'\x08\xab\xf7\xce\xff\xec-\x12C\n\x1b\t\x00\x00\x00 N1\xdf?\x11\x00\x00\x00\xe0k\n}?\x19\x00\x00\x00\xa0\xfd\x16\xf2\xbf\x12$\t\xd5yw\xc0\x00\xe0\xbb\xbf\x11\x1deI\xc0\xb3\x1f\xd1\xbf\x19\xdf[]\xa0\x18\xc8\x95\xbf!\xd1F\x83\xa0\xd4\xa0\xee?\x1a\x00"\x00*\x00'
 
 
-@pytest.fixture(scope='session')
-def db_session(tmpdir_factory):
-    """Connect to db before tests, disconnect after."""
-    temp_dir = tmpdir_factory.mktemp('temp')
-    # system.start_db(str(temp_dir), 'tiny')
-    yield
+@pytest.fixture(scope='function')
+def db_mock_mongo(monkeypatch):
+    """ Connect to db before tests, disconnect after.
+    Works on the function level so other tests can work with the real DB """
+    from brainComputer.db import Mongo
+
+    class mockedMongo:
+        def __init__(self, url: str):
+            pass
+
+        def save(self):
+            pass
+
+        def get_users(self):
+
+
+
+    monkeypatch.setattr(Mongo, "__init__", value=mockedMongo.__init__)
+    monkeypatch.setattr(Mongo, "save", value=mockedMongo.save)
     # system.stop_db()
 
 

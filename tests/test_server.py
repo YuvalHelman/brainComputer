@@ -12,7 +12,7 @@ def dummy_client(host: str, port: int, user_data, snap_data):
         con.send(snap_data)
 
 
-def test_run_server(capsys, monkeypatch, encoded_snapshot_user_json_no_data, test_data_path, pb_protocol_user_data,
+def test_run_server(capsys, encoded_snapshot_user_json_no_data, test_data_path, pb_protocol_user_data,
                     pb_protocol_snapshot_data):
     host = '127.0.0.1'
     port = random.randint(6000, 10000)
