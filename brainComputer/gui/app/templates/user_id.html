@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}users list{% endblock %}
-{% block main_title %} User #{{ user.user_id }}{% endblock %}
+{% block title %}users info{% endblock %}
+{% block main_title %} {{ user.username }}{% endblock %}
 {% block main_title_info %}{% endblock %}
 {% block body %}
 
@@ -9,41 +9,32 @@
   <li class="page-item"><a class="page-link" href="{{ user.user_id }}/snapshots">Snapshots</a></li>
 </ul>
 
-<div class="container">
-    <div><pre>Information about the user</pre></div>
-</div>
-
 
 <div class="container">
-  <div class="row">
-    <ul class="list-group list-group-horizontal">
-      <li class="list-group-item list-group-item-info">User ID:</li>
-      <li class="list-group-item">{{ user.user_id }}</li>
-    </ul>
-  </div>
-  <div class="row">
-    <ul class="list-group list-group-horizontal">
-      <li class="list-group-item list-group-item-info">Name:</li>
-      <li class="list-group-item">{{ user.username }}</li>
-    </ul>
-  </div>
-  <div class="row">
-    <ul class="list-group list-group-horizontal">
-      <li class="list-group-item list-group-item-info">Birthday:</li>
-      <li class="list-group-item">{{ user.birthday }}</li>
-    </ul>
-  </div>
-  <div class="row">
-    <ul class="list-group list-group-horizontal">
-      <li class="list-group-item list-group-item-info">Gender</li>
-      <li class="list-group-item">{{ user.gender }}</li>
-    </ul>
-  </div>
-</div>
-<!--<div class="container">-->
-<!--  <div class="row">-->
-<!--    <div class="well well-sm">User ID:</div>-->
-<!--  </div>-->
-<!--</div>-->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Information about the user:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="table-primary">
+        <td>User ID</td>
+	<td>{{ user.user_id  }}</td>
+      </tr>      
+      <tr class="table-success">
+        <td>Username</td>
+	<td>{{ user.username }}</td>
+      </tr>      
+      <tr class="table-primary">
+        <td>Birthday</td>
+	<td>{{ user.birthday  }}</td>
+      </tr>      
+      <tr class="table-success">
+        <td>gender</td>
+	<td>{{ user.gender  }}</td>
+      </tr>      
+    </tbody>
+  </table>
 
 {% endblock %}

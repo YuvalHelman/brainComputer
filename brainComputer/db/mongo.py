@@ -70,3 +70,9 @@ class Mongo:
         except mongoErrors.PyMongoError as e:
             print(f"Mongo operation failed: {e}")
             raise e
+
+    def insert_doc(self, data: dict):
+        try:
+            self.users.insert_one(data)
+        except mongoErrors.PyMongoError as e:
+            print(f"insertion failed: {e}")

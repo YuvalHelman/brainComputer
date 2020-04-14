@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}users list{% endblock %}
-{% block main_title %} User #{{ user.user_id }}{% endblock %}
+{% block title %}user snapshots{% endblock %}
+{% block main_title %} {{ user.username }}{% endblock %}
 {% block main_title_info %}{% endblock %}
 {% block body %}
 
@@ -17,11 +17,20 @@
 
 <div class="container">
   <div class="row">
-    <div class="col" style="background-color:lavender;">.col</div>
-    <div class="col" style="background-color:orange;">.col</div>
+    <div class="col-sm-4"><strong>ID</strong></div>
+    <div class="col"><strong>Name</strong></div>
+  <div class="row">
+    <div class="col"></div>
   </div>
-</div>
+  </div>
 
+  {% for id, name in data.items() %}
+    <div class="row">
+      <div class="col-sm-4" style="{{loop.cycle('background-color:lavender;', 'background-color:orange;')}}"><a href="users/{{ id }}"> {{ id }}</a></div>
+    <div class="col-sm-8" style="{{loop.cycle('background-color:lavender;', 'background-color:orange;')}}">{{ name }}</div>
+    </div>
+  {% endfor %}
+</div>
 
 
 {% endblock %}

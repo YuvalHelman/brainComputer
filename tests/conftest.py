@@ -125,9 +125,12 @@ def db_mock_mongo(monkeypatch):
     monkeypatch.setattr(Mongo, "get_user_id", value=mockedMongo.get_user_id)
 
 
-@pytest.fixture
-def api_flask_client():
+@pytest.fixture()
+def api_flask_client(db_mock_mongo):
+    from brainComputer.db import get_db_handler
+
     api.app.config['TESTING'] = True
+    api.app.config.update(db_handler=get_db_handler('mongodb://127.0.0.1:27017'))
     with api.app.test_client() as client:
         with api.app.app_context():
             yield client

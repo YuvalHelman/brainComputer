@@ -20,11 +20,10 @@
   </div>
 
   {% for id, name in data.items() %}
-  <div class="row">
-    <div class="col-sm-4" style="background-color:lavender;"><a href="users/{{ id }}"># {{ id }}</a></div>
-    <div class="col-sm-8" style="background-color:orange;">{{ name }}</div>
+    <div class="row">
+      <div class="col-sm-4" style="{{loop.cycle('background-color:lavender;', 'background-color:orange;')}}"><a href="users/{{ id }}"> {{ id }}</a></div>
+    <div class="col-sm-8" style="{{loop.cycle('background-color:lavender;', 'background-color:orange;')}}">{{ name }}</div>
+    </div>
   {% endfor %}
-  </div>
 </div>
-
 {% endblock %}
