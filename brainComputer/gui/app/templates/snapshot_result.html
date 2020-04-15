@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}snapshots details{% endblock %}
+{% block main_title %} {{ user.username }}{% endblock %}
+{% block main_title_info %}{% endblock %}
+{% block body %}
+
+<ul class="pagination justify-content-center" style="margin:20px 0">
+	<li class="page-item"><a class="page-link" href="/users/{{ user.user_id }}/snapshots">&#11013 Snapshot Results</a></li>
+</ul>
+
+<div class="container">
+    <div><pre>snapshot #{{ snapshot_id }}</pre></div>
+    <div class="list-group">
+
+      {% for result_name in snapid_dict.keys() %}
+         <div class="{{ loop.cycle('list-group-item list-group-item-primary', 'list-group-item list-group-item-secondary', 'list-group-item list-group-item-success', 'list-group-item list-group-item-danger', 'list-group-item list-group-item-warning', 'list-group-item list-group-item-info', 'list-group-item list-group-item-light', 'list-group-item list-group-item-dark') }}"><a href="#">hi </a></div>
+      {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -42,7 +42,8 @@ def get_user_snapshot_details(user_id, snapshot_id):
     """ Returns the specified snapshot's details: ID, datetime, and the available results' names only (e.g. pose). """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
-        return ", ".join(user_dict['snapshots'][snapshot_id].keys())
+      #  import pdb; pdb.set_trace()
+        return render_template('snapshots_details.html', snapshots=user_dict['snapshots'], user=user_dict['user'], snapshot_id=snapshot_id, snapid_dict=user_dict['snapshots'][snapshot_id])
     except Exception as e:
         return "operation failed", 404
 
@@ -53,8 +54,8 @@ def get_snapshot_result(user_id, snapshot_id, result_name):
         """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
-        res = user_dict['snapshots'][snapshot_id][result_name]
-        return res
+      #  import pdb; pdb.set_trace()
+        return render_template('snapshot_result.html', snapshots=user_dict['snapshots'], user=user_dict['user'], snapshot_id=snapshot_id, snapid_dict=user_dict['snapshots'][snapshot_id], res_dict=user_dict['snapshots'][snapshot_id][result_name] )
     except Exception as e:
         return "operation failed", 404
 
@@ -73,3 +74,4 @@ def get_snapshot_result_data(user_id, snapshot_id, result_name):
         return flask.send_file(image_path, mimetype='image/png')
     except Exception as e:
         return f"operation failed: {e}", 404
+
