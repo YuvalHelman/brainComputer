@@ -5,17 +5,24 @@
 {% block body %}
 
 <ul class="pagination justify-content-center" style="margin:20px 0">
-	<li class="page-item"><a class="page-link" href="/users/{{ user.user_id }}/snapshots">&#11013 Snapshot Results</a></li>
+	<li class="page-item"><a class="page-link" href="..">&#11013 Snapshot Results</a></li>
 </ul>
 
 <div class="container">
-    <div><pre>snapshot #{{ snapshot_id }}</pre></div>
-    <div class="list-group">
+    <div style="text-shadow: 2px 2px 5px red; font-size: 25px"><pre>{{ res_name }} data for snapshot #{{ snapshot_id }}:</pre></div>
+</div>
 
-      {% for result_name in snapid_dict.keys() %}
-         <div class="{{ loop.cycle('list-group-item list-group-item-primary', 'list-group-item list-group-item-secondary', 'list-group-item list-group-item-success', 'list-group-item list-group-item-danger', 'list-group-item list-group-item-warning', 'list-group-item list-group-item-info', 'list-group-item list-group-item-light', 'list-group-item list-group-item-dark') }}"><a href="#">hi </a></div>
+<div class="container">
+  <table class="table", table-layout: fixed>
+    <tbody>
+      {% for key, val in res_dict.items() %}
+      <tr class="{{ loop.cycle('table-primary', ' table-secondary', ' table-success', ' table-danger', ' table-warning', ' table-info', ' table-light', ' table-dark')}}">
+	<td>{{key}}</td>
+	<td>{{val}}</td>
+      </tr>      
       {% endfor %}
-    </div>
+    </tbody>
+  </table>
 </div>
 
 {% endblock %}

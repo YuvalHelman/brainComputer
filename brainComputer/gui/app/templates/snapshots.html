@@ -5,7 +5,7 @@
 {% block body %}
 
 <ul class="pagination justify-content-center" style="margin:20px 0">
-	<li class="page-item"><a class="page-link" href="/users/{{ user.user_id }}">&#11013 User Info</a></li>
+	<li class="page-item"><a class="page-link" href="..">&#11013 User Info</a></li>
 </ul>
 
 <div class="container">
@@ -13,7 +13,7 @@
     <div class="list-group">
 
       {% for snap_id in snapshots.keys() %}
-         <div class="{{ loop.cycle('list-group-item list-group-item-primary', 'list-group-item list-group-item-secondary', 'list-group-item list-group-item-success', 'list-group-item list-group-item-danger', 'list-group-item list-group-item-warning', 'list-group-item list-group-item-info', 'list-group-item list-group-item-light', 'list-group-item list-group-item-dark') }}"><a href="snapshots/{{ snap_id }}">{{ snap_id }}</a></div>
+      <div class="{{ loop.cycle('list-group-item list-group-item-primary', 'list-group-item list-group-item-secondary', 'list-group-item list-group-item-success', 'list-group-item list-group-item-danger', 'list-group-item list-group-item-warning', 'list-group-item list-group-item-info', 'list-group-item list-group-item-light', 'list-group-item list-group-item-dark') }}"><a href="{{snap_id}}">{{ snap_id }}</a></div>
       {% endfor %}
     </div>
 </div>
