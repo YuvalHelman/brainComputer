@@ -55,14 +55,16 @@ def get_snapshot_result(user_id, snapshot_id, result_name):
         """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
+        image_link = None
         if result_name == 'pose':
             res = pose_flatten(user_dict['snapshots'][snapshot_id][result_name])
         elif result_name in ['color_image', 'depth_image']:
             res = gui_image_dict_prepare(user_dict['snapshots'][snapshot_id][result_name], result_name)
+            image_link = 'A'
         else:
             res = user_dict['snapshots'][snapshot_id][result_name]
 
-        return render_template('snapshot_result.html', snapshots=user_dict['snapshots'], user=user_dict['user'], snapshot_id=snapshot_id, snapid_dict=user_dict['snapshots'][snapshot_id], res_dict=res, res_name=result_name)
+        return render_template('snapshot_result.html', snapshots=user_dict['snapshots'], user=user_dict['user'], snapshot_id=snapshot_id, snapid_dict=user_dict['snapshots'][snapshot_id], res_dict=res, res_name=result_name, image_link=image_link)
     except Exception as e:
         return "operation failed", 404
 

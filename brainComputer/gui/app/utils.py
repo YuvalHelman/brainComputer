@@ -8,7 +8,6 @@ def pose_flatten(pose_dict):
     return res
 
 def gui_image_dict_prepare(image_dict, name):
-    import pdb; pdb.set_trace()
     res = copy.deepcopy(image_dict)
     res.pop('data_path')
     res.pop(name+ '_path')
