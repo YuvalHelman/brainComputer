@@ -16,16 +16,14 @@ def gui_image_dict_prepare(image_dict, name, user_id, username, datetime):
     res = copy.deepcopy(image_dict)
     old_img_path = image_dict[name + '_path']
 
-    # Makes the directories tree under the html gui path
-    html_images_dir_path = get_gui_dir(ROOT_DIR + 'gui/app/templates/images/', user_id, username, datetime)
+    html_images_dir_path = ROOT_DIR + 'gui/app/static/'
     os.makedirs(html_images_dir_path, exist_ok=True)
-    shutil.copy2(old_img_path, html_images_dir_path)
-
-    image_link = html_images_dir_path + name + '.png'
+    new_image_name = name + '_' + str(user_id) + '_' + username + '_' + str(datetime) + '.png'
+    shutil.copy2(old_img_path, html_images_dir_path + new_image_name)
 
     res.pop('data_path')
     res.pop(name+ '_path')
-    return res, image_link
+    return res, new_image_name
 
 
 def get_gui_dir(data_path, user_id, username, datetime):
