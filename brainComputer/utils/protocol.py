@@ -16,11 +16,13 @@ def pbuser_to_dict(pb_user):
         gender=pb_user.gender
     )
 
+def get_data_dir(data_path, user_id, username, datetime):
+        return str(data_path) + str(user_id) + "_" + str(username) + "/" + str(datetime) + '/'  # /42_Ron Dan/15423/
+
 
 def pbsnapshot_to_dict(pb_snapshot, pb_user, data_path):
     try:
-        p = str(data_path) + str(pb_user.user_id) + "_" + str(pb_user.username) + "/" + str(
-            pb_snapshot.datetime) + '/'  # /42_Ron Dan/15423/
+        p = get_data_dir(data_path, pb_user.user_id, pb_user.username, pb_snapshot.datetime)
         os.makedirs(p, exist_ok=True)
 
         color_data_p = p + 'color_data'

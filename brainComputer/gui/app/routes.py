@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from brainComputer.gui.app.utils import pose_flatten, gui_image_dict_prepare
 
+
 @app.route('/', methods=['GET'])
 @app.route('/users/', methods=['GET'])
 def get_users_list():
@@ -59,8 +60,8 @@ def get_snapshot_result(user_id, snapshot_id, result_name):
         if result_name == 'pose':
             res = pose_flatten(user_dict['snapshots'][snapshot_id][result_name])
         elif result_name in ['color_image', 'depth_image']:
-            res = gui_image_dict_prepare(user_dict['snapshots'][snapshot_id][result_name], result_name)
-            image_link = 'A'
+            res, image_link = gui_image_dict_prepare(user_dict['snapshots'][snapshot_id][result_name], result_name, user_dict['user']['user_id'], user_dict['user']['username'], snapshot_id)
+            breakpoint()
         else:
             res = user_dict['snapshots'][snapshot_id][result_name]
 
@@ -68,18 +69,19 @@ def get_snapshot_result(user_id, snapshot_id, result_name):
     except Exception as e:
         return "operation failed", 404
 
-@app.route('/users/<int:user_id>/snapshots/<snapshot_id>/<result_name>/data/', methods=['GET'])
-def get_snapshot_result_data(user_id, snapshot_id, result_name):
-    """ Returns the specified snapshot's result image data. currently supports color-image, depth-image.
-        """
-    if result_name != 'color_image' and result_name != 'depth_image':
-        raise Exception
-    path_key_str = result_name + '_path'
-    try:
-        user_dict = app.config['db_handler'].get_user_id(user_id)
-        image_path = user_dict['snapshots'][snapshot_id][result_name][path_key_str]
 
-        return flask.send_file(image_path, mimetype='image/png')
-    except Exception as e:
-        return f"operation failed: {e}", 404
+# @app.route('/users/<int:user_id>/snapshots/<snapshot_id>/<result_name>/data/', methods=['GET'])
+# def get_snapshot_result_data(user_id, snapshot_id, result_name):
+#     """ Returns the specified snapshot's result image data. currently supports color-image, depth-image.
+#         """
+#     if result_name != 'color_image' and result_name != 'depth_image':
+#         raise Exception
+#     path_key_str = result_name + '_path'
+#     try:
+#         user_dict = app.config['db_handler'].get_user_id(user_id)
+#         image_path = user_dict['snapshots'][snapshot_id][result_name][path_key_str]
+# 
+#         return flask.send_file(image_path, mimetype='image/png')
+#     except Exception as e:
+#         return f"operation failed: {e}", 404
 

@@ -1,4 +1,5 @@
 import pytest
+import sys 
 
 from brainComputer.db import get_db_handler
 
@@ -31,5 +32,5 @@ def insert_to_db(user_id, username):
 
 
 if __name__ == '__main__':
-    insert_to_db(45, 'Asaf Lotz')
+    insert_to_db(sys.argv[1], sys.argv[2])
 

@@ -25,7 +25,6 @@ class Mongo:
             datetime_val = list(data["snapshots"].keys())[0]
             datetime_data_key = list(data["snapshots"][datetime_val].keys())[0]
             datetime_data_val = data["snapshots"][datetime_val][datetime_data_key]
-            # import pdb; pdb.set_trace()  # DEBUG
 
             user = db_p.find_one({'_id': user_id})
             if user is None:

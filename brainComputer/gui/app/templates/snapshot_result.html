@@ -21,14 +21,13 @@
 	<td>{{val}}</td>
       </tr>      
       {% endfor %}
-      {% if image_link %}
-      <tr class="table-success">
-	<td>data</td>
-	<td><a href="data">link</a></td>
-      </tr>      
-      {% endif %}
     </tbody>
   </table>
+</div>
+
+{% if image_link %}
+<img src="{{url_for('static/images/', filename='color_image.png')}}"> 
+{% endif %}
 </div>
 
 {% endblock %}
