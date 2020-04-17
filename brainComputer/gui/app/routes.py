@@ -60,7 +60,6 @@ def get_snapshot_result(user_id, snapshot_id, result_name):
         if result_name == 'pose':
             res = pose_flatten(user_dict['snapshots'][snapshot_id][result_name])
         elif result_name in ['color_image', 'depth_image']:
-            breakpoint()
             res, image_link = gui_image_dict_prepare(user_dict['snapshots'][snapshot_id][result_name], result_name, user_dict['user']['user_id'], user_dict['user']['username'], snapshot_id)
         else:
             res = user_dict['snapshots'][snapshot_id][result_name]

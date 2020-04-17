@@ -27,8 +27,8 @@
 
 <div class="container">
 {% if image_link %}
-<img class="rounded-circle mx-auto d-block" style="width:500px;height:600px;" src="{{url_for('static', filename={{ image_link }})}}" alt="data result"> 
+<img class="rounded-circle mx-auto d-block" style="width:500px;height:600px;" src="{{url_for('static', filename=image_link)}}" alt="data result"> 
 {% endif %}
 </div>
 
-{% endblock %}
+ {% endblock %}
