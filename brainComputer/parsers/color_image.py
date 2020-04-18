@@ -4,7 +4,7 @@ import json
 from brainComputer.utils import formatted_encoded_one_data
 
 
-class colorImageParser:
+class ColorImageParser:
     field = 'color_image'
 
     @staticmethod

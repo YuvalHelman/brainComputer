@@ -16,6 +16,7 @@ def pbuser_to_dict(pb_user):
         gender=pb_user.gender
     )
 
+
 def get_data_dir(data_path, user_id, username, datetime):
         return str(data_path) + str(user_id) + "_" + str(username) + "/" + str(datetime) + '/'  # /42_Ron Dan/15423/
 

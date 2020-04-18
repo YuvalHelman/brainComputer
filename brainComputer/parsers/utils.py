@@ -2,6 +2,7 @@ from pathlib import Path
 import inspect
 import sys
 import importlib
+import json
 
 
 def load_parsers():
@@ -34,6 +35,9 @@ def get_parser_function(parser_name):
     return parsers_dict[parser_name]
 
 
-if __name__ == "__main__":
-    print(Path(__file__).parent)
-    print(load_parsers())
+def formatted_encoded_one_data(user, datetime, item_key, item_val):
+    """ Given a single data probe builds the agreed format for json data transfered in the queue """
+    return json.dumps(dict(user=user, snapshots={
+                                                datetime: {item_key: item_val}
+                                                }
+                           ))

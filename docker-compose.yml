@@ -1,0 +1,29 @@
+version: '3.6'
+
+services:
+
+    rabbitmq:
+        image: rabbitmq
+        container_name: rab
+        ports:
+            - 5672:5672
+    healthcheck:
+        test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+        interval: 5s
+        timeout: 15s
+        retries: 1
+
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        ports:
+            - 27017:27017
+    
+    
+    saver:
+        build:  ############# TODO
+        image:  ############# TODO 
+        container_name: saver
+        restart: on-failure
+        depends_on:
+            - rabbitmq 

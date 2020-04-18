@@ -6,7 +6,7 @@ from matplotlib.pyplot import imshow, savefig
 from brainComputer.utils import formatted_encoded_one_data
 
 
-class depthImageParser:
+class DepthImageParser:
     field = 'depth_image'
 
     @staticmethod

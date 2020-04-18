@@ -1,7 +1,6 @@
 import socket
 import contextlib
 import struct
-import io
 
 
 class Connection:
@@ -70,12 +69,3 @@ class Connection:
 
     def close(self):
         self.socket.close()
-
-
-if __name__ == '__main__':
-    serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # create an INET, STREAMing socket
-    serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    serversocket.bind(('127.0.0.1', 5000))
-
-    print(f"{serversocket.getsockname()!r}")
-    # print(t1)
