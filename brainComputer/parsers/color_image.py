@@ -1,7 +1,7 @@
 from PIL import Image
 import json
 
-from brainComputer.utils import formatted_encoded_one_data
+from .utils import formatted_encoded_one_data
 
 
 class ColorImageParser:
@@ -25,7 +25,7 @@ class ColorImageParser:
                 user=snap_user["user"], datetime=snap_user["snapshot"]["datetime"],
                 item_key='color_image',
                 item_val=dict(width=width, height=height, data_path=data_path, color_image_path=image_path))
-            print(f"parser {colorImageParser.field} finished")
+            print(f"parser {ColorImageParser.field} finished")
             return ret
         except FileNotFoundError as e:
             print(f"Given data path in snapshot does not exist: {e}")

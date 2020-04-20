@@ -2,8 +2,8 @@ import pytest
 import os
 import json
 
-from brainComputer.parsers.color_image import colorImageParser
-from brainComputer.parsers.depth_image import depthImageParser
+from brainComputer.parsers.color_image import ColorImageParser
+from brainComputer.parsers.depth_image import DepthImageParser
 from brainComputer.parsers.pose import parse_pose
 from brainComputer.parsers.feelings import parse_feelings
 
@@ -12,7 +12,7 @@ def test_color_image_parser_result(encoded_snapshot_user_json_real_data):
     snap_user = json.loads(encoded_snapshot_user_json_real_data)
     assert os.path.exists(snap_user["snapshot"]["color_image"]["data_path"]) is True
 
-    imageCls = colorImageParser()
+    imageCls = ColorImageParser()
     res_json = json.loads(imageCls.parse(encoded_snapshot_user_json_real_data))
 
     assert res_json["user"]["user_id"] == snap_user["user"]["user_id"]
@@ -31,7 +31,7 @@ def test_depth_image_parser_result(encoded_snapshot_user_json_real_data):
     snap_user = json.loads(encoded_snapshot_user_json_real_data)
     assert os.path.exists(snap_user["snapshot"]["depth_image"]["data_path"]) is True
 
-    imageCls = depthImageParser()
+    imageCls = DepthImageParser()
     res_json = json.loads(imageCls.parse(encoded_snapshot_user_json_real_data))
 
     assert res_json["user"]["user_id"] == snap_user["user"]["user_id"]

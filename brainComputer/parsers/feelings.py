@@ -1,5 +1,5 @@
 import json
-from brainComputer.utils import formatted_encoded_one_data
+from .utils import formatted_encoded_one_data
 
 
 def parse_feelings(json_snap_user):

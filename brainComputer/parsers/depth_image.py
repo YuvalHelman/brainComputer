@@ -3,7 +3,7 @@ import json
 from matplotlib import cm
 from matplotlib.pyplot import imshow, savefig
 
-from brainComputer.utils import formatted_encoded_one_data
+from .utils import formatted_encoded_one_data
 
 
 class DepthImageParser:
@@ -27,7 +27,7 @@ class DepthImageParser:
                 user=snap_user["user"], datetime=snap_user["snapshot"]["datetime"],
                 item_key='depth_image',
                 item_val=dict(width=width, height=height, data_path=data_path, depth_image_path=image_path))
-            print(f"parser {depthImageParser.field} finished")
+            print(f"parser {DepthImageParser.field} finished")
             return ret
         except FileNotFoundError as e:
             print(f"Given data path in snapshot does not exist: {e}")
