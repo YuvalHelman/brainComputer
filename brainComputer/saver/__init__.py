@@ -12,5 +12,5 @@ class Saver:
     def save(self, topic_name, enc_data):
         data = json.loads(enc_data)
         self.handler.save(topic_name, data)
-        print("data probe saved to DB")
+        print("data probe saved to DB")  # DEBUG
 

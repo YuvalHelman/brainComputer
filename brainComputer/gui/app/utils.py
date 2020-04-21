@@ -22,7 +22,7 @@ def gui_image_dict_prepare(image_dict, name, user_id, username, datetime):
     shutil.copy2(old_img_path, html_images_dir_path + new_image_name)
 
     res.pop('data_path')
-    res.pop(name+ '_path')
+    res.pop(name + '_path')
     return res, new_image_name
 
 

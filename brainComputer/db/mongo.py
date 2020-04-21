@@ -1,6 +1,5 @@
 import pymongo
 from typing import Dict, List, Any
-
 from pymongo import errors as mongoErrors
 
 
@@ -14,7 +13,7 @@ class Mongo:
         """
         { 'user': {'user_id': '...' , '...' }
           'snapshots'= {
-                        datetime: {'pose': '...'}
+                        datetime_val: {'pose': '...'}
                        }
         }
         """
@@ -35,7 +34,7 @@ class Mongo:
                 update_key = "snapshots." + datetime_val + "." + datetime_data_key
                 db_p.update_one({'_id': user_id}, {'$set': {update_key: datetime_data_val}})
 
-            print(db_p.find_one({'_id': user_id}))  # See this probe in the DB.
+            print(db_p.find_one({'_id': user_id}))  # DEBUG
 
         except KeyError as e:
             print(f"db can't save this data format: {e}")

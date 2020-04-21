@@ -20,6 +20,11 @@ def test_run_parser_works(encoded_snapshot_user_json_real_data):
 
 
 def test_run_parser_throws(capsys):
+    """ check that loading a parser that doesn't exist returns a valid error """
+
+    def random_string_generator(size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for x in range(size))
+
     parsers_dict = load_parsers()
     parser_name = random_string_generator()
     if parser_name in parsers_dict:
@@ -28,7 +33,3 @@ def test_run_parser_throws(capsys):
         parser_func = parsers_dict[parser_name]
         out, err = capsys.readouterr()
         assert out == f"{parser_name} isn't a valid parser name"
-
-
-def random_string_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for x in range(size))

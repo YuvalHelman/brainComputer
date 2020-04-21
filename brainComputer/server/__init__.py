@@ -8,7 +8,7 @@ from brainComputer.utils.brain_pb2 import Snapshot as PbSnapshot
 from brainComputer.utils.protocol import user_snap_pb_to_json
 
 
-def run_server(host: str, port: int, data_path=brainComputer.ROOT_DIR+"data/", publish=print):
+def run_server(host: str, port: int, data_path=brainComputer.RESULTS_DIR, publish=print):
     print(f"## listening on {host}:{port} and passing received messages to publish ##")
     with Listener(host, port) as listener:
         while True:
