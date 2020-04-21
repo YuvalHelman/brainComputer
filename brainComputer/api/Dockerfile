@@ -1,3 +1,6 @@
 FROM brainbase
 
-CMD python -m brainComputer.api run-server  -h '0.0.0.0' -p '8000' --database mongodb://mongodb.containersNetwork:27017
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+ENTRYPOINT python3 -m brainComputer.api run-server  -h '0.0.0.0' -p '5000' --database mongodb://mongodb.containersnetwork:27017

@@ -4,4 +4,5 @@ from brainComputer.saver import Saver
 
 
 def test_saver_sanity():
-    pass
+    s = Saver(database)
+    s.save(topic_name, data)

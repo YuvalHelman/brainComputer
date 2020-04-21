@@ -15,7 +15,8 @@ def publish_fanout(connection, exchange_name='', data=None):
                          routing_key='',  # the queue name
                          body=data)
     except Exception as e:
-        print("publishing to RabbitMq failed")
+        print(f"connecting to RabbitMq failed: {e}")
+        raise e  # DEBUG
 
 
 def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_exchange_name='', pre_publish_func=None):
@@ -52,7 +53,7 @@ def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_ex
                          auto_ack=True)
         ch.start_consuming()
     except Exception as e:
-        print("connecting to RabbitMq failed")
+        print(f"connecting to RabbitMq failed: {e}")
     finally:
         if con is not None:
             con.close()
@@ -78,7 +79,7 @@ def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typin
         print(' [*] Consuming from rabbitmq. To exit press CTRL+C')
         ch.start_consuming()
     except Exception as e:
-        print("connecting to RabbitMq failed")
+        print(f"connecting to RabbitMq failed: {e}")
     finally:
         if con is not None:
             con.close()

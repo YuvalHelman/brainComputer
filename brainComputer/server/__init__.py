@@ -38,6 +38,7 @@ class ConnectionHandler(threading.Thread):
             # print(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))  # DEBUG
         except Exception as e:
             print(f"Abort connection to failed client. {e}")
+            raise e  # DEBUG
 
 
 if __name__ == '__main__':

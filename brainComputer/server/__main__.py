@@ -18,6 +18,11 @@ def cli():
 @click.argument('publish_url')
 def run_server_cli(host, port, data_path, publish_url):
     publisher_url = furl.furl(publish_url)
+    print(f"publish url (argument): {publish_url}")
+    print(f"publisher url (after furl): {publisher_url}")
+    print(f"publisher url host: {publisher_url.host}")
+    print(f"publisher url port: {publisher_url.port}")
+    print(f"publisher url scheme: {publisher_url.scheme}")
 
     def publish(message):
         try:
@@ -27,6 +32,7 @@ def run_server_cli(host, port, data_path, publish_url):
             con.close()
         except Exception as e:
             print(f"publish from server to queue failed: {e}")
+            raise e
 
     run_server(host, port, data_path, publish)
 
