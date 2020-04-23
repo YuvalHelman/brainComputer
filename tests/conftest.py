@@ -62,17 +62,42 @@ def encoded_snapshot_user_json_no_data(test_data_path):
 @pytest.fixture(scope='session')
 def json_db_document_user43():
     return {'_id': 43, 'user': {'user_id': 43, 'username': 'Dan Gittik', 'birthday': 699746400, 'gender': 0},
-            'snapshots': {'1575446887339': {
-                'pose': {'translation': {'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985},
-                         'rotation': {'x': -0.10888676356214629, 'y': -0.26755994585035286, 'z': -0.021271118915446748,
-                                      'w': 0.9571326384559261}},
-                'feelings': {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0, 'happiness': 0.0},
-                'depth_image': {'width': 224, 'height': 172,
-                                'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_data',
-                                'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_image.png'},
-                'color_image': {'width': 1920, 'height': 1080,
-                                'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_data',
-                                'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_image.png'}}}}
+            'snapshots': {'1575446887339': {'color_image': {'width': 1920, 'height': 1080,
+                                                            'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_data',
+                                                            'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_image.png'},
+                                            'feelings': {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0,
+                                                         'happiness': 0.0}, 'pose': {
+                    'translation': {'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985},
+                    'rotation': {'x': -0.10888676356214629, 'y': -0.26755994585035286, 'z': -0.021271118915446748,
+                                 'w': 0.9571326384559261}}, 'depth_image': {'width': 224, 'height': 172,
+                                                                            'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_data',
+                                                                            'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_image.png'}},
+                          '1575446887412': {'color_image': {'width': 1920, 'height': 1080,
+                                                            'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887412/color_data',
+                                                            'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887412/color_image.png'},
+                                            'pose': {'translation': {'x': 0.15600797533988953, 'y': 0.08133671432733536,
+                                                                     'z': -0.49068963527679443},
+                                                     'rotation': {'x': -0.2959017411322204, 'y': -0.16749024140672616,
+                                                                  'z': -0.04752900380336424, 'w': 0.9392178514199446}},
+                                            'feelings': {'hunger': 0.0010000000474974513,
+                                                         'thirst': 0.003000000026077032,
+                                                         'exhaustion': 0.0020000000949949026, 'happiness': 0.0},
+                                            'depth_image': {'width': 224, 'height': 172,
+                                                            'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887412/depth_data',
+                                                            'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887412/depth_image.png'}},
+                          '1575446887476': {
+                              'feelings': {'hunger': 0.0020000000949949026, 'thirst': 0.006000000052154064,
+                                           'exhaustion': 0.004000000189989805, 'happiness': 0.0}, 'pose': {
+                                  'translation': {'x': -0.05690298229455948, 'y': 0.09136273711919785,
+                                                  'z': -0.1454082578420639},
+                                  'rotation': {'x': -0.30262250114734884, 'y': 0.024984587319575428,
+                                               'z': 0.01379476785565966, 'w': 0.9526831039624887}},
+                              'depth_image': {'width': 224, 'height': 172,
+                                              'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887476/depth_data',
+                                              'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887476/depth_image.png'},
+                              'color_image': {'width': 1920, 'height': 1080,
+                                              'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887476/color_data',
+                                              'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887476/color_image.png'}}}}
 
 
 @pytest.fixture(scope='session')
@@ -106,18 +131,19 @@ def db_mock_mongo(monkeypatch):
             ]
 
         def get_user_id(self, user_id):
-            return {'_id': user_id, 'user': {'user_id': user_id, 'username': 'usernameMock', 'birthday': 699746400, 'gender': 'm'},
+            return {'_id': user_id,
+                    'user': {'user_id': user_id, 'username': 'usernameMock', 'birthday': 699746400, 'gender': 'm'},
                     'snapshots': {'1575446887339': {'pose': {
                         'translation': {'x': 0.4873843491077423, 'y': 0.007090016733855009, 'z': -1.1306129693984985},
                         'rotation': {'x': -0.10888676356214629, 'y': -0.26755994585035286, 'z': -0.021271118915446748,
                                      'w': 0.9571326384559261}}, 'depth_image': {'width': 224, 'height': 172,
                                                                                 'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_data',
                                                                                 'depth_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/depth_image.png'},
-                                                    'feelings': {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0,
-                                                                 'happiness': 0.0},
-                                                    'color_image': {'width': 1920, 'height': 1080,
-                                                                    'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_data',
-                                                                    'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_image.png'}}}}
+                        'feelings': {'hunger': 0.0, 'thirst': 0.0, 'exhaustion': 0.0,
+                                     'happiness': 0.0},
+                        'color_image': {'width': 1920, 'height': 1080,
+                                        'data_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_data',
+                                        'color_image_path': '/home/user/work/brainComputer/brainComputer/data/42_Dan Gittik/1575446887339/color_image.png'}}}}
 
     monkeypatch.setattr(Mongo, "__init__", value=mockedMongo.__init__)
     monkeypatch.setattr(Mongo, "save", value=mockedMongo.save)
@@ -134,4 +160,3 @@ def api_flask_client(db_mock_mongo):
     with api.app.test_client() as client:
         with api.app.app_context():
             yield client
-

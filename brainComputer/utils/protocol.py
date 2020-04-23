@@ -1,27 +1,41 @@
 import os
 import json
+import datetime
 
 
 def user_snap_pb_to_json(pb_user, pb_snapshot, data_path):
+    """ Converts User and Snapshots between protobuf objects to json. """
     user_dict = pbuser_to_dict(pb_user)
     snap_dict = pbsnapshot_to_dict(pb_snapshot, pb_user, data_path)
     return json.dumps(dict(user=user_dict, snapshot=snap_dict))
 
 
 def pbuser_to_dict(pb_user):
+    """ Converts the user object from binary protobuf protocol to json with interpretation of strings """
+    gender = 'o'
+    if pb_user.gender == 0:
+        gender = 'm'
+    elif pb_user.gender == 1:
+        gender = 'f'
+    birthday = datetime.datetime.fromtimestamp(pb_user.birthday)
+
     return dict(
         user_id=pb_user.user_id,
         username=pb_user.username,
-        birthday=pb_user.birthday,
-        gender=pb_user.gender
+        birthday=birthday.strftime("%m/%d/%Y, %H:%M:%S"),
+        gender=gender
     )
 
 
 def get_data_dir(data_path, user_id, username, datetime):
-        return str(data_path) + str(user_id) + "_" + str(username) + "/" + str(datetime) + '/'  # /42_Ron Dan/15423/
+    """ Returns a string that conforms to the valid path structure for saving a data file. """
+    return str(data_path) + str(user_id) + "_" + str(username) + "/" + str(datetime) + '/'  # /42_Ron Dan/15423/
 
 
 def pbsnapshot_to_dict(pb_snapshot, pb_user, data_path):
+    """ Converts the snapshot object from binary protobuf protocol to json with interpretation of strings.
+        Large binary files are saved to disk and being converted from data to absolute files paths on disk.
+     """
     try:
         p = get_data_dir(data_path, pb_user.user_id, pb_user.username, pb_snapshot.datetime)
         os.makedirs(p, exist_ok=True)

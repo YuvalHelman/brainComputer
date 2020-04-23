@@ -16,7 +16,6 @@ def publish_fanout(connection, exchange_name='', data=None):
                          body=data)
     except Exception as e:
         print(f"connecting to RabbitMq failed: {e}")
-        raise e  # DEBUG
 
 
 def consume_retrieve(publisher_url: furl.furl, consume_exchange_name, publish_exchange_name='', pre_publish_func=None):

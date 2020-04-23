@@ -40,7 +40,8 @@ def get_user_snapshot_details(user_id, snapshot_id):
     """ Returns the specified snapshot's details: ID, datetime, and the available results' names only (e.g. pose). """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
-        return ", ".join(user_dict['snapshots'][snapshot_id].keys())
+        res = dict(snapshot_id=snapshot_id, results=list(user_dict['snapshots'][snapshot_id].keys()))
+        return res
     except Exception as e:
         return "operation failed", 404
 
@@ -67,7 +68,6 @@ def get_snapshot_result_data(user_id, snapshot_id, result_name):
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
         image_path = user_dict['snapshots'][snapshot_id][result_name][path_key_str]
-
         return flask.send_file(image_path, mimetype='image/png')
     except Exception as e:
         return f"operation failed: {e}", 404

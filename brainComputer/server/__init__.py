@@ -1,5 +1,4 @@
 import threading
-import json
 
 import brainComputer
 from brainComputer.utils.listener import Listener
@@ -35,10 +34,8 @@ class ConnectionHandler(threading.Thread):
                 pb_user.ParseFromString(con.receive())
                 pb_snapshot.ParseFromString(con.receive())
             self.publish(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))
-            # print(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))  # DEBUG
         except Exception as e:
             print(f"Abort connection to failed client. {e}")
-            raise e  # DEBUG
 
 
 if __name__ == '__main__':

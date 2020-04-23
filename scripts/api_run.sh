@@ -1,1 +1,1 @@
-.env/bin/python -m brainComputer.api run-server &
+.env/bin/python -m brainComputer.api run-server
