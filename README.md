@@ -3,7 +3,9 @@
 
 # brainComputer 
 
-An example package. See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/). TODO
+A containerized based project that incorporates . See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/).
+
+![Image description](link-to-image)
 
 ## Installation
 
@@ -26,55 +28,31 @@ An example package. See [full documentation](https://advanced-system-design-foob
 
 3. To check that everything is working as expected, run the tests:
 
-
     ```sh
-    $ pyton -m pytest tests/
+    $ ./scripts/test_all.sh
     ...
     ```
+   
+## Deployment
 
-## Adding new Parsers
+To deploy all of the containers for a fast start of work using Docker:
 
-We use an "Aspect oriented programming" for ease of use.
-Adding new parsers should be done in the following manner:
-
-- Add a new file to hold your parser's code under 'brainComputer/parsers/', or use one of the files already in there.
-- The new parser's name should start with 'parse_' if it's a function, or end with 'Parser' if it's a Class. 
-  In the case of a class, it has to have a "parse" function in it to do the parsing. the functions should have a certain
-signature.
-- There has to be a 'field' member to your function\Class that indicates the type of parsing data it returns.
-
-- Example:
-    ```pycon
-   def parse_function(snapshot):
-        pass
-   parse_function.field = 'translation'
-
-   class ClassParser:
-       field = 'color_image'
-
-       def parse(self,snapshot)
-           pass
+    ```sh
+    $ ./run-pipeline.sh
     ```
 
-- The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
-- Adding new functionalities should be done in the 'utils' module.
-- A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen arbitrarily.
-- A parser should return an encoded json object of the following json format, or assist the given function:
- ```pycon
-{ 'user': {'user_id': '...' , '...' }
-   'snapshots'= [
-                 {'datetime': '..', parsedResult }
-                ]
-}
- ``` 
-Or use this builtin function:
- ```pycon
- from brainComputer.utils import formatted_encoded_one_data
- ```
+You should then use the client module to upload snapshots data into the system 
+(using the hardware's format - an example can be downloaded from 
+[here](https://storage.googleapis.com/advanced-system-design/sample.mind.gz))
+
+    ```sh
+    $ ./run-pipeline.sh
+    ```
+
 
 ## Usage
 
-The `brainComputer` packages provides the following classes:
+The `brainComputer` package provides the following packages:
 
 - `Foo`
 
@@ -172,4 +150,47 @@ Traceback (most recent call last):
     ...
 RuntimeError: something went terrible wrong :[
 ```
+
+
+## Adding new Parsers
+
+We use an "Aspect oriented programming" for ease of use.
+Adding new parsers should be done in the following manner:
+
+- Add a new file to hold your parser's code under 'brainComputer/parsers/', or use one of the files already in there.
+- The new parser's name should start with 'parse_' if it's a function, or end with 'Parser' if it's a Class. 
+  In the case of a class, it has to have a "parse" function in it to do the parsing. the functions should have a certain
+signature.
+- There has to be a 'field' member to your function\Class that indicates the type of parsing data it returns.
+
+- Example:
+    ```pycon
+   def parse_function(snapshot):
+        pass
+   parse_function.field = 'translation'
+
+   class ClassParser:
+       field = 'color_image'
+
+       def parse(self,snapshot)
+           pass
+    ```
+
+- The framework will automatically collect your function and use it for the functionality that's provided in it's 'field' member. 
+- Adding new functionalities should be done in the 'utils' module.
+- A functionality (e.g 'field' member) may have only one function for it and thus if more than one is implemented, one of them will be chosen arbitrarily.
+- A parser should return an encoded json object of the following json format, or assist the given function:
+ ```pycon
+{ 'user': {'user_id': '...' , '...' }
+   'snapshots'= [
+                 {'datetime': '..', parsedResult }
+                ]
+}
+ ``` 
+Or use this builtin function:
+ ```pycon
+ from brainComputer.utils import formatted_encoded_one_data
+ ```
+
+
 
