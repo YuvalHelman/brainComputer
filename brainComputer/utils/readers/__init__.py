@@ -1,1 +1,0 @@
-from .protoReader import ReaderProtobuf

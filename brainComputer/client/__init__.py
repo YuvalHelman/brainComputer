@@ -1,4 +1,4 @@
-from brainComputer.utils.readers import ReaderProtobuf
+from brainComputer.utils.binaryReader import ReaderProtobuf
 from brainComputer.utils.connection import Connection
 from brainComputer.client.utils import convert_to_protocol_user, convert_to_protocol_snapshot
 

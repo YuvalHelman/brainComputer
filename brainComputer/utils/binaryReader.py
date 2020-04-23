@@ -1,7 +1,7 @@
 import struct
 import gzip
-from ..brain_pb2 import User as PbUser
-from ..brain_pb2 import Snapshot as PbSnapshot
+from brainComputer.utils.brain_pb2 import User as PbUser
+from brainComputer.utils.brain_pb2 import Snapshot as PbSnapshot
 
 
 class ReaderProtobuf:
@@ -54,7 +54,3 @@ class ReaderProtobuf:
 
     def __repr__(self):
         return f"A reader Object for the file {self.file}"
-
-
-if __name__ == '__main__':
-    pass

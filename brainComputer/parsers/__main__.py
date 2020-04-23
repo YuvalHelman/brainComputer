@@ -1,7 +1,7 @@
 import click
 import furl
 
-import brainComputer.utils.rabbitmq as rabmq
+import brainComputer.utils.rabbit_utils as rabmq
 from . import run_parser
 from .utils import get_parser_function
 
@@ -20,7 +20,8 @@ def parse_cli(parser_name, data_path):
     with open(data_path, 'r') as f:
         data = f.read()
 
-    run_parser(parser_name, data)
+    res = run_parser(parser_name, data)
+    print(res)
 
 
 @cli.command(name='run-parser')

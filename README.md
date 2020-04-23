@@ -7,7 +7,7 @@
 A containerized based project with a backend that incorporates a message queue, designated server, parsers for 
 heavy computation, a DB to store the info and a client that sends data with an implemented API+GUI to view everything
 
-See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/).
+See [full documentation](https://braincomputeryh.readthedocs.io/en/latest/).
 
 ![alt text](https://github.com/YuvalHelman/brainComputer/blob/master/images/project_layout.PNG?raw=true)
 
@@ -72,7 +72,7 @@ Or get info from the API:
 
 ### Client
 
-The `Client` package provides the following interface:
+The `client` package provides the following interface:
 
    ```pycon
     >>> from brainComputer.client import upload_sample
@@ -83,7 +83,7 @@ The `Client` package provides the following interface:
 And the following CLI:
 
 ```sh
-$ python -m cortex.client upload-sample \
+$ python -m brainComputer.client upload-sample \
       -h/--host '127.0.0.1'             \
       -p/--port 8000                    \
       'snapshot.mind.gz'
@@ -91,76 +91,175 @@ $ python -m cortex.client upload-sample \
 
 ### Server
 
-The `Server` package provides the following interface:
-   
-```
+The server itself is quite simple: it accepts connections from the client, receives the uploaded samples
+ and publishes them to the message queue;
+ 
 
-All commands accept the `-q` or `--quiet` flag to suppress output, and the `-t`
-or `--traceback` flag to show the full traceback when an exception is raised
-(by default, only the error message is printed, and the program exits with a
-non-zero code).
+The `server` package provides the following interface:
 
-The CLI provides the `foo` command, with the `run`, `add` and `inc`
-subcommands:
+   ```pycon
+    >>> from brainComputer.server import run_server
+    >>> def print_message(message):
+    ...     print(message)
+    >>> run_server(host='127.0.0.1', port=8000, publish=print_message)
+    … # listen on host:port and pass received messages to publish
+   ```
 
-```sh
-$ python -m webUtils upload -a 127.0.0.1:5000 -u 1 -t message
-message sent
-$ python -m run_server -a 127.0.0.1:5000 -d ./data
-server is ready to recieve requests
-$ python -m web -a 127.0.0.1:5000 -d ./data
-webserver is ready to recieve requests
-
-3:
-```
-
-The CLI further provides the `bar` command, with the `run` and `error`
-subcommands.
-
-Curiously enough, `bar`'s `run` subcommand accepts the `-o` or `--output`
-option to write its output to a file rather than the standard output, and the
-`-u` or `--uppercase` option to do so in uppercase letters.
+And the following CLI:
 
 ```sh
-$ python -m foobar bar run
-bar
-$ python -m foobar bar run -u
-BAR
-$ python -m foobar bar run -o output.txt
-$ cat output.txt
-BAR
+$ python -m brainComputer.server run-server \
+      -h/--host '127.0.0.1'          \
+      -p/--port 8000                 \
+      'rabbitmq://127.0.0.1:5672/'
 ```
 
-Do note that each command's options should be passed to *that* command, so for
-example the `-q` and `-t` options should be passed to `foobar`, not `foo` or
-`bar`.
+### Parser
+
+The `parser` package provides the following interface:
+
+   ```pycon
+    >>> from brainComputer.parsers import run_parser
+    >>> data = … 
+    >>> result = run_parser('pose', data)
+   ```
+Which accepts a parser name and some raw data, as consumed from the message queue, and returns the result
+
+And the following CLI:
 
 ```sh
-$ python -m foobar bar run -q # this doesn't work
-ERROR: no such option: -q
-$ python -m foobar -q bar run # this does work
+$ python -m brainComputer.parsers parse 'pose' 'snapshot.raw' > 'pose.result'
 ```
-
-To showcase these options, consider `bar`'s `error` subcommand, which raises an
-exception:
+which runs the parser exactly once, and:
 
 ```sh
-$ python -m foobar bar error
-ERROR: something went terribly wrong :[
-$ python -m foobar -q bar error # suppress output
-$ python -m foobar -t bar error # show full traceback
-ERROR: something went terribly wrong :[
-Traceback (most recent call last):
-    ...
-RuntimeError: something went terrible wrong :[
+$ python -m brainComputer.parsers run-parser 'pose' 'rabbitmq://127.0.0.1:5672/'
+
 ```
+which runs the parser as a service, and works with the message queue indefinitely.
+
+### Saver
+
+The Saver itself is quite simple: it connects to a database, accepts a topic name and some data as consumed from the 
+message queue and saves it to the database.
+ 
+The `saver` package provides the following interface:
+
+   ```pycon
+    >>> from brainComputer.saver import Saver
+    >>> saver = Saver(database_url)
+    >>> data = …
+    >>> saver.save('pose', data)
+   ```
+Which connects to a database, accepts a topic name and some data, as consumed from the message queue, and saves it to the database.
+
+And the following CLI:
+
+```sh
+$ python -m brainComputer.saver save                     \
+      -d/--database 'mongodb://127.0.0.1:27017' \
+     'pose'                                       \
+     'pose.result' 
+```
+Which accepts a topic name and a path to some raw data, as consumed from the message queue, and saves it to a database.
+
+```sh
+$ python -m brainComputer.saver run-saver  \
+      'mongodb://127.0.0.1:27017' \
+      'rabbitmq://127.0.0.1:5672/'
+```
+which runs the saver as a service, and works with the message queue indefinitely.
+
+##### The Saver automatically subscribes to all topics published by any valid parser.
+
+### API
+
+The API server supports the following RESTful API endpoints:
+- ##### GET /users
+- ##### GET /users/<user-id>
+- ##### GET /users/<user-id>/snapshots
+- ##### GET /users/<user-id>/snapshots/<snapshot-id>
+- ##### GET/users/<user-id>/snapshots/<snapshot-id>/<result-name>
+
+
+The `api` package provides the following interface:
+
+   ```pycon
+    >>> from brainComputer.api import run_api_server
+    >>> run_api_server(
+    ...     host = '127.0.0.1',
+    ...     port = 5000,
+    ...     database_url = 'mongodb://127.0.0.1:27017',
+    ... )
+    … # listen on host:port and serve data from database_url
+   ```
+
+And the following CLI:
+
+   ```sh
+    $ python -m brainComputer.api run-server \
+          -h/--host '127.0.0.1'       \
+          -p/--port 5000              \
+          -d/--database 'mongodb://127.0.0.1:27017'
+   ```
+
+### CLI
+
+The CLI consumes the API and simply reflects it:
+
+The `api` package provides the following interface:
+
+   ```pycon
+    $ python -m cortex.cli get-users
+    …
+    $ python -m cortex.cli get-user 1
+    …
+    $ python -m cortex.cli get-snapshots 1
+    …
+    $ python -m cortex.cli get-snapshot 1 2
+    …
+    $ python -m cortex.cli get-result 1 2 'pose'
+    …
+   ```
+
+All commands accepts the -h/--host and -p/--port flags to configure the host and port,
+but default to the API's address.
+
+The `get-result` command also accept the -s/--save flag that, if specified,
+receives a path, and saves the result's data to that path.
+
+### GUI
+
+The GUI server is a standalone server that reflects the API in a more pleasant way.
+
+The `gui` package provides the following interface:
+
+   ```pycon
+    >>> from cortex.gui import run_server
+    >>> run_server(
+    ...     host = '127.0.0.1',
+    ...     port = 8080,
+    ...     database_url = 'mongodb://127.0.0.1:27017',
+    ... )
+   ```
+
+And the following CLI:
+
+   ```sh
+    $ python -m cortex.gui run-server \
+      -h/--host '127.0.0.1'       \
+      -p/--port 8080              \
+      -d/--database 'mongodb://127.0.0.1:27017'
+   ```
 
 
 ## Adding new Parsers
 
 We use an "Aspect oriented programming" for ease of use.
-Adding new parsers should be done in the following manner:
+After implementing a new parser Class\Function it's automatically possible to run it as a service and invoke it 
+like the other parsers. 
 
+Adding new parsers should be done in the following manner:
 - Add a new file to hold your parser's code under 'brainComputer/parsers/', or use one of the files already in there.
 - The new parser's name should start with 'parse_' if it's a function, or end with 'Parser' if it's a Class. 
   In the case of a class, it has to have a "parse" function in it to do the parsing. the functions should have a certain
@@ -193,7 +292,7 @@ signature.
  ``` 
 Or use this builtin function:
  ```pycon
- from brainComputer.utils import formatted_encoded_one_data
+ from brainComputer.parsers.utils import formatted_encoded_one_data
  ```
 
 

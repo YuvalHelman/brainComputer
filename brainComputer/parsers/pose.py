@@ -16,6 +16,3 @@ def parse_pose(json_snap_user):
 
 
 parse_pose.field = 'pose'
-
-if __name__ == '__main__':
-    pass

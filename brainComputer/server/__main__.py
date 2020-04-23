@@ -1,4 +1,4 @@
-import brainComputer.utils.rabbitmq as rabmq
+import brainComputer.utils.rabbit_utils as rabmq
 import brainComputer
 import click
 import pika

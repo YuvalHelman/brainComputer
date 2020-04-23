@@ -1,7 +1,6 @@
-import pika
-import furl
 import typing
-import json
+import furl
+import pika
 
 SNAPSHOT_EXCHANGE = 'snapshot-exchange'
 
@@ -82,7 +81,3 @@ def consume_topics(publisher_url: furl.furl, topics_dict: typing.Dict[str, typin
     finally:
         if con is not None:
             con.close()
-
-
-if __name__ == "__main__":
-    pass

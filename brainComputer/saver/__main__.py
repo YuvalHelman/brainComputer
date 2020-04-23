@@ -1,7 +1,7 @@
 import click
 import furl
 
-import brainComputer.utils.rabbitmq as rabmq
+import brainComputer.utils.rabbit_utils as rabmq
 from brainComputer.parsers import load_parsers
 from . import Saver
 
