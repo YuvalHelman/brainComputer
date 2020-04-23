@@ -74,3 +74,4 @@ class Mongo:
             self.users.insert_one(data)
         except mongoErrors.PyMongoError as e:
             print(f"insertion failed: {e}")
+            raise e

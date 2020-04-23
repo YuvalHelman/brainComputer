@@ -10,6 +10,10 @@ class Saver:
         self.handler = get_db_handler(self.db_url)
 
     def save(self, topic_name, enc_data):
-        data = json.loads(enc_data)
-        self.handler.save(topic_name, data)
-
+        try:
+            data = json.loads(enc_data)
+            self.handler.save(topic_name, data)
+            print("Save to db success")
+        except Exception as e:
+            print("Saving to DB failed")
+            print(e)
