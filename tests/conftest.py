@@ -2,6 +2,7 @@ import pytest
 import json
 from tests import ROOT_DIR
 
+
 @pytest.fixture(scope='session')
 def data_test_path():
     import tests
