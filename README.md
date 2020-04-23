@@ -1,11 +1,15 @@
 [![Build Status](https://travis-ci.org/YuvalHelman/brainComputer.svg?branch=master)](https://travis-ci.org/YuvalHelman/brainComputer)
 [![codecov](https://codecov.io/gh/YuvalHelman/brainComputer/branch/master/graph/badge.svg)](https://codecov.io/gh/YuvalHelman/brainComputer)
+[![Documentation Status](https://readthedocs.org/projects/braincomputeryh/badge/?version=latest)](https://braincomputeryh.readthedocs.io/en/latest/?badge=latest)
 
 # brainComputer 
 
-A containerized based project that incorporates . See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/).
+A containerized based project with a backend that incorporates a message queue, designated server, parsers for 
+heavy computation, a DB to store the info and a client that sends data with an implemented API+GUI to view everything
 
-![Image description](link-to-image)
+See [full documentation](https://advanced-system-design-foobar.readthedocs.io/en/latest/).
+
+![alt text](https://github.com/YuvalHelman/brainComputer/blob/master/images/project_layout.PNG?raw=true)
 
 ## Installation
 
@@ -37,58 +41,58 @@ A containerized based project that incorporates . See [full documentation](https
 
 To deploy all of the containers for a fast start of work using Docker:
 
-    ```sh
+   ```sh
     $ ./run-pipeline.sh
-    ```
+   ```
+    
 
 You should then use the client module to upload snapshots data into the system 
 (using the hardware's format - an example can be downloaded from 
 [here](https://storage.googleapis.com/advanced-system-design/sample.mind.gz))
 
-    ```sh
-    $ ./run-pipeline.sh
-    ```
-
-
+   ```sh
+    [brainComputer] $ python -m brainComputer.client upload-sample 
+                      path_to_data_file
+                      -h 0.0.0.0 -p 8000 
+   ```
+And lookup on the results from the GUI:
+   ```sh
+    [brainComputer] $ firefox 0.0.0.0:8080/users/
+    [brainComputer] $ python -m brainComputer.gui run-server
+                      ...
+   ```
+Or get info from the API:
+   ```sh
+    [brainComputer] $ python
+        >> import requests
+        >> requests.get('0.0.0.0:8080/users')
+        ...
+   ```
 ## Usage
 
-The `brainComputer` package provides the following packages:
+### Client
 
-- `Foo`
+The `Client` package provides the following interface:
 
-    This class encapsulates the concept of `foo`, and returns `"foo"` when run.
+   ```pycon
+    >>> from brainComputer.client import upload_sample
+    >>> upload_sample(host='127.0.0.1', port=8000, path='sample.mind.gz')
+    … # upload path to server - host:port 
+   ```
 
-    In addition, it provides the `inc` method to increment integers, and the
-    `add` method to sum them.
-
-    ```pycon
-    >>> from foobar import Foo
-    >>> foo = Foo()
-    >>> foo.run()
-    'foo'
-    >>> foo.inc(1)
-    2
-    >>> foo.add(1, 2)
-    3
-    ```
-
-- `Bar`
-
-    This class encapsulates the concept of `bar`; it's very similar to `Foo`,
-    except it returns `"bar"` when run.
-
-    ```pycon
-    >>> from foobar import Bar
-    >>> bar = Bar()
-    >>> bar.run()
-    'bar'
-    ```
-
-The `webUtils` package also provides a command-line interface:
+And the following CLI:
 
 ```sh
-$ python -m brainComputer 
-webUtils, version 0.1.0
+$ python -m cortex.client upload-sample \
+      -h/--host '127.0.0.1'             \
+      -p/--port 8000                    \
+      'snapshot.mind.gz'
+```
+
+### Server
+
+The `Server` package provides the following interface:
+   
 ```
 
 All commands accept the `-q` or `--quiet` flag to suppress output, and the `-t`
