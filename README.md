@@ -58,14 +58,13 @@ You should then use the client module to upload snapshots data into the system
 And lookup on the results from the GUI:
    ```sh
     [brainComputer] $ firefox 0.0.0.0:8080/users/
-    [brainComputer] $ python -m brainComputer.gui run-server
                       ...
    ```
 Or get info from the API:
    ```sh
     [brainComputer] $ python
         >> import requests
-        >> requests.get('0.0.0.0:8080/users')
+        >> requests.get('0.0.0.0:5000/users')
         ...
    ```
 ## Usage
@@ -176,11 +175,10 @@ which runs the saver as a service, and works with the message queue indefinitely
 
 The API server supports the following RESTful API endpoints:
 - ##### GET /users
-- ##### GET /users/<user-id>
-- ##### GET /users/<user-id>/snapshots
-- ##### GET /users/<user-id>/snapshots/<snapshot-id>
-- ##### GET/users/<user-id>/snapshots/<snapshot-id>/<result-name>
-
+- ##### GET /users/{user-id}
+- ##### GET /users/{user-id}/snapshots
+- ##### GET /users/{user-id}/snapshots/{snapshot-id}
+- ##### GET/users/{user-id}/snapshots/{snapshot-id}/{result-name}
 
 The `api` package provides the following interface:
 
