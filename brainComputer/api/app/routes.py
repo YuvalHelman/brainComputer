@@ -48,8 +48,7 @@ def get_user_snapshot_details(user_id, snapshot_id):
 
 @app.route('/users/<int:user_id>/snapshots/<snapshot_id>/<result_name>', methods=['GET'])
 def get_snapshot_result(user_id, snapshot_id, result_name):
-    """ Returns the specified snapshot's result. currently supports pose, color-image, depth-image and feelings.
-        """
+    """ Returns the specified snapshot's result. currently supports pose, color-image, depth-image and feelings. """
     try:
         user_dict = app.config['db_handler'].get_user_id(user_id)
         res = user_dict['snapshots'][snapshot_id][result_name]

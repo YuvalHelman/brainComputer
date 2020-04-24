@@ -18,7 +18,7 @@ class mockedProtoReader:
 
 
 def test_upload_sample(monkeypatch, capsys):
-    from brainComputer.utils.readers import ReaderProtobuf
+    from brainComputer.utils.binaryReader import ReaderProtobuf
 
     monkeypatch.setattr(ReaderProtobuf, "__init__", value=mockedProtoReader.__init__)
     monkeypatch.setattr(ReaderProtobuf, "__next__", value=mockedProtoReader.__next__)

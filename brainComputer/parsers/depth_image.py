@@ -7,10 +7,15 @@ from .utils import formatted_encoded_one_data
 
 
 class DepthImageParser:
+    """ A parser that handles probes of "depth_image" type. """
     field = 'depth_image'
 
     @staticmethod
     def parse(json_snap_user):
+        """ The function that does the parsing
+        :param json_snap_user: the data to be parsed.
+        :return: the parsed data result.
+        """
         try:
             snap_user = json.loads(json_snap_user)
             width, height, data_path, image_path = snap_user["snapshot"]["depth_image"]["width"], \

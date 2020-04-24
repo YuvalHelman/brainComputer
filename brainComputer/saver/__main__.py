@@ -16,8 +16,8 @@ def cli():
 @click.argument('topic_name')
 @click.argument('data_path')
 def save_cli(database, topic_name, data_path):
-    """  accepts a parser name and a path to some raw data and prints the result.
-         This way of invocation runs the parser exactly once """
+    """ accepts a topic name and a path to some raw data, as consumed from the message queue, and saves it to a
+        database """
     with open(data_path, 'r') as f:
         data = f.read()
 
@@ -29,7 +29,9 @@ def save_cli(database, topic_name, data_path):
 @click.argument('db_url')
 @click.argument('publish_url')
 def run_saver_cli(db_url, publish_url):
-    """ running the parser as a service, which works with a message queue indefinitely """
+    """ running the saver as a service, which works with a message queue indefinitely.
+        subscribes to all the relevant topics it is capable of consuming and saving them to the database
+    """
     publisher_url = furl.furl(publish_url)
 
     s = Saver(db_url)

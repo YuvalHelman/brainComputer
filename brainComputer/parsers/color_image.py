@@ -5,10 +5,15 @@ from .utils import formatted_encoded_one_data
 
 
 class ColorImageParser:
+    """ A parser that handles probes of "color_image" type. """
     field = 'color_image'
 
     @staticmethod
     def parse(json_snap_user):
+        """ The function that does the parsing
+        :param json_snap_user: the data to be parsed.
+        :return: the parsed data result.
+        """
         try:
             snap_user = json.loads(json_snap_user)
             width, height, data_path, image_path = snap_user["snapshot"]["color_image"]["width"], \

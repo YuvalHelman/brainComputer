@@ -8,6 +8,12 @@ from brainComputer.utils.protocol import user_snap_pb_to_json
 
 
 def run_server(host: str, port: int, data_path=brainComputer.RESULTS_DIR, publish=print):
+    """ accept connections from clients, receive the uploaded samples and publish upon the 'publish' function.
+    :param host: Network IP Address or Hostname to connect to.
+    :param port: Network Port to bind.
+    :param data_path: a path to save data that needs to be saved on the disk.
+    :param publish: function to intitiate upon receiving data from the client.
+    """
     print(f"## listening on {host}:{port} and passing received messages to publish ##")
     with Listener(host, port) as listener:
         while True:
@@ -36,7 +42,3 @@ class ConnectionHandler(threading.Thread):
             self.publish(user_snap_pb_to_json(pb_user, pb_snapshot, self.data_path))
         except Exception as e:
             print(f"Abort connection to failed client. {e}")
-
-
-if __name__ == '__main__':
-    run_server('127.0.0.1', 8000)

@@ -6,7 +6,8 @@ import json
 
 
 def load_parsers():
-    """ loads all of the parsers in the parsers/ directory.
+    """ loads all of the parsers in the 'parsers' package.
+        Uses a dynamic fetch in an aspect oriented manner.
     returns: {parser_functionality_string : function_object}
     """
     parsers_dict = {}
@@ -31,6 +32,11 @@ def load_parsers():
 
 
 def get_parser_function(parser_name):
+    """ returns a 'parser_name' parser using the 'load_parsers' function.
+        Throws a KeyError if the parser doesn't exist in the project.
+    :param parser_name:
+    :return: the function of type 'parser_name'
+    """
     parsers_dict = load_parsers()
     return parsers_dict[parser_name]
 

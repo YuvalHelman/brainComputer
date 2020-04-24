@@ -4,7 +4,12 @@ from brainComputer.client.utils import convert_to_protocol_user, convert_to_prot
 
 
 def upload_sample(host: str, port: int, file_path: str):
-    """ """
+    """ Read data from the hardware's binary format, converts it to the format agreed upon the client-server protocol
+        and sends it to the server
+    :param host: Network IP Address or Hostname of the server.
+    :param port: Network Port of the server
+    :param file_path: path of the hardware's file to read the data from before sending to the server
+    """
     try:
         reader = ReaderProtobuf(file_path)
         pb_user = convert_to_protocol_user(reader.user)
@@ -13,7 +18,6 @@ def upload_sample(host: str, port: int, file_path: str):
             with Connection.connect(host, port) as con:
                 con.send(pb_user.SerializeToString())
                 con.send(pb_snap.SerializeToString())
-                import pdb; pdb.set_trace()  # DEBUG
         print("completed sending all snapshots")
     except Exception as e:
         print(f'ERROR: {e}')

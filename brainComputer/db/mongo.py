@@ -10,7 +10,9 @@ class Mongo:
         self.users = db['users']
 
     def save(self, topic_name: str, data: dict):
-        """
+        """ saves a dict of type 'user-snapshot' in the mongo DB. Each user as a single document.
+        :param topic_name: name of the probe to be saved (unusable in this version)
+        :param data: a dict of the following format -
         { 'user': {'user_id': '...' , '...' }
           'snapshots'= {
                         datetime_val: {'pose': '...'}
@@ -33,9 +35,6 @@ class Mongo:
             else:
                 update_key = "snapshots." + datetime_val + "." + datetime_data_key
                 db_p.update_one({'_id': user_id}, {'$set': {update_key: datetime_data_val}})
-
-            print(db_p.find_one({'_id': user_id}))  # DEBUG
-
         except KeyError as e:
             print(f"db can't save this data format: {e}")
             raise e
@@ -50,6 +49,7 @@ class Mongo:
             raise e
 
     def get_users(self) -> List[Any]:
+        """ A query for fetching all of the users in the DB (basically returns all documents """
         try:
             return self.users.distinct('user')
         except mongoErrors.ConnectionFailure as e:
@@ -60,6 +60,10 @@ class Mongo:
             raise e
 
     def get_user_id(self, user_id) -> Dict[Any, Any]:
+        """ A query for fetching aa single user in the DB
+        :param user_id: the ID of this user
+        :return: a dict type of the user's document
+        """
         try:
             return self.users.find_one({'_id': user_id})
         except mongoErrors.ConnectionFailure as e:
@@ -70,6 +74,7 @@ class Mongo:
             raise e
 
     def insert_doc(self, data: dict):
+        """ Used for testing for inserting documents into the data """
         try:
             self.users.insert_one(data)
         except mongoErrors.PyMongoError as e:

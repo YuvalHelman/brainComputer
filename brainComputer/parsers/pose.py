@@ -3,6 +3,10 @@ from .utils import formatted_encoded_one_data
 
 
 def parse_pose(json_snap_user):
+    """ A parser that handles probes of "pose" type.
+    :param json_snap_user: the data to be parsed.
+    :return: the parsed data result.
+    """
     try:
         snap_user = json.loads(json_snap_user)
 

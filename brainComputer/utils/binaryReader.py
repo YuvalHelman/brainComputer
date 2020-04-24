@@ -18,8 +18,6 @@ class ReaderProtobuf:
             print("parsing User failed")
             return None
         return pb_user
-        # return User(pb_user.user_id, pb_user.username, pb_user.birthday,
-        #             'f' if pb_user.gender == 1 else 'm')
 
     def read_next_snapshot(self):
         pb_snapshot = PbSnapshot()
@@ -30,12 +28,9 @@ class ReaderProtobuf:
         return pb_snapshot
 
     def read_message_from_file(self, protoObject, is_write=False):
-        """ Reads a 'message' from the file given from the hardware specifications for exercise 7
-        :return:
-        """
+        """ Reads a 'message' from the file given from the hardware specifications """
         try:
-            UINT_32_LEN_IN_BYTES = 4
-            len_raw = self.file.read(UINT_32_LEN_IN_BYTES)
+            len_raw = self.file.read(4)
             message_length, *_ = struct.unpack('I', len_raw)
             msg_raw = self.file.read(message_length)
             if is_write:

@@ -17,6 +17,12 @@ def cli():
 @click.option('--data_path', '-d', default=brainComputer.ROOT_DIR + "data/", help="path on disk to save big data")
 @click.argument('publish_url')
 def run_server_cli(host, port, data_path, publish_url):
+    """ accept connections from clients, receive the uploaded samples and sends them to the message queue.
+    :param host: Network IP Address or Hostname to connect to.
+    :param port: Network Port to bind.
+    :param data_path: a path to save data that needs to be saved on the disk.
+    :param publish_url: message queue url to publish data to upon receiving uploaded samples.
+    """
     publisher_url = furl.furl(publish_url)
 
     def publish(message):

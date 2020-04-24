@@ -16,7 +16,10 @@ def cli():
 @click.argument('data_path')
 def parse_cli(parser_name, data_path):
     """  accepts a parser name and some raw data and prints the result.
-         This way of invocation runs the parser exactly once            """
+         This way of invocation runs the parser exactly once  .
+    :param parser_name: the name of the parser's functionality
+    :param data_path: a path to the data to be parsed
+    """
     with open(data_path, 'r') as f:
         data = f.read()
 
@@ -28,7 +31,10 @@ def parse_cli(parser_name, data_path):
 @click.argument('parser_name')
 @click.argument('publish_url')
 def run_parser_cli(parser_name, publish_url):
-    """ running the parser as a service, which works with a message queue indefinitely """
+    """ running the parser as a service, which works with a message queue indefinitely
+    :param parser_name: the name of the parser's functionality
+    :param publish_url: a message_queue url to send the parsed data to after the parsing.
+    """
     publisher_url = furl.furl(publish_url)
 
     try:
