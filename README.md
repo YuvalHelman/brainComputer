@@ -1,13 +1,11 @@
 [![Build Status](https://travis-ci.org/YuvalHelman/brainComputer.svg?branch=master)](https://travis-ci.org/YuvalHelman/brainComputer)
 [![codecov](https://codecov.io/gh/YuvalHelman/brainComputer/branch/master/graph/badge.svg)](https://codecov.io/gh/YuvalHelman/brainComputer)
-[![Documentation Status](https://readthedocs.org/projects/braincomputeryh/badge/?version=latest)](https://braincomputeryh.readthedocs.io/en/latest/?badge=latest)
 
 # brainComputer 
 
 A containerized based project with a backend that incorporates a message queue, designated server, parsers for 
 heavy computation, a DB to store the info and a client that sends data with an implemented API+GUI to view everything
 
-See [full documentation](https://braincomputeryh.readthedocs.io/en/latest/).
 
 ![alt text](https://github.com/YuvalHelman/brainComputer/blob/master/images/project_layout.PNG?raw=true)
 
